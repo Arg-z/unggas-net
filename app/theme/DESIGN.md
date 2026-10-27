@@ -1,5 +1,5 @@
 ---
-version: v5.1
+version: v5.2
 name: Unggas.net
 description: Forum komunitas peternak unggas berbahasa Indonesia. Kertas putih berbingkai hijau-kelabu, judul dan prosa Fraunces, UI Plus Jakarta Sans. Arah framed-sheet untuk layar aplikasi yang dibaca dan dikerjakan lama.
 colors:
@@ -87,7 +87,6 @@ spacing:
   sheet-inset: "8px kanan & bawah di layar >=1024px"
   sidebar: "228px"
   topbar: "48px"
-  nav-bawah: "54px"
   konten-beranda: "max 1120px, daftar memakai lebar penuh"
   konten-thread: "max 1080px (utama 788 + rel 260)"
   konten-auth: "max 420px, satu kolom di tengah"
@@ -147,6 +146,8 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
 - `.btn` 36px, radius 8, 14px/600. `.btn-sm` 30px, `.btn-lg` 44px.
   `.btn-primary` near-black, `.btn-outline` putih + `control`, `.btn-quiet` transparan.
   Satu aksi terisi per pandangan.
+- `TombolTulis`: di ponsel berupa tombol plus 44x44 near-black di bilah atas;
+  label "Tulis diskusi" muncul mulai 768px. Di `/baru` tombol ini diam.
 - `.panel` putih, 1px `border`, radius 12. `.well` `wash`, 1px, radius 12.
   Tanpa bayangan; kedalaman dari langkah warna dan garis.
 - Keadaan kosong memakai blok `wash` radius 16 tanpa garis putus-putus, judul
@@ -164,7 +165,11 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
 ## Tata letak
 
 - Bingkai: sidebar 228px (>=1024px), bilah atas 48px, kertas inset 8px. Di bawah
-  1024px bingkai hilang; kertas menjadi layar penuh dan nav bawah 54px.
+  1024px bingkai hilang dan kertas menjadi layar penuh.
+- Ponsel tidak memakai nav bawah. Tujuan utama tinggal di bilah atas: wordmark
+  ke beranda, lonceng ke notifikasi, tombol plus 44x44 near-black ke `/baru`,
+  dan keluar. Komunitas tetap terjangkau dari pemilih di baris judul beranda,
+  dan tautan footer.
 - Beranda: judul dan satu kalimat pengantar, pemilih komunitas dan kotak cari
   di ponsel, papan komunitas untuk sematan, lalu satu label bagian dan daftar
   diskusi ala feed: judul serif, cuplikan dua baris, byline, tag. Baris
@@ -204,6 +209,12 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
 
 ## Riwayat
 
+- v5.2 (28 Okt 2026): nav bawah ponsel dihapus atas permintaan pemilik. Kertas
+  ponsel memakai tinggi penuh tanpa bilah tetap; footer turun ke tepi dengan
+  aman untuk home indicator. Aksi Tulis pindah ke bilah atas sebagai tombol plus
+  44x44 near-black, label penuh muncul mulai 768px. Wordmark, lonceng, dan
+  keluar tetap menjadi navigasi utama ponsel; komunitas lewat pemilih di baris
+  judul beranda.
 - v5.1 (28 Okt 2026): beranda dibaca seperti feed editorial, acuan Medium.
   Header kolom dan angka balasan rata kanan dibuang; judul diskusi memakai
   Fraunces 18/20px dengan cuplikan dua baris dan byline penulis · waktu ·

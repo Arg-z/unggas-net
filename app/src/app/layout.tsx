@@ -9,7 +9,6 @@ import { NotifikasiBadge } from "@/components/NotifikasiBadge";
 import { Avatar } from "@/components/Avatar";
 import { Wordmark } from "@/components/Wordmark";
 import { NavSamping } from "@/components/NavSamping";
-import { NavBawah } from "@/components/NavBawah";
 import { BilahCari } from "@/components/BilahCari";
 import { AksiTamu } from "@/components/AksiTamu";
 import { TombolTulis } from "@/components/TombolTulis";
@@ -151,7 +150,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   {children}
                 </div>
 
-                <footer className="border-t border-rule px-4 pb-24 pt-5 sm:px-6 lg:px-7 lg:pb-5">
+                <footer className="border-t border-rule px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 lg:px-7 lg:pb-5">
                   <div className="flex flex-col gap-2 text-[12.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
                     <p>unggas.net · Forum peternak unggas Indonesia.</p>
                     <nav
@@ -180,10 +179,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </div>
         </div>
-
-        <Suspense fallback={null}>
-          <NavBawah topik={topik} />
-        </Suspense>
       </body>
     </html>
   );
