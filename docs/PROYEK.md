@@ -283,6 +283,7 @@ Yang berlaku saat `EMAIL_AKTIF` bernilai selain `"true"`:
 - Email placeholder diisi `<username>@unggas.local` karena kolom `email` di database masih `@unique` dan belum ada migrasi. Jangan menganggap alamat itu bisa dikirimi email.
 - Masuk di `/masuk` memakai username saja, tanpa peduli huruf besar/kecil. Pemeriksaan "akun belum diverifikasi" dilewati.
 - `/lupa-password` menampilkan pemberitahuan bahwa reset lewat email dimatikan, tanpa form. `/cek-email`, `/verifikasi/[token]`, dan `/reset-password/[token]` mengalihkan ke `/masuk`.
+- Panel admin belum punya tombol reset password. Selama email mati, pengaturan ulang password dilakukan lewat database atau dengan menambahkan aksi admin lebih dulu.
 - Server Action `lupaPassword`, `resetPassword`, `kirimUlangVerifikasi`, dan `aktifkanAkun` tetap menolak dengan pesan yang jelas bila dipanggil langsung.
 
 Menyalakan lagi: set `EMAIL_AKTIF=true` di `.env`, build ulang, lalu restart PM2. Kode email tidak dihapus, hanya dijaga sakelar di `src/lib/fitur.ts`. Akun yang dibuat selama mode mati tidak punya email asli, jadi verifikasi dan reset untuk akun itu tidak akan pernah sampai; kalau email dinyalakan lagi, akun tersebut perlu diberi email lewat jalur admin atau database.
