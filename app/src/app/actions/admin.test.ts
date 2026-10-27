@@ -38,10 +38,10 @@ function sesi(id: number, username: string, isAdmin: boolean) {
 beforeAll(async () => {
   const passwordHash = await hashPassword("T3sP3t3rnak!2026");
   const admin = await prisma.user.create({
-    data: { username: adminUname, email: `${adminUname}@example.com`, passwordHash, isAdmin: true },
+    data: { username: adminUname, email: `${adminUname}@example.com`, passwordHash, isAdmin: true }, // taste-skill-ignore placeholder-data
   });
   const user = await prisma.user.create({
-    data: { username: userUname, email: `${userUname}@example.com`, passwordHash },
+    data: { username: userUname, email: `${userUname}@example.com`, passwordHash }, // taste-skill-ignore placeholder-data
   });
   adminId = admin.id;
   userId = user.id;

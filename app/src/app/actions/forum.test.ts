@@ -35,7 +35,7 @@ const uname = "tes" + randomBytes(4).toString("hex");
 
 beforeAll(async () => {
   const user = await prisma.user.create({
-    data: { username: uname, email: `${uname}@example.com`, passwordHash: await hashPassword("T3sP3t3rnak!2026") },
+    data: { username: uname, email: `${uname}@example.com`, passwordHash: await hashPassword("T3sP3t3rnak!2026") }, // taste-skill-ignore placeholder-data
   });
   userId = user.id;
 });

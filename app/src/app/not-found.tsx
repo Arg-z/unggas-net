@@ -23,10 +23,10 @@ export default async function TidakKetemu() {
     .catch(() => []);
 
   return (
-    <main id="konten" tabIndex={-1} className="py-4 sm:py-8">
+    <main id="konten" tabIndex={-1} className="w-full py-4 sm:py-8">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
         <div>
-          <p className="eyebrow">404</p>
+          <p className="label-aksen">404</p>
           <h1 className="mt-2 font-display text-[30px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[34px]">
             Halaman ini tidak ada.
           </h1>
@@ -45,11 +45,14 @@ export default async function TidakKetemu() {
         </div>
 
         {terbaru.length > 0 && (
-          <section aria-labelledby="judul-terbaru">
+          <section
+            aria-labelledby="judul-terbaru"
+            className="rounded-2xl border border-border bg-surface p-4 sm:p-5"
+          >
             <h2 id="judul-terbaru" className="text-[12px] font-medium text-ink-faint">
               Diskusi terbaru
             </h2>
-            <ul className="mt-2 divide-y divide-rule border-t border-rule">
+            <ul className="mt-1 divide-y divide-rule">
               {terbaru.map((d) => {
                 const balasan = Math.max(0, d._count.posts - 1);
                 return (

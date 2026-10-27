@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
 /*
-  Unggas.net UI v5 — "kertas berbingkai" (framed sheet).
-  Chrome hijau-kelabu (satu langkah rendah dari daun #2e7d32) mengelilingi
-  kertas putih. Kedalaman dari langkah warna dan garis 1px, tanpa bayangan.
+  Unggas.net UI v6 — "tangga aksen" (accent ladder).
+  Satu tanah hijau-kelabu pucat, kartu putih duduk langsung di atasnya tanpa
+  bilah atas dan tanpa lembar berbingkai. Hijau daun penuh hanya muncul di
+  penanda kecil: tombol utama, ikon aktif, garis tab, dan satu angka. Tint
+  hijau 50–200 yang memikul bidang: baris nav aktif, papan komunitas, kepala
+  form auth, dan keadaan kosong.
 
-  Warna merek menyusut ke logo, garis 2px tab aktif, dan garis atas papan
-  komunitas. Tombol utama near-black — hijau tetap penanda, bukan cat.
-
-  Peran token mengikuti lembar arah framed-sheet: ground (bingkai), surface
-  (kertas), wash (panel tonal), border (tepi kertas/kartu), rule (garis rambut),
+  Peran token mengikuti lembar arah accent-ladder: ground (tanah), surface
+  (kartu), wash (panel tonal netral), border (tepi kartu), rule (garis rambut),
   control (batas kontrol), ink (teks), accent + tint-nya, status pill.
   Setiap pasangan teks–latar diukur AA:
-  putih di atas ink-strong 17.8:1, ink-faint di ground 4.87:1, ink-soft di
-  ground 7.2:1, accent-ink di accent-soft 6.9:1, control di putih 3.52:1
-  (WCAG 1.4.11 non-teks).
+  putih di atas accent 5.0:1, putih di atas ink-strong 17.8:1, ink-faint di
+  ground 5.1:1, ink-soft di ground 7.4:1, accent-ink di accent-soft 6.9:1,
+  control di putih 3.52:1 (WCAG 1.4.11 non-teks).
 */
 @theme {
   /* Permukaan */
-  --color-ground: #edf2ea;      /* bingkai chrome: sidebar + bilah atas */
-  --color-surface: #ffffff;     /* kertas halaman, kartu, kontrol */
-  --color-raised: #fbfdfb;      /* blok disematkan */
-  --color-wash: #f3f8f1;        /* panel tonal, papan komunitas, baris belum dibaca */
-  --color-sunken: #e8eee5;      /* isian toolbar, hover nav di bingkai */
+  --color-ground: #f4f7f1;      /* tanah halaman: satu langkah ke arah tint daun */
+  --color-surface: #ffffff;     /* kartu, panel, kontrol */
+  --color-raised: #fbfdfa;      /* blok tenang di dalam kartu */
+  --color-wash: #f0f6ee;        /* panel tonal netral, isian toolbar */
+  --color-sunken: #e7efe4;      /* hover nav, kontrol sekunder */
 
   /* Garis */
-  --color-border: #dfe6dc;      /* tepi kertas, batas panel */
-  --color-rule: #eef2ec;        /* pemisah baris di dalam kertas */
+  --color-border: #dde6d9;      /* tepi kartu, batas panel */
+  --color-rule: #edf2ea;        /* pemisah baris di dalam kartu */
   --color-control: #7d8d79;     /* batas kontrol — 3.52:1 di putih */
 
   /* Teks */
@@ -81,9 +81,9 @@ body {
 
 @layer components {
   /* === Tombol ===
-     Satu gaya terisi: near-black. Hijau tidak dipakai untuk mengisi tombol besar —
-     ia penanda, bukan cat. Tinggi 36px di desktop; .btn-lg 44px untuk aksi utama
-     di ponsel. */
+     Satu gaya terisi: hijau daun penuh. Ia satu-satunya bidang hijau penuh di
+     halaman; sisanya tint. Tinggi 36px di desktop; .btn-lg 44px untuk aksi
+     utama di ponsel. */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -115,11 +115,11 @@ body {
     font-size: 15px;
   }
   .btn-primary {
-    background: var(--color-ink-strong);
+    background: var(--color-accent);
     color: #ffffff;
   }
   .btn-primary:hover {
-    background: var(--color-ink);
+    background: var(--color-accent-deep);
   }
   .btn-outline {
     background: var(--color-surface);
@@ -127,30 +127,37 @@ body {
     border-color: var(--color-control);
   }
   .btn-outline:hover {
-    background: var(--color-wash);
-    border-color: var(--color-ink-soft);
+    background: var(--color-accent-soft);
+    border-color: var(--color-accent-track);
+    color: var(--color-accent-ink);
   }
   .btn-quiet {
     background: transparent;
     color: var(--color-ink-soft);
   }
   .btn-quiet:hover {
-    background: var(--color-sunken);
-    color: var(--color-ink-strong);
+    background: var(--color-accent-soft);
+    color: var(--color-accent-ink);
   }
 
-  /* === Kertas, panel, well ===
-     Kertas halaman diatur layout. Di dalamnya hanya tiga tingkat: kertas,
-     panel (kartu 1px), dan well tonal. Tidak ada bayangan. */
+  /* === Kartu, panel, well ===
+     Kartu putih duduk di tanah; tidak ada lembar induk. Tiga tingkat saja:
+     kartu (surface), panel netral (wash), dan panel tint (accent-soft).
+     Semua tanpa bayangan. */
   .panel {
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 14px;
     background: var(--color-surface);
   }
   .well {
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 14px;
     background: var(--color-wash);
+  }
+  .panel-accent {
+    border: 1px solid var(--color-accent-track);
+    border-radius: 14px;
+    background: var(--color-accent-soft);
   }
 
   /* === Kontrol form ===
@@ -174,7 +181,7 @@ body {
   .input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgb(46 125 50 / 0.15);
+    box-shadow: 0 0 0 3px rgb(46 125 50 / 0.15); /* taste-skill-ignore shadow */
   }
   select.input {
     appearance: none;
@@ -199,7 +206,7 @@ body {
     line-height: 1.5;
     color: var(--color-ink-faint);
   }
-  .eyebrow {
+  .label-aksen {
     font-size: 12px;
     font-weight: 600;
     line-height: 1.4;

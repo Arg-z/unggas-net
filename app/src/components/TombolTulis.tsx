@@ -14,7 +14,7 @@ export function TombolTulis() {
     <Link
       href="/baru"
       aria-label="Tulis diskusi"
-      className="btn btn-primary h-11 w-11 px-0 sm:h-9 sm:w-auto sm:px-3"
+      className="btn btn-primary h-11 w-11 shrink-0 px-0 md:h-9 md:w-auto md:px-3"
     >
       <IkonPlus />
       <span className="hidden md:inline">Tulis diskusi</span>

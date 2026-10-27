@@ -6,7 +6,7 @@ import { IkonCari } from "./Ikon";
 /** Pencarian di bilah atas: form GET biasa ke beranda, jadi tetap bekerja
  *  tanpa JavaScript dan URL-nya bisa dibagikan. Filter yang sedang aktif ikut
  *  dibawa, supaya mencari dari satu komunitas tidak diam-diam melebar ke semua. */
-export function BilahCari() {
+export function BilahCari({ penuh = false }: { penuh?: boolean }) {
   const sp = useSearchParams();
   const q = sp.get("q") ?? "";
   const tag = sp.get("tag");
@@ -14,7 +14,7 @@ export function BilahCari() {
   const urut = sp.get("urut");
 
   return (
-    <form action="/" role="search" className="relative w-[300px]">
+    <form action="/" role="search" className={`relative ${penuh ? "w-full" : "w-[300px]"}`}>
       {tag && <input type="hidden" name="tag" value={tag} />}
       {saring && <input type="hidden" name="saring" value={saring} />}
       {urut && <input type="hidden" name="urut" value={urut} />}
@@ -28,7 +28,9 @@ export function BilahCari() {
         defaultValue={q}
         placeholder="Cari judul atau isi diskusi"
         aria-label="Cari diskusi"
-        className="h-8 w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15"
+        className={`w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 ${
+          penuh ? "h-9" : "h-8"
+        }`}
       />
     </form>
   );

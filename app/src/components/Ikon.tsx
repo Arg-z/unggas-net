@@ -114,3 +114,19 @@ export function IkonKeluar({ className = "h-4 w-4" }: Props) {
     </svg>
   );
 }
+
+export function IkonMenu({ className = "h-5 w-5" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13" />
+    </svg>
+  );
+}
+
+export function IkonTutup({ className = "h-5 w-5" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="m5 5 10 10M15 5 5 15" />
+    </svg>
+  );
+}

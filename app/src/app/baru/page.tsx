@@ -17,14 +17,14 @@ export default async function BaruPage() {
     <main
       id="konten"
       tabIndex={-1}
-      className="grid gap-8 xl:max-w-[1028px] xl:grid-cols-[minmax(0,1fr)_280px] xl:items-start xl:gap-7"
+      className="grid w-full gap-8 xl:grid-cols-[minmax(0,1fr)_280px] xl:items-start xl:gap-8"
     >
       <div className="min-w-0">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-ink-strong"
         >
-          <IkonPanah className="h-3.5 w-3.5" />
+          <IkonPanah className="h-3.5 w-3.5 text-accent" />
           Semua diskusi
         </Link>
 
@@ -84,8 +84,8 @@ export default async function BaruPage() {
             </div>
           </section>
 
-          <section className="well p-4" aria-labelledby="judul-satu">
-            <h2 id="judul-satu" className="eyebrow">
+          <section className="panel-accent p-4" aria-labelledby="judul-satu">
+            <h2 id="judul-satu" className="label-aksen">
               Satu pertanyaan
             </h2>
             <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">

@@ -131,7 +131,7 @@ export default async function Beranda({
   const daftar = rows.filter((d) => !papan.some((p) => p.id === d.id));
 
   return (
-    <main id="konten" tabIndex={-1} className="max-w-[1120px]">
+    <main id="konten" tabIndex={-1} className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
         <div className="min-w-0">
           <h1 className="truncate font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[28px]">
@@ -154,9 +154,9 @@ export default async function Beranda({
         </div>
       </div>
 
-      {/* Ponsel: pencarian tinggal satu baris. Di 768px ke atas ia pindah ke
-          bilah atas. Tidak ada urutan atau jumlah di sampingnya. */}
-      <div className="mt-3 md:hidden">
+      {/* Ponsel: pencarian tinggal satu baris. Di 1024px ke atas ia pindah ke
+          sidebar. Tidak ada urutan atau jumlah di sampingnya. */}
+      <div className="mt-3 lg:hidden">
         <form action="/" role="search" className="relative">
           {params.tag && <input type="hidden" name="tag" value={params.tag} />}
           {saring !== "semua" && <input type="hidden" name="saring" value={saring} />}
@@ -185,7 +185,7 @@ export default async function Beranda({
         )}
 
         {rows.length === 0 ? (
-          <div className="rounded-2xl bg-wash/70 px-6 py-10 text-center sm:py-12">
+          <div className="rounded-2xl border border-dashed border-accent-track bg-accent-soft/50 px-6 py-10 text-center sm:py-12">
             <p className="mx-auto max-w-[30ch] font-display text-[21px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[23px]">
               {kosong.judul}
             </p>
@@ -193,14 +193,17 @@ export default async function Beranda({
               {kosong.isi}
             </p>
             <div className="mt-5 flex justify-center">
-              <Link href={kosong.aksi.href} className="btn btn-outline">
+              <Link
+                href={kosong.aksi.href}
+                className={kosong.aksi.href === "/baru" ? "btn btn-primary" : "btn btn-outline"}
+              >
                 {kosong.aksi.label}
               </Link>
             </div>
           </div>
         ) : (
-          <div>
-            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+            <div className="flex items-baseline justify-between gap-4 border-b border-rule px-4 py-3 sm:px-5">
               <h2 className="text-[12.5px] font-medium text-ink-faint">{labelDaftar}</h2>
             </div>
 
@@ -246,11 +249,10 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <article className="relative overflow-hidden rounded-xl border border-border bg-wash">
-      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[2px] bg-accent" />
+    <article className="rounded-2xl border border-accent-track bg-accent-soft">
       <div className="px-5 py-5 sm:px-6 sm:py-6">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-          <span className="eyebrow inline-flex items-center gap-1.5">
+          <span className="label-aksen inline-flex items-center gap-1.5">
             <IkonSematkan className="h-3.5 w-3.5" />
             Papan komunitas
           </span>
@@ -264,7 +266,7 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
           ))}
         </div>
 
-        <h2 className="mt-2.5 max-w-[34ch] font-display text-[22px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:text-[25px]">
+        <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[25px]">
           <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
             {d.title}
           </Link>
@@ -304,11 +306,11 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
 
   return (
     <li className="group relative">
-      <div className="px-2 py-4 transition-colors group-hover:bg-wash/50 sm:-mx-2 sm:rounded-xl sm:px-4 sm:py-5">
+      <div className="px-4 py-4 transition-colors group-hover:bg-accent-soft/35 sm:px-5 sm:py-5">
         <h2 className="font-display text-[18px] font-semibold leading-[1.35] tracking-[-0.01em] text-ink-strong sm:text-[20px]">
           {d.isPinned && (
             <span
-              className="mr-1.5 inline-block translate-y-[2px] text-warn-ink"
+              className="mr-1.5 inline-block translate-y-[2px] text-accent"
               title="Disematkan"
             >
               <IkonSematkan className="h-3.5 w-3.5" />

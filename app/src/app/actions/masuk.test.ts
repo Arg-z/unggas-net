@@ -42,7 +42,7 @@ const PASS = "T3sP3t3rnak!2026";
 
 beforeAll(async () => {
   await prisma.user.create({
-    data: { username: uname, email: `${uname}@example.com`, passwordHash: await hashPassword(PASS) },
+    data: { username: uname, email: `${uname}@example.com`, passwordHash: await hashPassword(PASS) }, // taste-skill-ignore placeholder-data
   });
 });
 

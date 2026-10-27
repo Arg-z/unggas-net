@@ -26,7 +26,7 @@ export default async function NotifikasiPage() {
   const belumDibaca = daftar.filter((n) => !n.readAt).length;
 
   return (
-    <main id="konten" tabIndex={-1} className="max-w-[820px]">
+    <main id="konten" tabIndex={-1} className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
         <div className="min-w-0">
           <h1 className="font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong">
@@ -45,15 +45,8 @@ export default async function NotifikasiPage() {
         )}
       </div>
 
-      <div className="mt-5 flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
-        <span className="text-[12px] font-medium text-ink-faint">Balasan terbaru</span>
-        <span className="tabular text-[12.5px] text-ink-faint">
-          {belumDibaca > 0 ? `${belumDibaca} belum dibaca` : `${daftar.length} notifikasi`}
-        </span>
-      </div>
-
       {daftar.length === 0 ? (
-        <div className="mt-4 rounded-2xl bg-wash/70 px-6 py-10 text-center">
+        <div className="mt-5 rounded-2xl border border-dashed border-accent-track bg-accent-soft/50 px-6 py-10 text-center">
           <p className="mx-auto max-w-[28ch] font-display text-[21px] font-semibold leading-tight tracking-tight text-ink-strong">
             Belum ada notifikasi.
           </p>
@@ -68,7 +61,15 @@ export default async function NotifikasiPage() {
           </div>
         </div>
       ) : (
-        <ul className="divide-y divide-rule border-b border-rule">
+        <div className="mt-5 overflow-hidden rounded-2xl border border-border bg-surface">
+          <div className="flex items-baseline justify-between gap-4 border-b border-rule px-4 py-3 sm:px-5">
+            <span className="text-[12px] font-medium text-ink-faint">Balasan terbaru</span>
+            <span className="tabular text-[12.5px] text-ink-faint">
+              {belumDibaca > 0 ? `${belumDibaca} belum dibaca` : `${daftar.length} notifikasi`}
+            </span>
+          </div>
+
+          <ul className="divide-y divide-rule">
           {daftar.map((n) => (
             <li key={n.id}>
               <form action={bukaNotifikasi}>
@@ -77,8 +78,8 @@ export default async function NotifikasiPage() {
                 <input type="hidden" name="postNumber" value={n.postNumber} />
                 <button
                   type="submit"
-                  className={`flex w-full items-start gap-3 px-2 py-4 text-left transition-colors hover:bg-wash/60 ${
-                    n.readAt ? "" : "bg-wash/40"
+                  className={`flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-accent-soft/60 sm:px-5 ${
+                    n.readAt ? "" : "bg-accent-soft/40"
                   }`}
                 >
                   <Avatar username={n.actor.username} size="sm" />
@@ -99,7 +100,7 @@ export default async function NotifikasiPage() {
                     <span className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] text-ink-faint">
                       <span className="tabular">Balasan #{n.postNumber}</span>
                       {!n.readAt && (
-                        <span className="rounded-[4px] bg-accent-soft px-1.5 py-0.5 text-[11px] font-semibold text-accent-ink">
+                        <span className="rounded-[4px] border border-accent-track bg-surface px-1.5 py-0.5 text-[11px] font-semibold text-accent-ink">
                           Baru
                         </span>
                       )}
@@ -115,7 +116,8 @@ export default async function NotifikasiPage() {
               </form>
             </li>
           ))}
-        </ul>
+          </ul>
+        </div>
       )}
     </main>
   );

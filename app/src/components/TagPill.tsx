@@ -31,7 +31,7 @@ export function TagPill({
   return (
     <Link
       href={`/?tag=${slug}`}
-      className={`${dasar} bg-accent-soft font-semibold text-accent-ink hover:bg-accent-track`}
+      className={`${dasar} border border-accent-track/70 bg-accent-soft font-semibold text-accent-ink hover:border-accent-track hover:bg-accent-track/60`}
     >
       {children}
     </Link>

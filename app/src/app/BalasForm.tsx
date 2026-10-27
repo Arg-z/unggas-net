@@ -6,7 +6,7 @@ import { balas, type ActionResult } from "@/app/actions/forum";
 export function BalasForm({ discussionId }: { discussionId: number }) {
   const [state, action, pending] = useActionState<ActionResult | null, FormData>(balas, null);
   return (
-    <form action={action} className="well px-4 py-4 sm:px-5 sm:py-5">
+    <form action={action} className="panel px-4 py-4 sm:px-5 sm:py-5">
       <input type="hidden" name="discussionId" value={discussionId} />
       <label htmlFor="content" className="label">
         Tulis balasan

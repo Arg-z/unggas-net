@@ -50,7 +50,7 @@ Backup    -> cron 03:15 harian -> S3 unggas-backups-385207569778 (lifecycle 30 h
 
 - Server: AWS EC2 t8i.small, ap-southeast-1, Ubuntu 26.04 (`ssh aws`)
 - Stack: Next.js 16.4.3 (App Router, TypeScript, Tailwind v4), Prisma 6, PostgreSQL 16, PM2
-- Repo GitHub: `Arg-z/unggas-net` (private, https://github.com/Arg-z/unggas-net). Salinan kerja di server: `~/unggas-net` (`app/` + `proyek unggas.MD` + `app/.taste-skill/direction.json`), disinkron dari produksi 28 Okt. Setiap perubahan produksi: commit + push dari situ.
+- Repo GitHub: `Arg-z/unggas-net` (private, https://github.com/Arg-z/unggas-net). Salinan kerja di server: `~/unggas-net` (`app/` + `proyek unggas.md` + `app/.taste-skill/direction.json`), disinkron dari produksi 28 Okt. Setiap perubahan produksi: commit + push dari situ.
 - Aplikasi di server: `/var/www/unggas-app`, bukan repo git. Pembanding sebelum deploy adalah salinan kerja `~/unggas-net`. Repo lama `~/unggas-forum` di macbook masih v3.1 (plus docs/ops/theme/archive dan riwayat commit lama) dan belum direkonsiliasi; jangan dijadikan dasar deploy sampai disatukan.
 - Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual. Token dan aturan lengkap ada di bagian Sistem desain dokumen ini. Lembar arah v5 `framed-sheet` (seed 1338313458) tersimpan di `.taste-skill/direction.json`.
 - Pernah terjadi drift: 26 Okt kode di server lebih baru daripada repo karena diedit langsung di server. Sudah diselamatkan lewat commit `c87850e`. Selalu diff dulu sebelum deploy.
@@ -366,8 +366,8 @@ python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "forum komunitas diskus
 Pemeriksa prosa. Gerbang lulus 90 dan tidak ada temuan di atas minor. Nama berkas memakai tanda kutip karena ada spasi:
 
 ```bash
-python3 ~/.claude/skills/anti-ai-slop/scripts/sanitize.py "proyek unggas.MD" --fix
-python3 ~/.claude/skills/anti-ai-slop/scripts/slopcheck.py "proyek unggas.MD"
+python3 ~/.claude/skills/anti-ai-slop/scripts/sanitize.py "proyek unggas.md" --fix
+python3 ~/.claude/skills/anti-ai-slop/scripts/slopcheck.py "proyek unggas.md"
 ```
 
 ### Gerbang lulus sebelum menyerahkan pekerjaan

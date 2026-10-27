@@ -36,7 +36,7 @@ async function buatUser(username: string, banned = false) {
   return prisma.user.create({
     data: {
       username,
-      email: `${username}@example.com`,
+      email: `${username}@example.com`, // taste-skill-ignore placeholder-data
       passwordHash: await hashPassword("T3sP3t3rnak!2026"),
       emailVerifiedAt: new Date(),
       isBanned: banned,

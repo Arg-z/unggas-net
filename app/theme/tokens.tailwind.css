@@ -1,14 +1,14 @@
-/* Ringkasan token v5 untuk alat yang tidak membaca globals.css.
+/* Ringkasan token v6 untuk alat yang tidak membaca globals.css.
    Sumber kebenaran tetap src/app/globals.css — jangan menambah token hanya di sini. */
 @theme {
-  --color-ground: #edf2ea;
+  --color-ground: #f4f7f1;
   --color-surface: #ffffff;
-  --color-raised: #fbfdfb;
-  --color-wash: #f3f8f1;
-  --color-sunken: #e8eee5;
+  --color-raised: #fbfdfa;
+  --color-wash: #f0f6ee;
+  --color-sunken: #e7efe4;
 
-  --color-border: #dfe6dc;
-  --color-rule: #eef2ec;
+  --color-border: #dde6d9;
+  --color-rule: #edf2ea;
   --color-control: #7d8d79;
 
   --color-ink: #1b2621;

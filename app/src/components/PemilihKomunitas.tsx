@@ -3,20 +3,22 @@
 import { useRouter, useSearchParams } from "next/navigation";
 
 /**
- * Pemilih komunitas. Di bilah atas ia duduk di ujung kanan di balik garis
- * pemisah penuh; di dalam halaman (ponsel) ia menjadi kontrol bergaris supaya
- * terbaca sebagai pilihan, bukan teks.
+ * Pemilih komunitas. Di sidebar ia duduk di dalam bidang tint daun sebagai
+ * sakelar cakupan: latar transparan, teks hijau tua. Di dalam halaman (ponsel)
+ * ia menjadi kontrol bergaris supaya terbaca sebagai pilihan, bukan teks.
  */
 export function PemilihKomunitas({
   topik,
   lebar = "w-[152px]",
   denganLabel = false,
   kotak = false,
+  lembut = false,
 }: {
   topik: { slug: string; name: string }[];
   lebar?: string;
   denganLabel?: boolean;
   kotak?: boolean;
+  lembut?: boolean;
 }) {
   const router = useRouter();
   const tag = useSearchParams().get("tag") ?? "";
@@ -31,8 +33,12 @@ export function PemilihKomunitas({
           const v = e.target.value;
           router.push(v ? `/?tag=${encodeURIComponent(v)}` : "/");
         }}
-        className={`input h-9 min-h-0 cursor-pointer py-0 pl-2 pr-7 text-[13px] font-semibold text-ink-strong focus:bg-surface ${lebar} ${
-          kotak ? "border-control bg-surface" : "border-transparent bg-transparent hover:bg-sunken"
+        className={`input min-h-0 cursor-pointer py-0 pr-7 focus:bg-surface ${lebar} ${
+          lembut
+            ? "h-8 border-transparent bg-transparent pl-1 text-[14px] font-semibold text-accent-ink hover:bg-accent-track/40"
+            : kotak
+              ? "h-9 border-control bg-surface pl-2 text-[13px] font-semibold text-ink-strong"
+              : "h-9 border-transparent bg-transparent pl-2 text-[13px] font-semibold text-ink-strong hover:bg-sunken"
         }`}
       >
         <option value="">{denganLabel ? "Semua" : "Semua komunitas"}</option>
