@@ -1,6 +1,6 @@
 # Proyek unggas.net: forum komunitas peternak unggas
 
-Status per 28 Oktober 2026: **UI v5 (framed sheet) live di https://unggas.net, dengan login sementara tanpa email**. Bingkai hijau-kelabu memegang sidebar dan bilah atas, kertas putih masuk 8px dari tepi kanan dan bawah. Sidebar hanya satu grup Forum, pemilih komunitas ada di bilah atas dan di baris judul beranda pada ponsel, tanpa tab, tanpa jumlah, tanpa pemilih urutan. Pendaftaran dan masuk hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `h3Jnu_jE0X14ZT0ugShiC`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan publik 0 FAIL di 1440, 768, dan 390. Backup pra-deploy `~/backups/unggas-src-20261028-0343.tar.gz`.
+Status per 28 Oktober 2026: **UI v5.1 (framed sheet, daftar ala Medium) live di https://unggas.net, dengan login sementara tanpa email**. Bingkai hijau-kelabu memegang sidebar dan bilah atas, kertas putih masuk 8px dari tepi kanan dan bawah. Sidebar hanya satu grup Forum, pemilih komunitas ada di bilah atas dan di baris judul beranda pada ponsel, tanpa tab, tanpa jumlah, tanpa pemilih urutan. Beranda dibaca seperti feed: judul serif, cuplikan dua baris, byline, tanpa header kolom dan tanpa angka rata kanan. Pendaftaran dan masuk hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `6nROVtdqVHfOeDiU3bolq`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan publik 0 FAIL di 1440, 768, dan 390. Backup pra-deploy `~/backup-unggas-20261028-040027`.
 
 Dokumen ini adalah serah terima. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
 
@@ -23,7 +23,7 @@ Backup    -> cron 03:15 harian -> S3 unggas-backups-385207569778 (lifecycle 30 h
 - Stack: Next.js 16 (App Router, TypeScript, Tailwind v4), Prisma 6, PostgreSQL 16, PM2
 - Repo GitHub: `Arg-z/unggas-net` (private, https://github.com/Arg-z/unggas-net). Salinan kerja di server: `~/unggas-net` (app/ + docs/PROYEK.md + app/.taste-skill/direction.json), disinkron dari produksi 28 Okt. Setiap perubahan produksi: commit + push dari situ.
 - Aplikasi di server: `/var/www/unggas-app`, bukan repo git. Pembanding sebelum deploy adalah salinan kerja `~/unggas-net`. Repo lama `~/unggas-forum` di macbook masih v3.1 (plus docs/ops/theme/archive dan riwayat commit lama) dan belum direkonsiliasi; jangan dijadikan dasar deploy sampai disatukan.
-- Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual. `theme/DESIGN.md` sudah v5.0 dan mencatat token, komposisi, serta keputusan pemilik. Lembar arah v5 `framed-sheet` (seed 1338313458) tersimpan di `.taste-skill/direction.json`.
+- Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual. `theme/DESIGN.md` sudah v5.1 dan mencatat token, komposisi, serta keputusan pemilik. Lembar arah v5 `framed-sheet` (seed 1338313458) tersimpan di `.taste-skill/direction.json`.
 - Pernah terjadi drift: 26 Okt kode di server lebih baru daripada repo karena diedit langsung di server. Sudah diselamatkan lewat commit `c87850e`. Selalu diff dulu sebelum deploy.
 
 ## Struktur komunitas dan aturan UI
@@ -45,6 +45,10 @@ Bingkai hijau-kelabu `#edf2ea` mengelilingi sidebar dan bilah atas. Kertas putih
 
 Bentuk yang dilarang dan sudah tidak ada: primary hijau terisi, tint hijau di setiap label, ikon di dalam kotak berwarna, gradien, bayangan saat diam, angka karangan.
 
+### Revisi v5.1: feed ala Medium
+
+Pemilik menilai v5 masih kaku dan meminta acuan Medium. Yang diambil adalah cara Medium membaca daftar, bukan tampilannya: judul serif, satu cuplikan, byline yang menyatu, tanpa tabel dan tanpa angka rata kanan. Header kolom beranda dihapus dan diganti satu label bagian yang berubah mengikuti keadaan (Diskusi terbaru, Hasil pencarian, Diskusi disematkan, Menunggu jawaban). Notifikasi memakai judul serif dan chip "Baru"; keadaan kosong beranda, notifikasi, dan balasan thread menjadi blok `wash` tanpa garis putus-putus; form auth duduk di panel `wash` tanpa garis. Rute, alur, palet, font, dan keputusan pemilik tidak berubah.
+
 ### Shell
 
 Bilah samping 228px dan bilah atas 48px duduk di satu bingkai tanpa garis pemisah; batasnya terbaca dari warna. Bilah samping memuat wordmark, satu grup Forum (Semua diskusi, Tulis diskusi, Notifikasi, Panel admin), dan blok akun di bawah. Bilah atas memuat wordmark ponsel, kotak cari mulai 768px, pemilih komunitas mulai 1024px di balik garis pemisah, lalu notifikasi dan satu tombol primary. Halaman menulis menyembunyikan tombol primary bilah atas lewat `TombolTulis` supaya hanya tombol Terbitkan yang terisi.
@@ -57,11 +61,11 @@ Diskusi tersemat dibaca sebagai papan pengumuman, bukan baris tabel. Papan hanya
 
 ### Halaman
 
-Beranda memakai pola daftar. Judul 26px ponsel dan 28px desktop, pemilih komunitas di kanan judul pada ponsel, pencarian satu baris di bawahnya. Papan komunitas, lalu label kolom 12px (Diskusi, Balasan, Aktivitas) dan baris bergaris rambut sekitar 72px: judul 15px, cuplikan satu baris, label topik dan wilayah, avatar, angka balasan dan aktivitas rata kanan dengan digit tabular. Tidak ada tab keadaan, jumlah diskusi, pemilih urutan, atau rel kanan. Parameter `?saring=`, `?urut=`, `?q=`, dan `?tag=` tetap bekerja untuk tautan lama, dan tag tak dikenal tetap 404.
+Beranda memakai pola feed, bukan tabel. Judul 26px ponsel dan 28px desktop dengan satu kalimat pengantar 13px, pemilih komunitas di kanan judul pada ponsel, pencarian satu baris di bawahnya. Papan komunitas (judul 22/25px), lalu satu label bagian 12.5px dan baris diskusi tanpa header kolom: judul Fraunces 18/20px maksimal dua baris, cuplikan dua baris 13.8/14.5px, byline avatar kecil + nama + waktu + jumlah balasan + tag. Angka nol tetap dicetak "0 balasan" dengan `ink-faint`; baris utuh bisa diklik dan tag tetap bisa diklik karena `TagPill` duduk di z-10. Hover memberi `wash` lembut. Tidak ada tab keadaan, jumlah diskusi, pemilih urutan, atau rel kanan. Parameter `?saring=`, `?urut=`, `?q=`, dan `?tag=` tetap bekerja untuk tautan lama, dan tag tak dikenal tetap 404.
 
 Thread memakai pola detail. Kepala thread adalah garis bawah, bukan kartu: remah, label, judul 26px ponsel dan 30px desktop, meta 13px, satu aksi bergaris. Isi memakai `.prosa` Fraunces 17.5px/1.72 dengan lebar 68 karakter, balasan berupa baris bergaris, dan tautan `#post-N` bisa dibagikan. Mulai 1280px ada rel kanan 260px berisi Tentang diskusi (komunitas, dibuka, balasan, penulis) dan tiga diskusi lain di komunitas yang sama.
 
-Notifikasi memakai satu kolom 820px, daftar bergaris, tombol Tandai semua dibaca, dan baris belum dibaca berlatar `wash`. Admin memakai lebar 1120px dengan tab 36px bergaris aksen. Halaman tulis memakai 1028px: form 720px dan rel panduan 280px berisi cara menulis pertanyaan yang mudah dijawab. Halaman masuk, daftar, lupa password, dan verifikasi memakai satu kolom 420px di tengah, mulai ditengahkan vertikal pada 768px. 404 menampilkan lima diskusi terbaru sebagai jalan keluar.
+Notifikasi memakai satu kolom 820px dan daftar bergaris. Baris berisi byline "nama membalas · waktu", judul diskusi Fraunces 16.5px, "Balasan #N", dan chip "Baru"; baris belum dibaca bertint `wash` dengan satu dot aksen. Admin memakai lebar 1120px dengan tab 36px bergaris aksen. Halaman tulis memakai 1028px: form 720px dan rel panduan 280px berisi cara menulis pertanyaan yang mudah dijawab. Halaman masuk, daftar, lupa password, dan verifikasi memakai satu kolom 420px di tengah, dengan form di panel `wash` tanpa garis; mulai 768px form ditengahkan vertikal. Keadaan kosong beranda, notifikasi, dan balasan thread memakai blok `wash` radius 16 tanpa garis putus-putus. 404 menampilkan lima diskusi terbaru sebagai jalan keluar.
 
 ### Token dan kelas komponen
 
@@ -266,6 +270,8 @@ Cek email: `aws sesv2 get-account --region ap-southeast-1` untuk `ProductionAcce
 
 ## Email (aktif 26 Okt 2026, dimatikan sementara 28 Okt 2026)
 
+24. Revisi UI v5.1, daftar ala Medium (28 Okt, permintaan pemilik). v5 dinilai masih kaku: judul 15px sans, header kolom Diskusi/Balasan/Aktivitas, dan angka nol rata kanan membuat beranda terbaca sebagai tabel. Header kolom dicabut dan diganti satu label bagian; baris diskusi memakai judul Fraunces 18/20px dua baris, cuplikan dua baris 13.8/14.5px, lalu byline avatar + nama + waktu + balasan + tag, dengan overlay judul agar seluruh baris bisa diklik dan `TagPill` di z-10 agar tag tetap bisa diklik. Papan komunitas naik ke 22/25px. Notifikasi memakai byline "nama membalas · waktu", judul diskusi serif 16.5px, nomor balasan, dan chip "Baru". Keadaan kosong beranda, notifikasi, dan balasan thread memakai blok `wash` tanpa garis putus-putus; form auth memakai panel `wash` tanpa garis. Rute, field, Server Action, palet, dan font tidak berubah. Gerbang: `tsc` bersih, 59 test hijau di 9 berkas di server, build `6nROVtdqVHfOeDiU3bolq`, marker CSS `bg-wash/70`, `text-[13.8px]`, `after:inset-0`, dan `sm:py-5` ditemukan sebelum restart. Inspect beranda 1440/768/390 0 FAIL dengan `--allow headline-lines` untuk satu judul diskusi nyata sepanjang tiga baris di 390; /masuk 0 FAIL 1 WARN `hero-void` yang diterima sebagai komposisi satu kolom. Screenshot produksi 1440 dan 390 diperiksa. Backup pra-deploy `~/backup-unggas-20261028-040027`.
+
 **Status sekarang: mati.** `EMAIL_AKTIF=false` di `/var/www/unggas-app/.env`. Selama mati, tidak ada satu pun jalur yang memanggil SES.
 
 Yang berlaku saat `EMAIL_AKTIF` bernilai selain `"true"`:
@@ -312,6 +318,7 @@ Catatan teknis:
 - UI v3 tipografi dan sistem tombol, sudah live. Font judul v3 sudah digantikan Fraunces di v3.1.
 - UI v4 accent ladder, sudah live (28 Okt).
 - UI v5 framed sheet, sudah live (28 Okt).
+- UI v5.1 daftar ala Medium, sudah live (28 Okt).
 - Nyalakan lagi verifikasi email dan lupa password (`EMAIL_AKTIF=true`) setelah ada anggota nyata. Sebelum itu, tentukan cara memberi email asli ke akun yang dibuat selama mode mati.
 - Kalkulator pakan interaktif, dibatalkan pemilik, bisa dipertimbangkan lagi nanti.
 - CloudFront CDN saat trafik naik.

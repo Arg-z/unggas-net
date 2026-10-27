@@ -1,5 +1,5 @@
 ---
-version: v5.0
+version: v5.1
 name: Unggas.net
 description: Forum komunitas peternak unggas berbahasa Indonesia. Kertas putih berbingkai hijau-kelabu, judul dan prosa Fraunces, UI Plus Jakarta Sans. Arah framed-sheet untuk layar aplikasi yang dibaca dan dikerjakan lama.
 colors:
@@ -68,10 +68,13 @@ typography:
     h1-beranda: "26px mobile / 28px desktop, display 600"
     h1-thread: "26px mobile / 30px desktop, display 600"
     h1-sekunder: "26px, display 600 (notifikasi, tulis, admin, auth)"
-    judul-papan: "20px mobile / 22px desktop, display 600"
-    judul-baris: "15px, body 600"
+    judul-papan: "22px mobile / 25px desktop, display 600"
+    judul-baris: "18px mobile / 20px desktop, display 600, line-clamp 2"
+    cuplikan-baris: "13.8px mobile / 14.5px desktop, leading 1.65, ink-soft, line-clamp 2"
+    judul-notifikasi: "16.5px, display 600, line-clamp 2"
     isi-post: "17.5px / 1.72 serif (.prosa)"
     meta: "13px ink-faint"
+    meta-baris: "12.5px ink-faint, nama penulis ink-soft 500"
     label-form: "13px, 600, ink-strong"
 
 rounded:
@@ -126,9 +129,14 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
 
 ## Tipografi
 
-- Fraunces untuk identitas dan bacaan: h1, judul thread, judul papan, wordmark,
-  isi post (`.prosa`, 17.5px/1.72), copy 404. Bobot 600, tracking rapat.
-- Plus Jakarta Sans untuk seluruh UI. Angka memakai `.tabular`.
+- Fraunces untuk identitas dan bacaan: h1, judul thread, judul papan, judul
+  baris diskusi dan notifikasi, wordmark, isi post (`.prosa`, 17.5px/1.72),
+  copy 404. Bobot 600, tracking rapat.
+- Plus Jakarta Sans untuk seluruh UI: cuplikan, meta, tombol, form, sidebar.
+  Angka memakai `.tabular`.
+- Baris diskusi dibaca seperti feed: judul serif 18/20px maksimal dua baris,
+  cuplikan dua baris, lalu byline penulis · waktu · balasan · tag. Tidak ada
+  angka balasan rata kanan dan tidak ada header kolom.
 - Baris prosa dibatasi `max-w-[68ch]`; halaman thread tidak memakai kartu di dalam
   kertas. Kepala thread adalah garis bawah, bukan kotak.
 - Input 16px untuk mencegah zoom iOS. Label 13px/600, hint 12px.
@@ -141,6 +149,10 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
   Satu aksi terisi per pandangan.
 - `.panel` putih, 1px `border`, radius 12. `.well` `wash`, 1px, radius 12.
   Tanpa bayangan; kedalaman dari langkah warna dan garis.
+- Keadaan kosong memakai blok `wash` radius 16 tanpa garis putus-putus, judul
+  serif di tengah, satu kalimat penjelas, dan satu aksi bergaris.
+- Form auth duduk di panel `wash/60` radius 16 tanpa garis; bidang input tetap
+  putih sehingga batas kontrol terbaca.
 - `.input` 40px, radius 8, batas `control`, fokus `accent` + ring 3px 15%.
 - `.eyebrow` 12px/600 `accent-ink` untuk penanda papan dan panel ajakan.
 - TagPill topik: tint aksen, radius 4. Wilayah: putih + pin, pin informatif.
@@ -153,18 +165,26 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
 
 - Bingkai: sidebar 228px (>=1024px), bilah atas 48px, kertas inset 8px. Di bawah
   1024px bingkai hilang; kertas menjadi layar penuh dan nav bawah 54px.
-- Beranda: judul, pemilih komunitas dan kotak cari di ponsel, papan komunitas
-  untuk sematan, lalu daftar diskusi selebar kertas. Tanpa tab, jumlah, urutan,
-  atau rel kanan. Pemilih komunitas di bilah atas hanya tampil >=1024px.
+- Beranda: judul dan satu kalimat pengantar, pemilih komunitas dan kotak cari
+  di ponsel, papan komunitas untuk sematan, lalu satu label bagian dan daftar
+  diskusi ala feed: judul serif, cuplikan dua baris, byline, tag. Baris
+  membentang selebar kertas; hover memberi `wash` lembut. Tanpa tab, jumlah,
+  urutan, header kolom, angka rata kanan, atau rel kanan. Pemilih komunitas di
+  bilah atas hanya tampil >=1024px.
 - Thread: kepala tanpa kartu, prosa 68ch, balasan sebagai baris bergaris, rel
   kanan berisi fakta diskusi (termasuk penulis) dan diskusi lain di komunitas
   yang sama, tampil >=1280px.
-- Auth: satu kolom 420px di tengah. Di >=768px form duduk di tengah tinggi layar.
-  Shell menyembunyikan tautan Masuk/Daftar saat sudah berada di halaman auth.
+- Auth: satu kolom 420px di tengah, form di panel `wash` tanpa garis. Di >=768px
+  form duduk di tengah tinggi layar. Shell menyembunyikan tautan Masuk/Daftar
+  saat sudah berada di halaman auth. Kekosongan simetris di sekeliling form
+  adalah komposisinya, bukan ruang yang harus diisi.
 - Tulis: form + rel panduan 280px di >=1280px; panduan berisi hal yang membuat
   pertanyaan mudah dijawab, ditulis sebelum mengetik. Tombol Tulis di bilah atas
   disembunyikan di halaman ini agar hanya ada satu aksi terisi.
-- Notifikasi: satu kolom 820px, daftar bergaris, baris belum dibaca bertint `wash`.
+- Notifikasi: satu kolom 820px, daftar bergaris. Tiap baris memakai byline
+  "nama membalas · waktu", judul diskusi serif 16.5px, nomor balasan, dan chip
+  "Baru"; baris belum dibaca bertint `wash` dengan satu dot aksen. Keadaan
+  kosong memakai blok `wash`, bukan garis putus-putus.
 - Admin: satu kolom 1120px, tab 36px bergaris 2px, tindakan per baris.
 - 404: dua kolom, salinan dan aksi di kiri, diskusi terbaru di kanan.
 - Wilayah tidak pernah menjadi panel filter di beranda (keputusan pemilik).
@@ -184,6 +204,13 @@ blok jarang dipakai. Jangan menambah warna tanpa mengukur dan mencatatnya di sin
 
 ## Riwayat
 
+- v5.1 (28 Okt 2026): beranda dibaca seperti feed editorial, acuan Medium.
+  Header kolom dan angka balasan rata kanan dibuang; judul diskusi memakai
+  Fraunces 18/20px dengan cuplikan dua baris dan byline penulis · waktu ·
+  balasan · tag. Papan komunitas naik ke 22/25px. Notifikasi memakai judul
+  serif dan chip "Baru". Keadaan kosong beranda, notifikasi, dan balasan thread
+  menjadi blok `wash` tanpa garis putus-putus; form auth duduk di panel `wash`
+  tanpa garis. Rute, alur, palet, font, dan keputusan pemilik tidak berubah.
 - v5.0 (27 Okt 2026): framed-sheet. Bingkai + kertas inset, sidebar satu grup
   Forum, pemilih komunitas di bilah atas, papan komunitas, thread tanpa kartu
   dengan rel fakta + Penulis, auth satu kolom, form tulis dengan rel panduan,
