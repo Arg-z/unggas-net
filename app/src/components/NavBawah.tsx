@@ -7,8 +7,8 @@ import { IkonBeranda, IkonNotifikasi, IkonTulis } from "./Ikon";
 import { TopicIcon } from "./TagPill";
 
 /** Bilah bawah ponsel: empat tujuan. Komunitas lain tetap terjangkau lewat
- *  pemilih di baris judul beranda dan bilah samping — empat sel membuat label
- *  terpanjang pun tidak menempel ke tepi layar. */
+ *  pemilih di baris judul beranda. Garis 2px di tepi atas menandai tujuan aktif,
+ *  sejalan dengan tab putih di bilah samping desktop. */
 export function NavBawah({ topik }: { topik: { slug: string; name: string; jumlah: number }[] }) {
   const pathname = usePathname();
   const tag = useSearchParams().get("tag");
@@ -39,12 +39,18 @@ export function NavBawah({ topik }: { topik: { slug: string; name: string; jumla
     >
       <ul className="flex items-stretch px-2">
         {tujuan.map((t) => (
-          <li key={t.href} className="min-w-0 flex-1">
+          <li key={t.href} className="relative min-w-0 flex-1">
+            {t.aktif && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-5 top-0 h-[2px] rounded-full bg-accent"
+              />
+            )}
             <Link
               href={t.href}
               aria-current={t.aktif ? "page" : undefined}
-              className={`flex h-[52px] flex-col items-center justify-center gap-1 text-[10.5px] font-medium ${
-                t.aktif ? "text-accent-ink" : "text-ink-faint"
+              className={`flex h-[54px] flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+                t.aktif ? "text-ink-strong" : "text-ink-faint"
               }`}
             >
               <span className={t.aktif ? "text-accent" : "text-ink-faint"}>{t.ikon}</span>

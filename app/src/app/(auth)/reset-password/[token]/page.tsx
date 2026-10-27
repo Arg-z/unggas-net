@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { tokenMasihBerlaku } from "@/lib/emailtoken";
 import { emailAktif } from "@/lib/fitur";
 import { ResetForm } from "@/app/actions/EmailForm";
+import { AuthShell } from "@/components/AuthShell";
 
 export const metadata = { title: "Atur ulang password" };
 export const dynamic = "force-dynamic";
@@ -18,34 +19,33 @@ export default async function ResetPasswordPage({
 
   if (!(await tokenMasihBerlaku(token, "reset"))) {
     return (
-      <main id="konten" tabIndex={-1} className="mx-auto max-w-[392px] py-4 sm:py-10">
-        <h1 className="text-[22px] font-semibold leading-8 tracking-tight text-ink-strong">
-          Tautan tidak berlaku
-        </h1>
-        <p className="mt-1 text-[13.5px] leading-relaxed text-ink-faint">
-          Tautan reset password hanya berlaku 1 jam dan cuma bisa dipakai sekali.
-        </p>
-        <div className="mt-5">
-          <Link href="/lupa-password" className="btn btn-primary">
+      <main id="konten" tabIndex={-1} className="py-2 sm:py-6 md:grid md:min-h-[calc(100svh-12rem)] md:content-center">
+        <AuthShell
+          judul="Tautan tidak berlaku"
+          sub="Tautan reset password hanya berlaku 1 jam dan cuma bisa dipakai sekali."
+        >
+          <Link href="/lupa-password" className="btn btn-primary w-full">
             Minta tautan baru
           </Link>
-        </div>
+          <div className="mt-5 border-t border-rule pt-4 text-[13px] text-ink-faint">
+            Ingat password?{" "}
+            <Link href="/masuk" className="link">
+              Masuk
+            </Link>
+          </div>
+        </AuthShell>
       </main>
     );
   }
 
   return (
-    <main id="konten" tabIndex={-1} className="mx-auto max-w-[392px] py-4 sm:py-10">
-      <h1 className="text-[22px] font-semibold leading-8 tracking-tight text-ink-strong">
-        Password baru
-      </h1>
-      <p className="mt-1 text-[13.5px] leading-relaxed text-ink-faint">
-        Setelah disimpan, semua perangkat yang masih masuk akan dikeluarkan.
-      </p>
-
-      <div className="panel mt-5 px-4 py-5 sm:px-5">
+    <main id="konten" tabIndex={-1} className="py-2 sm:py-6 md:grid md:min-h-[calc(100svh-12rem)] md:content-center">
+      <AuthShell
+        judul="Password baru"
+        sub="Setelah disimpan, semua perangkat yang masih masuk akan dikeluarkan."
+      >
         <ResetForm token={token} />
-      </div>
+      </AuthShell>
     </main>
   );
 }

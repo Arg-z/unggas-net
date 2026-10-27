@@ -47,7 +47,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   });
 
   return (
-    <main id="konten" tabIndex={-1}>
+    <main id="konten" tabIndex={-1} className="max-w-[1080px]">
       <Link
         href={topik ? `/?tag=${topik.slug}` : "/"}
         className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-ink-strong"
@@ -56,60 +56,58 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
         {topik ? topik.name : "Semua diskusi"}
       </Link>
 
-      <div className="mt-3 grid gap-x-8 gap-y-8 lg:grid-cols-[minmax(0,1fr)_252px]">
+      <div className="mt-3 grid gap-x-8 gap-y-8 xl:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0">
-          {/* Kepala thread: satu kartu, judul 20–22px, meta 13px, satu aksi
-              bergaris 36px di kanan. Isi pembuka duduk di kartu yang sama. */}
-          <article id="post-1" className="panel">
-            <div className="px-4 pb-4 pt-4 sm:px-5 sm:pt-5">
-              <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {thread.isPinned && <BadgeSematkan />}
-                    {thread.tags.map(({ tag: t }) => (
-                      <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
-                        {t.name}
-                      </TagPill>
-                    ))}
-                  </div>
-
-                  <h1 className="mt-2.5 text-[20px] font-semibold leading-[1.35] tracking-tight text-ink-strong sm:text-[22px]">
-                    {thread.title}
-                  </h1>
-
-                  <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-faint">
-                    <span className="flex items-center gap-1.5 whitespace-nowrap">
-                      <Avatar username={thread.user.username} size="xs" />
-                      <span className="font-medium text-ink-soft">{thread.user.username}</span>
-                      {thread.user.isAdmin && <span className="text-[11.5px]">admin</span>}
-                    </span>
-                    <span aria-hidden="true">·</span>
-                    <span className="whitespace-nowrap">{relatif(thread.createdAt)}</span>
-                  </p>
+          {/* Kepala thread di atas kertas: judul serif, meta 13px, satu aksi
+              bergaris. Isi pembuka duduk langsung di kertas — tidak ada kartu
+              di dalam kertas yang menambah kotak tanpa alasan. */}
+          <article id="post-1" className="scroll-mt-20">
+            <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-3 border-b border-border pb-5">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {thread.isPinned && <BadgeSematkan />}
+                  {thread.tags.map(({ tag: t }) => (
+                    <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
+                      {t.name}
+                    </TagPill>
+                  ))}
                 </div>
 
-                <div className="shrink-0">
-                  <a href="#balas" className="btn btn-outline">
-                    Balas
-                  </a>
-                </div>
+                <h1 className="mt-3 font-display text-[26px] font-semibold leading-[1.25] tracking-tight text-ink-strong sm:text-[30px]">
+                  {thread.title}
+                </h1>
+
+                <p className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-faint">
+                  <span className="flex items-center gap-1.5 whitespace-nowrap">
+                    <Avatar username={thread.user.username} size="xs" />
+                    <span className="font-medium text-ink-soft">{thread.user.username}</span>
+                    {thread.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+                  </span>
+                  <span aria-hidden="true">·</span>
+                  <span className="whitespace-nowrap">{relatif(thread.createdAt)}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="tabular whitespace-nowrap">{balasan.length} balasan</span>
+                </p>
+              </div>
+
+              <div className="shrink-0">
+                <a href="#balas" className="btn btn-outline">
+                  Balas
+                </a>
               </div>
             </div>
 
             {pembuka && (
-              <>
-                <div className="border-t border-rule" />
-                <div className="px-4 py-5 sm:px-5 sm:py-6">
-                  <div className="prosa max-w-[68ch] whitespace-pre-wrap break-words text-ink">
-                    {pembuka.content}
-                  </div>
+              <div className="mt-6">
+                <div className="prosa max-w-[68ch] whitespace-pre-wrap break-words text-ink">
+                  {pembuka.content}
                 </div>
-              </>
+              </div>
             )}
           </article>
 
-          {/* Balasan: baris di atas tanah, satu garis rambut per balasan. */}
-          <section aria-labelledby="judul-balasan" className="mt-8">
+          {/* Balasan: baris di atas kertas, satu garis rambut per balasan. */}
+          <section aria-labelledby="judul-balasan" className="mt-9">
             <div className="flex items-baseline justify-between gap-3 border-b border-border pb-2.5">
               <h2 id="judul-balasan" className="text-[15px] font-semibold text-ink-strong">
                 Balasan
@@ -127,7 +125,9 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                         <span className="flex items-center gap-1.5 whitespace-nowrap after:ml-1 after:content-['·']">
                           <Avatar username={p.user.username} size="xs" />
                           <span className="font-semibold text-ink-strong">{p.user.username}</span>
-                          {adalahPenulis && <span className="text-[11.5px]">penulis</span>}
+                          {adalahPenulis && (
+                            <span className="text-[11.5px] font-medium text-accent-ink">penulis</span>
+                          )}
                           {p.user.isAdmin && <span className="text-[11.5px]">admin</span>}
                         </span>
                         <span className="whitespace-nowrap">{relatif(p.createdAt)}</span>
@@ -148,10 +148,15 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 })}
               </ol>
             ) : (
-              <p className="max-w-[62ch] py-6 text-[14px] leading-relaxed text-ink-soft">
-                Belum ada yang menanggapi. Pengalaman sekecil apa pun berguna di sini, pemula lain
-                pasti terbantu.
-              </p>
+              <div className="mt-4 rounded-xl border border-dashed border-control/60 bg-wash/60 px-4 py-5">
+                <p className="max-w-[62ch] text-[14px] leading-relaxed text-ink-soft">
+                  Belum ada yang menanggapi. Pengalaman sekecil apa pun berguna di sini, pemula lain
+                  pasti terbantu.
+                </p>
+                <a href="#balas" className="link mt-2 text-[13px]">
+                  Jadi yang pertama membalas
+                </a>
+              </div>
             )}
           </section>
 
@@ -159,7 +164,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
             {user ? (
               <BalasForm discussionId={thread.id} />
             ) : (
-              <div className="panel flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+              <div className="well flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
                 <p className="text-[14px] text-ink-soft">
                   Masuk untuk menanggapi atau berbagi pengalaman di diskusi ini.
                 </p>
@@ -177,29 +182,31 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
         </div>
 
         {/* Kolom kanan: fakta diskusi dan diskusi lain di komunitas yang sama. */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-24">
-            <h2 className="text-[12px] font-medium text-ink-faint">Tentang diskusi</h2>
-            <dl className="mt-2 space-y-2 border-t border-rule pt-3 text-[13px]">
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="text-ink-faint">Komunitas</dt>
-                <dd className="font-medium text-ink-strong">{topik ? topik.name : "—"}</dd>
-              </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="text-ink-faint">Dibuka</dt>
-                <dd className="text-right font-medium text-ink-strong">{dibuka}</dd>
-              </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="text-ink-faint">Balasan</dt>
-                <dd className="tabular font-medium text-ink-strong">{balasan.length}</dd>
-              </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="text-ink-faint">Penulis</dt>
-                <dd className="font-medium text-ink-strong">{thread.user.username}</dd>
-              </div>
-            </dl>
+        <aside className="hidden xl:block">
+          <div className="sticky top-16">
+            <div className="well p-4">
+              <h2 className="text-[12px] font-medium text-ink-faint">Tentang diskusi</h2>
+              <dl className="mt-2 border-t border-border text-[13px]">
+                <div className="flex items-baseline justify-between gap-3 border-b border-rule py-2">
+                  <dt className="text-ink-faint">Komunitas</dt>
+                  <dd className="font-medium text-ink-strong">{topik ? topik.name : "—"}</dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-3 border-b border-rule py-2">
+                  <dt className="text-ink-faint">Dibuka</dt>
+                  <dd className="text-right font-medium text-ink-strong">{dibuka}</dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-3 border-b border-rule py-2">
+                  <dt className="text-ink-faint">Balasan</dt>
+                  <dd className="tabular font-medium text-ink-strong">{balasan.length}</dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-3 py-2">
+                  <dt className="text-ink-faint">Penulis</dt>
+                  <dd className="truncate font-medium text-ink-strong">{thread.user.username}</dd>
+                </div>
+              </dl>
+            </div>
 
-            <h2 className="mt-7 text-[12px] font-medium text-ink-faint">
+            <h2 className="mt-6 text-[12px] font-medium text-ink-faint">
               {topik ? `Lainnya di ${topik.name}` : "Diskusi lain"}
             </h2>
             {lain.length > 0 ? (
@@ -221,6 +228,12 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
               <p className="mt-2 border-t border-rule pt-3 text-[13px] leading-relaxed text-ink-faint">
                 Ini diskusi satu-satunya di komunitas ini.
               </p>
+            )}
+
+            {topik && (
+              <Link href={`/?tag=${topik.slug}`} className="link mt-4 text-[13px]">
+                Lihat semua di {topik.name}
+              </Link>
             )}
           </div>
         </aside>

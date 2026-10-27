@@ -1,27 +1,32 @@
 @import "tailwindcss";
 
 /*
-  Unggas.net UI v4 — "tangga aksen" (accent ladder).
-  Satu hue merek (daun #2e7d32) hanya di tanda kecil: aksi terisi, indikator tab,
-  ikon nav aktif, dot belum-dibaca. Tint-nya (50–200) yang mengerjakan area.
-  Aksi utama near-black — bukan hijau — supaya hijau tetap jadi penanda, bukan cat.
+  Unggas.net UI v5 — "kertas berbingkai" (framed sheet).
+  Chrome hijau-kelabu (satu langkah rendah dari daun #2e7d32) mengelilingi
+  kertas putih. Kedalaman dari langkah warna dan garis 1px, tanpa bayangan.
 
-  Peran token mengikuti lembar arah: ground, surface, raised, border, rule,
-  control, ink (teks), ink-faint (meta), accent + tint-nya, status pill.
+  Warna merek menyusut ke logo, garis 2px tab aktif, dan garis atas papan
+  komunitas. Tombol utama near-black — hijau tetap penanda, bukan cat.
+
+  Peran token mengikuti lembar arah framed-sheet: ground (bingkai), surface
+  (kertas), wash (panel tonal), border (tepi kertas/kartu), rule (garis rambut),
+  control (batas kontrol), ink (teks), accent + tint-nya, status pill.
   Setiap pasangan teks–latar diukur AA:
-  putih di atas ink-strong 17.8:1, ink-faint di ground 5.5:1, ink-soft di ground 7.9:1,
-  accent-ink di accent-soft 6.9:1, control di putih 3.52:1 (WCAG 1.4.11 non-teks).
+  putih di atas ink-strong 17.8:1, ink-faint di ground 4.87:1, ink-soft di
+  ground 7.2:1, accent-ink di accent-soft 6.9:1, control di putih 3.52:1
+  (WCAG 1.4.11 non-teks).
 */
 @theme {
   /* Permukaan */
-  --color-ground: #f8faf7;      /* latar halaman & krom — satu langkah ke tint daun */
-  --color-surface: #ffffff;     /* permukaan konten, baris hover, kontrol */
+  --color-ground: #edf2ea;      /* bingkai chrome: sidebar + bilah atas */
+  --color-surface: #ffffff;     /* kertas halaman, kartu, kontrol */
   --color-raised: #fbfdfb;      /* blok disematkan */
-  --color-sunken: #f1f5f0;      /* isian toolbar, hover nav */
+  --color-wash: #f3f8f1;        /* panel tonal, papan komunitas, baris belum dibaca */
+  --color-sunken: #e8eee5;      /* isian toolbar, hover nav di bingkai */
 
   /* Garis */
-  --color-border: #e3e9e1;      /* batas panel 1px */
-  --color-rule: #edf1ec;        /* pemisah baris di dalam panel */
+  --color-border: #dfe6dc;      /* tepi kertas, batas panel */
+  --color-rule: #eef2ec;        /* pemisah baris di dalam kertas */
   --color-control: #7d8d79;     /* batas kontrol — 3.52:1 di putih */
 
   /* Teks */
@@ -77,7 +82,8 @@ body {
 @layer components {
   /* === Tombol ===
      Satu gaya terisi: near-black. Hijau tidak dipakai untuk mengisi tombol besar —
-     ia penanda, bukan cat. Tinggi 36px di desktop, 40px di layar sentuh. */
+     ia penanda, bukan cat. Tinggi 36px di desktop; .btn-lg 44px untuk aksi utama
+     di ponsel. */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -86,7 +92,7 @@ body {
     min-height: 36px;
     padding: 0 14px;
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     line-height: 1;
@@ -103,6 +109,11 @@ body {
     padding: 0 10px;
     font-size: 13px;
   }
+  .btn-lg {
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 15px;
+  }
   .btn-primary {
     background: var(--color-ink-strong);
     color: #ffffff;
@@ -116,7 +127,7 @@ body {
     border-color: var(--color-control);
   }
   .btn-outline:hover {
-    background: var(--color-sunken);
+    background: var(--color-wash);
     border-color: var(--color-ink-soft);
   }
   .btn-quiet {
@@ -128,13 +139,18 @@ body {
     color: var(--color-ink-strong);
   }
 
-  /* === Panel ===
-     Satu bidang: 1px garis, tanpa bayangan. Kalau butuh pemisah di dalamnya,
-     pakai garis rambut --color-rule, jangan tambah bayangan. */
+  /* === Kertas, panel, well ===
+     Kertas halaman diatur layout. Di dalamnya hanya tiga tingkat: kertas,
+     panel (kartu 1px), dan well tonal. Tidak ada bayangan. */
   .panel {
     border: 1px solid var(--color-border);
-    border-radius: 8px;
+    border-radius: 12px;
     background: var(--color-surface);
+  }
+  .well {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-wash);
   }
 
   /* === Kontrol form ===
@@ -145,7 +161,7 @@ body {
     min-height: 40px;
     padding: 8px 12px;
     border: 1px solid var(--color-control);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--color-surface);
     font-size: 16px;
     line-height: 1.45;
@@ -183,10 +199,16 @@ body {
     line-height: 1.5;
     color: var(--color-ink-faint);
   }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-accent-ink);
+  }
 
   .alert-error,
   .alert-ok {
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid;
     font-size: 13px;
     font-weight: 500;
@@ -213,7 +235,7 @@ body {
 /* Prosa pembacaan di halaman thread — permukaan baca serif. */
 .prosa {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 17.5px;
   line-height: 1.72;
   letter-spacing: 0.001em;
 }
@@ -266,7 +288,7 @@ body {
   left: 12px;
   top: 12px;
   padding: 10px 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--color-ink-strong);
   color: #ffffff;
   font-size: 14px;

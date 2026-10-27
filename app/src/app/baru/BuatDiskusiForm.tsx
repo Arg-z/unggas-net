@@ -65,6 +65,9 @@ export function BuatDiskusiForm({ topik, wilayah }: { topik: Tag[]; wilayah: Tag
           className="input mt-2"
           placeholder="Umur ternak, kapasitas kandang, komposisi pakan, gejala yang terlihat, dan apa yang sudah dicoba."
         />
+        <span className="hint mt-1.5 block">
+          Makin lengkap konteksnya, makin tepat jawaban yang kamu terima.
+        </span>
       </label>
 
       {state && !state.ok && (

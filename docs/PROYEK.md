@@ -1,6 +1,6 @@
 # Proyek unggas.net: forum komunitas peternak unggas
 
-Status per 28 Oktober 2026: **UI v4 (accent ladder) live di https://unggas.net, dengan login sementara tanpa email**: sidebar tanpa grup Komunitas, tanpa baris tab, tanpa jumlah+urutan, halaman masuk/daftar satu kolom. Pendaftaran dan masuk kini hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `vZ-eLgI8x5pYluKsyp2hp`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan 0 FAIL.
+Status per 28 Oktober 2026: **UI v5 (framed sheet) live di https://unggas.net, dengan login sementara tanpa email**. Bingkai hijau-kelabu memegang sidebar dan bilah atas, kertas putih masuk 8px dari tepi kanan dan bawah. Sidebar hanya satu grup Forum, pemilih komunitas ada di bilah atas dan di baris judul beranda pada ponsel, tanpa tab, tanpa jumlah, tanpa pemilih urutan. Pendaftaran dan masuk hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `h3Jnu_jE0X14ZT0ugShiC`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan publik 0 FAIL di 1440, 768, dan 390. Backup pra-deploy `~/backups/unggas-src-20261028-0343.tar.gz`.
 
 Dokumen ini adalah serah terima. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
 
@@ -23,7 +23,7 @@ Backup    -> cron 03:15 harian -> S3 unggas-backups-385207569778 (lifecycle 30 h
 - Stack: Next.js 16 (App Router, TypeScript, Tailwind v4), Prisma 6, PostgreSQL 16, PM2
 - Repo GitHub: `Arg-z/unggas-net` (private, https://github.com/Arg-z/unggas-net). Salinan kerja di server: `~/unggas-net` (app/ + docs/PROYEK.md + app/.taste-skill/direction.json), disinkron dari produksi 28 Okt. Setiap perubahan produksi: commit + push dari situ.
 - Aplikasi di server: `/var/www/unggas-app`, bukan repo git. Pembanding sebelum deploy adalah salinan kerja `~/unggas-net`. Repo lama `~/unggas-forum` di macbook masih v3.1 (plus docs/ops/theme/archive dan riwayat commit lama) dan belum direkonsiliasi; jangan dijadikan dasar deploy sampai disatukan.
-- Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual sejak v4. `theme/DESIGN.md` (v3.2) sudah usang dan masih mencatat palet serta radius v3, jangan dipakai sebagai acuan. Lembar arah v4 tersimpan di `.taste-skill/direction.json`.
+- Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual. `theme/DESIGN.md` sudah v5.0 dan mencatat token, komposisi, serta keputusan pemilik. Lembar arah v5 `framed-sheet` (seed 1338313458) tersimpan di `.taste-skill/direction.json`.
 - Pernah terjadi drift: 26 Okt kode di server lebih baru daripada repo karena diedit langsung di server. Sudah diselamatkan lewat commit `c87850e`. Selalu diff dulu sebelum deploy.
 
 ## Struktur komunitas dan aturan UI
@@ -33,85 +33,73 @@ Backup    -> cron 03:15 harian -> S3 unggas-backups-385207569778 (lifecycle 30 h
 - Wilayah, 10 tag: Sumatera Utara, Sumatera Selatan, Jawa Barat, Jawa Tengah, Jawa Timur, Bali dan Nusa Tenggara, Kalimantan, Sulawesi, Maluku dan Papua, Luar Negeri.
 - Keputusan UI 27 Okt yang masih berlaku: jangan tampilkan daftar atau panel filter wilayah di beranda maupun di bilah samping. Wilayah dipilih opsional saat membuat diskusi di `/baru` dan tampil sebagai label kecil berikon pin pada baris diskusi, tetap bisa diklik ke `/?tag=<slug>`.
 
-## Arsitektur UI v4 (27 Okt 2026)
+## Arsitektur UI v5 (28 Okt 2026)
 
 ### Alasan penggantian
 
-v3.1 terbaca sebagai template hasil generate. Primary hijau di setiap aksi, tint hijau di setiap label dan banner, ikon di dalam cakram putih, kartu 20px seragam dengan label "0 balasan" di setiap baris, dan tidak ada satu pun struktur kolom di seluruh aplikasi.
-
-Arah diambil dari `draw.mjs --app --kind community --keep palette,type` dengan seed 2105562756. Nama arahnya **accent ladder**. Palet daun dan pasangan Fraunces plus Plus Jakarta Sans dipertahankan karena itu keputusan pemilik, jadi yang berubah adalah komposisinya, bukan warnanya.
+v4 sudah membuang primary hijau dan kartu seragam, tetapi seluruh layar masih berupa tabel di atas kanvas kosong. Tidak ada bingkai yang memisahkan navigasi dari isi, dan setiap halaman dimulai dengan judul lalu garis. Pemilik meminta tampilan yang lebih segar tanpa memaksa pengguna mempelajari navigasi baru. Arah `framed-sheet` diambil dari `draw.mjs --app --kind community --keep palette,type` dengan seed 1338313458. Rute, label, dan alur tetap sama. Yang berubah bingkai, kepadatan, dan satu penanda identitas: papan komunitas.
 
 ### Aturan arah
 
-Hue hanya di tanda kecil. Hijau daun `#2e7d32` dipakai untuk indikator tab 2px, ikon nav aktif, dot belum dibaca, dan fokus. Aksi utama near black `#0f1714`, bukan hijau. Tint hijau (50 sampai 200) yang mengerjakan area: baris nav aktif, label topik, alert OK.
+Bingkai hijau-kelabu `#edf2ea` mengelilingi sidebar dan bilah atas. Kertas putih duduk di dalamnya, masuk 8px dari tepi kanan dan bawah, radius 16px, garis 1px, tanpa bayangan. Warna merek menyusut di bawah 3 persen: hijau daun hanya di logo, garis tab aktif 2px, garis atas papan komunitas, dot notifikasi belum dibaca, dan badge admin. Aksi terisi memakai near-black `#0f1714`. Tidak ada mode gelap.
 
-Bentuk yang dilarang dan sudah dihapus: primary hijau terisi, tint hijau di setiap label, ikon di dalam kotak berwarna, batang aksen kiri pada baris nav aktif, gradien pada chip, radius 20px, bayangan saat diam, angka karangan.
+Bentuk yang dilarang dan sudah tidak ada: primary hijau terisi, tint hijau di setiap label, ikon di dalam kotak berwarna, gradien, bayangan saat diam, angka karangan.
 
 ### Shell
 
-Bilah samping 230px dan bilah atas 64px duduk di satu tanah, dipisah garis 1px saja. Switcher komunitas di ujung kanan bilah atas, di balik garis pemisah setinggi bilah. Gutter konten 29px dari garis bilah samping dan dari tepi jendela. Bilah atas mengangkut isi nyata: kotak cari, bel notifikasi, satu tombol primary, dan switcher.
+Bilah samping 228px dan bilah atas 48px duduk di satu bingkai tanpa garis pemisah; batasnya terbaca dari warna. Bilah samping memuat wordmark, satu grup Forum (Semua diskusi, Tulis diskusi, Notifikasi, Panel admin), dan blok akun di bawah. Bilah atas memuat wordmark ponsel, kotak cari mulai 768px, pemilih komunitas mulai 1024px di balik garis pemisah, lalu notifikasi dan satu tombol primary. Halaman menulis menyembunyikan tombol primary bilah atas lewat `TombolTulis` supaya hanya tombol Terbitkan yang terisi.
 
-Ponsel memakai bilah bawah 4 tujuan: Beranda, satu komunitas teratas, Tulis, Notifikasi. Pemilih komunitas pindah ke baris judul beranda karena bilah atas baru memuatnya mulai 1024px.
+Ponsel memakai kertas penuh dan bilah bawah 54px berisi empat tujuan: Beranda, satu komunitas teratas, Tulis, Notifikasi. Pemilih komunitas pindah ke baris judul beranda, pencarian ke baris di bawahnya.
+
+### Papan komunitas
+
+Diskusi tersemat dibaca sebagai papan pengumuman, bukan baris tabel. Papan hanya muncul di halaman pertama tampilan utama, memakai panel `wash` dengan garis atas aksen 2px, judul, cuplikan, penulis, dan waktu. Saat pencarian atau filter aktif, sematan kembali ke daftar supaya hasil tidak terbelah.
 
 ### Halaman
 
-Beranda memakai pola daftar. Baris judul 22px, tab keadaan (Semua, Disematkan, Belum dijawab) di atas garis penuh 1px dengan indikator 2px selebar label, toolbar berisi pencarian dan kontrol urutan, lalu tabel di atas tanah halaman tanpa kartu: label kolom 12px abu huruf kalimat, baris sekitar 72px dengan judul, cuplikan satu baris, label topik, avatar, dan angka balasan rata kanan, kolom aktivitas sendiri.
+Beranda memakai pola daftar. Judul 26px ponsel dan 28px desktop, pemilih komunitas di kanan judul pada ponsel, pencarian satu baris di bawahnya. Papan komunitas, lalu label kolom 12px (Diskusi, Balasan, Aktivitas) dan baris bergaris rambut sekitar 72px: judul 15px, cuplikan satu baris, label topik dan wilayah, avatar, angka balasan dan aktivitas rata kanan dengan digit tabular. Tidak ada tab keadaan, jumlah diskusi, pemilih urutan, atau rel kanan. Parameter `?saring=`, `?urut=`, `?q=`, dan `?tag=` tetap bekerja untuk tautan lama, dan tag tak dikenal tetap 404.
 
-Thread memakai pola detail. Satu panel pembuka dengan judul 20 sampai 22px, meta 13px, satu aksi bergaris 36px, lalu balasan sebagai baris bergaris rambut (bukan tumpukan kartu). Kolom kanan 252px berisi fakta diskusi dan tiga diskusi lain di komunitas yang sama.
+Thread memakai pola detail. Kepala thread adalah garis bawah, bukan kartu: remah, label, judul 26px ponsel dan 30px desktop, meta 13px, satu aksi bergaris. Isi memakai `.prosa` Fraunces 17.5px/1.72 dengan lebar 68 karakter, balasan berupa baris bergaris, dan tautan `#post-N` bisa dibagikan. Mulai 1280px ada rel kanan 260px berisi Tentang diskusi (komunitas, dibuka, balasan, penulis) dan tiga diskusi lain di komunitas yang sama.
 
-Radius bimodal: 4 sampai 8px untuk kontrol dan label. Panel tanpa bayangan saat diam. Angka rata kanan dengan digit tabular.
+Notifikasi memakai satu kolom 820px, daftar bergaris, tombol Tandai semua dibaca, dan baris belum dibaca berlatar `wash`. Admin memakai lebar 1120px dengan tab 36px bergaris aksen. Halaman tulis memakai 1028px: form 720px dan rel panduan 280px berisi cara menulis pertanyaan yang mudah dijawab. Halaman masuk, daftar, lupa password, dan verifikasi memakai satu kolom 420px di tengah, mulai ditengahkan vertikal pada 768px. 404 menampilkan lima diskusi terbaru sebagai jalan keluar.
 
 ### Token dan kelas komponen
 
 Nilai di `src/app/globals.css`:
 
-- Permukaan: `ground` `#f8faf7`, `surface` `#ffffff`, `raised` `#fbfdfb`, `sunken` `#f1f5f0`
-- Garis: `border` `#e3e9e1`, `rule` `#edf1ec`, `control` `#7d8d79`
+- Permukaan: `ground` `#edf2ea`, `surface` `#ffffff`, `raised` `#fbfdfb`, `wash` `#f3f8f1`, `sunken` `#e8eee5`
+- Garis: `border` `#dfe6dc`, `rule` `#eef2ec`, `control` `#7d8d79`
 - Teks: `ink` `#1b2621`, `ink-strong` `#0f1714`, `ink-soft` `#47524c`, `ink-faint` `#5f6672`
 - Aksen: `accent` `#2e7d32`, `accent-deep` `#236327`, `accent-ink` `#1b5e20`, `accent-soft` `#e8f5e9`, `accent-track` `#c8e6c9`
 - Status: `warn-soft/line/ink`, `danger`, `danger-soft`, `danger-line`
 - Avatar: 6 triple `av-*` (hijau, amber, biru, oranye, teal, rose)
 
-Kelas: `.btn` (36px, radius 6) dengan varian `-primary` (near black), `-outline`, `-quiet`, `-sm`; `.panel`; `.input`, `.label`, `.hint`, `.alert-error`, `.alert-ok`; di luar layer `.prosa` (Fraunces 17px/1.72), `.tabular`, `.link`, `.scroll-x`, `.lewati-nav`.
+Kelas: `.btn` (36px, radius 8) dengan varian `-primary` (near black), `-outline`, `-quiet`, `-sm` (30px), `-lg` (44px); `.panel` dan `.well` (radius 12); `.input` 40px; `.label`, `.hint`, `.eyebrow`, `.alert-error`, `.alert-ok`; di luar layer `.prosa` (Fraunces 17.5px/1.72), `.tabular`, `.link`, `.scroll-x`, `.lewati-nav`.
 
-Kelas lama sudah dihapus dari CSS. Jangan dipakai lagi: `bg-canvas`, `border-line`, `border-line-soft`, `border-line-strong`, `bg-leaf`, `leaf-tint*`, `leaf-ink`, `text-leaf`, `bg-paper`, `bg-panel`, `bg-unread`, `danger-tint`, `.card`, `.btn-secondary`, `.btn-tint`, `.btn-ghost`, `.btn-lg`, `.link-hijau`, `.no-scrollbar`, `divide-line-soft`.
+Kelas lama tetap dihapus. Jangan dipakai lagi: `bg-canvas`, `border-line`, `border-line-soft`, `border-line-strong`, `bg-leaf`, `leaf-tint*`, `leaf-ink`, `text-leaf`, `bg-paper`, `bg-panel`, `bg-unread`, `danger-tint`, `.card`, `.btn-secondary`, `.btn-tint`, `.btn-ghost`, `.link-hijau`, `.no-scrollbar`, `divide-line-soft`.
 
-### Berkas baru, berubah, dihapus
+### Berkas baru dan berubah
 
-Baru: `components/Wordmark.tsx`, `NavSamping.tsx`, `NavBawah.tsx`, `BilahCari.tsx`, `PemilihKomunitas.tsx`, `PanelKomunitas.tsx`.
+Baru: `components/AksiTamu.tsx`, `components/AuthShell.tsx`, `components/TombolTulis.tsx`.
 
-Dihapus: `components/NavPintasan.tsx`.
-
-Ditulis ulang: `app/layout.tsx`, `app/page.tsx`, `app/t/[id]/page.tsx`, `app/notifikasi/page.tsx`, `app/baru/page.tsx`, `app/baru/BuatDiskusiForm.tsx`, `app/BalasForm.tsx`, `app/admin/page.tsx`, `app/not-found.tsx`, semua halaman `(auth)/*` dan `verifikasi/[token]`, `app/actions/AuthForm.tsx`, `app/actions/EmailForm.tsx`, `components/TagPill.tsx`, `BadgeSematkan.tsx`, `NotifikasiBadge.tsx`, `Pemilih.tsx`.
-
-Ditambah isi: `components/Ikon.tsx` (`IkonBeranda`, `IkonAkun`, `IkonSematkan` digambar ulang), `lib/forum.ts` (tipe `Saringan` dan `Urutan`, `parseSaringan`, `parseUrutan`, `listDiscussions` menerima `saring`, `urut`, `q`).
-
-Konfigurasi: `vitest.config.ts` diganti `vitest.config.mts` karena Vitest 5 memuat `.ts` sebagai CommonJS dan menolak sintaks ESM.
-
-### Perilaku baru yang nyata
-
-- `/?saring=disematkan` dan `/?saring=belum-dijawab` benar-benar menyaring. Sematan selalu di atas, apa pun urutannya.
-- `/?urut=terbaru|terlama|dibalas` mengubah query Prisma, bukan urutan di klien.
-- `/?q=` mencari di judul dan isi balasan.
-- Pencarian di bilah atas membawa `tag`, `saring`, dan `urut` yang sedang aktif.
-- Tag tak dikenal tetap 404, tidak lagi jatuh diam-diam ke daftar penuh.
-- Thread punya kolom kanan dan tautan balasan `#post-N` yang bisa dibagikan.
-- 404 menampilkan lima diskusi terbaru sebagai jalan keluar.
+Berubah: `app/layout.tsx`, `app/page.tsx`, `app/t/[id]/page.tsx`, `app/notifikasi/page.tsx`, `app/baru/page.tsx`, `app/baru/BuatDiskusiForm.tsx`, `app/BalasForm.tsx`, `app/admin/page.tsx`, `app/not-found.tsx`, semua halaman `(auth)/*` dan `verifikasi/[token]`, `app/globals.css`, `components/BilahCari.tsx`, `NavBawah.tsx`, `NavSamping.tsx`, `NotifikasiBadge.tsx`, `theme/DESIGN.md`, `theme/tokens.json`, `theme/tokens.tailwind.css`.
 
 ### Verifikasi yang sudah dijalankan
 
-- `npx tsc --noEmit` bersih.
-- `NODE_OPTIONS=--max-old-space-size=1280 npx next build` sukses, `.next/BUILD_ID` terbentuk (build terakhir `iiPjqFNTqz6PU9uwbl7NJ`).
-- `npx vitest run` 52 test di 8 berkas, semua hijau.
-- Rute di server pratinjau: `/`, `/t/20`, `/masuk`, `/daftar`, `/lupa-password`, `/cek-email` mengembalikan 200. `/admin`, `/notifikasi`, `/baru` mengembalikan 307 ke `/masuk` untuk tamu, 200 setelah login. `/t/999999` dan `/?tag=tidak-ada` mengembalikan 404.
-- `inspect.mjs --app` di 1440, 768, dan 390 pada build terakhir: beranda, thread, dan `/masuk` semuanya 0 FAIL 0 WARN. Dua peringatan putaran sebelumnya sudah beres: label bilah bawah tidak lagi menempel ke tepi setelah padding `<ul>` dinaikkan, dan layar auth tidak lagi kosong karena kolom `PanelKomunitas` diisi data forum yang sebenarnya.
-- Tangkapan layar final ada di `.taste-skill/after-home/`, `after-thread/`, `after-masuk/`. Pembanding sebelum redesign ada di `.taste-skill/before/`.
+- `npx tsc --noEmit` keluar 0.
+- `NODE_OPTIONS=--max-old-space-size=1280 npm run build` sukses, `.next/BUILD_ID` berisi `h3Jnu_jE0X14ZT0ugShiC`, dan CSS hasil build memuat `#edf2ea`, `bg-ground`, `text-ink-strong`, serta `btn-primary`.
+- `npx vitest run` di server: 59 test hijau di 9 berkas.
+- `inspect.mjs --app` di 1440, 768, dan 390 pada beranda, thread, dan masuk: 0 FAIL. Satu WARN `hero-void` pada halaman auth diterima karena form tunggal di tengah memang menyisakan ruang simetris.
+- Halaman berlogin (notifikasi, tulis, admin, thread) diperiksa lewat sesi sementara untuk `arga`, lalu sesi dihapus. Tidak ada konten pengguna yang diubah.
+- Produksi: `/`, `/masuk`, `/daftar`, `/lupa-password`, `/t/20` mengembalikan 200. `/admin` mengalihkan tamu ke `/`, sedangkan `/notifikasi` dan `/baru` ke `/masuk`. `/t/999999` mengembalikan 404. Tidak ada field email di halaman daftar, dan halaman tulis hanya punya satu tombol terisi.
+- Tangkapan layar akhir ada di `.taste-skill/after-beranda/`, `after-t-20/`, `after-masuk/`, `after-notifikasi/`, `after-baru/`, dan `after-admin/`.
 
 ### Yang belum selesai
 
 - Verifikasi email, lupa password, dan reset password sengaja mati sejak 28 Okt lewat `EMAIL_AKTIF=false`.
 - Akun yang dibuat selama mode mati memakai email placeholder dan belum punya alamat email asli.
 - Dua warning ESLint yang belum disentuh: `LIMIT_DISKUSI_BARU` di `app/actions/forum.ts` tidak terpakai, dan parameter `_user` di `getTags` (`lib/forum.ts`). Keduanya bukan error.
+- Judul thread panjang buatan pengguna bisa menjadi empat baris di 390px. Aturan dua baris tidak mungkin dipaksakan pada judul bebas, jadi inspeksi thread memakai `--allow headline-lines`.
 
 ## Syarat skill untuk agen berikutnya
 
@@ -144,13 +132,11 @@ node ~/.claude/skills/design-taste-frontend/scripts/inspect.mjs \
   http://127.0.0.1:3100/ --app --out .taste-skill/after-home --widths 1440,768,390
 ```
 
-Token desain diambil dengan perintah ini.
+Token desain diambil dengan perintah berikut, dan jangan pernah menambahkan `-I` ke `search.py` karena flag itu memutus import `core` lokal.
 
 ```bash
 python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "forum komunitas diskusi" --design-system
 ```
-
-Jangan pernah menambahkan `-I` ke `search.py`. Flag itu memutus import `core` lokal.
 
 Pemeriksa prosa. Gerbang lulus 90 dan tidak ada temuan di atas minor:
 
@@ -177,16 +163,17 @@ python3 ~/.claude/skills/anti-ai-slop/scripts/slopcheck.py unggas-net-PROYEK.md
 - Topik ber-`is_restricted` tetap tersembunyi dari semua daftar.
 - Email hanya untuk daftar dan lupa password. Notifikasi balasan tetap di dalam web.
 - Angka nol ditulis nol, bukan disembunyikan atau dibulatkan jadi seolah ada aktivitas. Data aslinya 13 diskusi, 14 post, 3 akun, dan satu thread dengan satu balasan. Desain harus tetap masuk akal dalam keadaan hampir kosong.
-- Jangan mengubah rute, nama field form, atau Server Action. Yang berubah di v4 hanya tampilan dan query daftar.
+- Jangan mengubah rute, nama field form, atau Server Action. Yang berubah di v5 hanya tampilan dan query daftar.
 
 ## Jebakan yang sudah ditemui
 
-Empat hal ini sudah memakan waktu di sesi sebelumnya. Tulis di sini supaya tidak terulang.
+Lima hal ini sudah memakan waktu di sesi sebelumnya. Tulis di sini supaya tidak terulang.
 
 1. `next start` menyajikan build yang ada saat proses dijalankan. Kalau build ulang lalu tidak restart, `inspect.mjs` akan mengukur versi lama dan melaporkan FAIL yang sebenarnya sudah beres. Selalu restart server pratinjau setelah build, lalu cek `cat .next/BUILD_ID` cocok dengan build terakhir.
 2. `pkill -f "next start -p 3100"` bisa ikut mematikan shell yang menjalankannya, karena pola itu muncul di baris perintah shell itu sendiri. Gejalanya exit code 144. Pakai pola yang tidak cocok dengan perintah sendiri, atau simpan PID.
 3. Vitest 5 menolak `vitest.config.ts` berisi ESM di paket tanpa `"type": "module"`. Nama berkasnya harus `.mts`. Konfigurasi memakai `import.meta.dirname`, bukan `__dirname`.
 4. Turbopack bisa menyajikan CSS basi meski build exit 0. Kalau `globals.css` berubah, cek dulu penandanya ada di `.next/static/chunks/*.css`. Kalau tidak ada, `rm -rf .next` lalu build ulang. Tanpa cek ini, restart akan menjalankan CSS lama bersama markup baru.
+5. Turbopack menolak `node_modules` yang berupa symlink ke luar root workspace. Gejalanya `Error: Could not find the Next.js package (next/package.json)` saat build, padahal `next` ada. Ganti symlink dengan salinan nyata (`cp -a` dari produksi) atau jalankan build di direktori yang punya `node_modules` asli.
 
 ## Kredensial dan rahasia (di server, tidak ada di repo)
 
@@ -207,9 +194,10 @@ Login admin di https://unggas.net/masuk dengan user `arga`. Tautan Panel admin m
 Update aplikasi setelah kode diubah:
 
 ```bash
-rsync -az --delete --exclude node_modules --exclude .next --exclude .git --exclude .env \
-  ~/unggas-forum/app/ aws:/var/www/unggas-app/
-ssh aws 'set -e; set -o pipefail; cd /var/www/unggas-app \
+ssh aws 'set -e; set -o pipefail; cd ~/unggas-net && git pull --ff-only \
+  && rsync -a --delete --exclude node_modules --exclude .next --exclude .env \
+       --exclude .taste-skill app/ /var/www/unggas-app/ \
+  && cd /var/www/unggas-app \
   && npm ci --no-audit --no-fund \
   && npx prisma generate \
   && npx prisma migrate deploy \
@@ -217,6 +205,8 @@ ssh aws 'set -e; set -o pipefail; cd /var/www/unggas-app \
   && test -f .next/BUILD_ID \
   && pm2 restart unggas-app'
 ```
+
+Sumber deploy adalah repo server `~/unggas-net/app`, bukan `~/unggas-forum` di macbook yang masih v3.1. Kalau kode diubah di mesin lain, commit dan push dulu, baru jalankan perintah ini.
 
 Jangan pernah restart PM2 kalau build belum sukses. `test -f .next/BUILD_ID` adalah penggereknya. Restart saat build gagal membuat aplikasi crash-loop "Could not find a production build" sampai dibuild ulang, dan itu pernah terjadi 58 restart pada 26 Okt. `set -o pipefail` wajib karena perintahnya di-pipe, tanpa itu kegagalan build tertelan oleh `tail`.
 
@@ -272,6 +262,7 @@ Cek email: `aws sesv2 get-account --region ap-southeast-1` untuk `ProductionAcce
 20. Hapus seluruh kolom kanan halaman masuk/daftar (28 Okt, permintaan pemilik): `<PanelKomunitas />` dicabut dari kedua halaman, layout main jadi satu kolom `mx-auto max-w-[392px]` dengan penengahan vertikal dari item 19, dan berkas `components/PanelKomunitas.tsx` dihapus karena tak terpakai. Inspeksi /masuk dan /daftar 1440 memberi WARN `hero-void` (blok kosong 600×600, 28% layar) dan sengaja diterima: halaman auth adalah satu form di tengah, kekosongan simetris di sekelilingnya adalah komposisinya, sama seperti pola lupa-password dan cek-email. Gerbang lain: tsc bersih, 52 test hijau, 0 FAIL. Build `VQhMKwJx5aNaBJrYTINCI`, backup pra-deploy `~/backup-unggas-20261028-015708`.
 21. Repo GitHub `Arg-z/unggas-net` dibuat dari server (28 Okt, private): `gh` CLI 2.103.3 terpasang, login perangkat dengan akun `Arg-z`. Salinan kerja `~/unggas-net` di-commit dan didorong (`2d5312d`); `.env`, `node_modules`, dan `.next` dikecualikan dan diverifikasi bebas nilai rahasia. Tujuannya mematahkan pola drift: produksi kini punya pembanding permanen dan cadangan di luar server. Riwayat commit lama di repo macbook belum ikut.
 22. Login tanpa email sementara (28 Okt, permintaan pemilik). Web belum punya user dan alur auth sudah menempel ke SES, jadi verifikasi dan reset lewat email dimatikan dulu. Sakelar `EMAIL_AKTIF` di `src/lib/fitur.ts` menjaga semua jalur; `.env` produksi diisi `EMAIL_AKTIF=false`. Daftar kini cukup username dan password, email diisi `<username>@unggas.local`, akun langsung aktif, sesi langsung dibuat. Masuk memakai username saja dan tidak peduli huruf besar/kecil. Empat Server Action email menolak dengan pesan jelas, halaman lupa password menampilkan pemberitahuan, dan tiga rute email mengalihkan ke `/masuk`. Test bertambah: `validateSignupTanpaEmail`, sakelar, pendaftaran tanpa email, dan masuk sukses (59 test, 9 berkas). Build `vZ-eLgI8x5pYluKsyp2hp`, backup pra-deploy `~/backup-unggas-20261028-030516`. Uji asap di produksi: daftar sebagai `uji_emailless_a1b2c3`, langsung masuk, keluar, lalu masuk lagi dengan username huruf besar; akun uji dihapus sesudahnya.
+23. Redesign UI v5, arah framed-sheet (28 Okt, permintaan pemilik). v4 sudah bersih dari primary hijau, tetapi semua halaman masih berupa tabel di atas kanvas kosong tanpa bingkai. Arah dealt dari `draw.mjs --app --kind community --keep palette,type` dengan seed 1338313458: bingkai `#edf2ea` memegang sidebar 228px dan bilah atas 48px, kertas putih inset 8px, radius 16, tanpa bayangan. Sidebar tinggal satu grup Forum, pemilih komunitas ada di bilah atas mulai 1024px dan di baris judul beranda pada ponsel. Sematan dibaca sebagai papan komunitas dengan garis atas aksen 2px. Beranda tidak memakai tab, jumlah, urutan, atau rel kanan; thread punya rel 260px berisi Tentang diskusi termasuk penulis; notifikasi 820px, admin 1120px, tulis 1028px, auth satu kolom 420px yang mulai ditengahkan di 768px. Tombol primary tetap near black, dan `TombolTulis` menyembunyikan aksi bilah atas di `/baru` supaya hanya tombol Terbitkan yang terisi. Palet daun, Fraunces, Plus Jakarta Sans, dan tanpa mode gelap tetap. Gerbang: `tsc` bersih, 59 test hijau di 9 berkas, build `h3Jnu_jE0X14ZT0ugShiC`, inspeksi 0 FAIL di 1440/768/390 untuk beranda, thread, dan masuk; halaman berlogin diperiksa lewat sesi sementara `arga` yang langsung dihapus. Build sempat gagal karena `node_modules` berupa symlink ke luar workspace; diperbaiki dengan salinan nyata. Backup pra-deploy `~/backups/unggas-src-20261028-0343.tar.gz`. Uji asap produksi: lima rute publik 200, tamu dialihkan dari admin dan notifikasi, `/t/999999` 404, tanpa field email di daftar, satu tombol terisi di `/baru`.
 
 ## Email (aktif 26 Okt 2026, dimatikan sementara 28 Okt 2026)
 
@@ -320,6 +311,7 @@ Catatan teknis:
 - UI v2 kartu organik, sudah live.
 - UI v3 tipografi dan sistem tombol, sudah live. Font judul v3 sudah digantikan Fraunces di v3.1.
 - UI v4 accent ladder, sudah live (28 Okt).
+- UI v5 framed sheet, sudah live (28 Okt).
 - Nyalakan lagi verifikasi email dan lupa password (`EMAIL_AKTIF=true`) setelah ada anggota nyata. Sebelum itu, tentukan cara memberi email asli ke akun yang dibuat selama mode mati.
 - Kalkulator pakan interaktif, dibatalkan pemilik, bisa dipertimbangkan lagi nanti.
 - CloudFront CDN saat trafik naik.

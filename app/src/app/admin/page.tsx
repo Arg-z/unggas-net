@@ -27,12 +27,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
 
   return (
     <main id="konten" tabIndex={-1} className="max-w-[1120px]">
-      <h1 className="text-[22px] font-semibold leading-8 tracking-tight text-ink-strong">
-        Panel admin
-      </h1>
-      <p className="mt-1 text-[13.5px] leading-relaxed text-ink-faint">
-        Moderasi diskusi, post tersembunyi, dan akun pengguna.
-      </p>
+      <div className="min-w-0">
+        <h1 className="font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong">
+          Panel admin
+        </h1>
+        <p className="mt-1 text-[13px] text-ink-faint">
+          Moderasi diskusi, post tersembunyi, dan akun pengguna.
+        </p>
+      </div>
 
       <div className="scroll-x mt-5 flex items-center gap-5 border-b border-border">
         {TABS.map((t) => (
@@ -40,21 +42,18 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             key={t.id}
             href={`/admin?tab=${t.id}`}
             aria-current={aktif === t.id ? "page" : undefined}
-            className={`relative -mb-px inline-flex h-10 shrink-0 items-center px-2 text-[13.5px] transition-colors ${
+            className={`relative -mb-px inline-flex h-9 shrink-0 items-center px-0.5 text-[13.5px] transition-colors ${
               aktif === t.id
-                ? "font-semibold text-ink-strong"
+                ? "font-semibold text-ink-strong after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-accent"
                 : "font-medium text-ink-soft hover:text-ink-strong"
             }`}
           >
             {t.label}
-            {aktif === t.id && (
-              <span aria-hidden="true" className="absolute inset-x-2 bottom-0 h-[2px] bg-accent" />
-            )}
           </Link>
         ))}
       </div>
 
-      <section className="mt-5">
+      <section className="mt-4">
         {aktif === "diskusi" && <DaftarDiskusi />}
         {aktif === "post" && <PostTersembunyi />}
         {aktif === "user" && <DaftarPengguna akunId={user.id} />}
@@ -72,7 +71,11 @@ async function DaftarDiskusi() {
   });
 
   if (rows.length === 0) {
-    return <p className="py-6 text-[14px] text-ink-soft">Belum ada diskusi.</p>;
+    return (
+      <p className="rounded-xl border border-dashed border-control/60 bg-wash/60 px-5 py-6 text-[14px] text-ink-soft">
+        Belum ada diskusi.
+      </p>
+    );
   }
 
   return (
@@ -83,7 +86,7 @@ async function DaftarDiskusi() {
       </div>
       <ul className="divide-y divide-rule border-t border-rule">
         {rows.map((d) => (
-          <li key={d.id}>
+          <li key={d.id} className="transition-colors hover:bg-wash/60">
             <div className="grid gap-x-5 gap-y-2 px-2 py-3 sm:grid-cols-[1fr_260px] sm:items-center">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -136,13 +139,17 @@ async function PostTersembunyi() {
   });
 
   if (rows.length === 0) {
-    return <p className="py-6 text-[14px] text-ink-soft">Tidak ada post tersembunyi.</p>;
+    return (
+      <p className="rounded-xl border border-dashed border-control/60 bg-wash/60 px-5 py-6 text-[14px] text-ink-soft">
+        Tidak ada post tersembunyi.
+      </p>
+    );
   }
 
   return (
     <ul className="divide-y divide-rule border-t border-rule">
       {rows.map((p) => (
-        <li key={p.id}>
+        <li key={p.id} className="transition-colors hover:bg-wash/60">
           <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-2 px-2 py-3.5">
             <div className="min-w-0">
               <p className="tabular text-[12.5px] text-ink-faint">
@@ -186,7 +193,7 @@ async function DaftarPengguna({ akunId }: { akunId: number }) {
     <div>
       <ul className="divide-y divide-rule border-t border-rule">
         {rows.map((u) => (
-          <li key={u.id}>
+          <li key={u.id} className="transition-colors hover:bg-wash/60">
             <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 px-2 py-3">
               <div className="flex min-w-0 items-center gap-3">
                 <Avatar username={u.username} size="sm" />

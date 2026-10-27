@@ -11,8 +11,10 @@ import { Wordmark } from "@/components/Wordmark";
 import { NavSamping } from "@/components/NavSamping";
 import { NavBawah } from "@/components/NavBawah";
 import { BilahCari } from "@/components/BilahCari";
+import { AksiTamu } from "@/components/AksiTamu";
+import { TombolTulis } from "@/components/TombolTulis";
 import { PemilihKomunitas } from "@/components/PemilihKomunitas";
-import { IkonKeluar, IkonPlus } from "@/components/Ikon";
+import { IkonKeluar } from "@/components/Ikon";
 import { keluar } from "./actions/auth";
 
 /* Serif untuk identitas & permukaan baca, sans humanist untuk UI.
@@ -51,22 +53,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Langsung ke konten
         </a>
 
+        {/* Bingkai: sidebar dan bilah atas satu tanah. Kertas putih duduk di
+            dalamnya, masuk 8px dari tepi kanan dan bawah (lembar arah). */}
         <div className="flex min-h-screen">
-          {/* Bilah samping 230px — satu tanah dengan bilah atas, dipisah garis 1px. */}
-          <aside className="sticky top-0 hidden h-screen w-[230px] shrink-0 flex-col border-r border-border lg:flex">
-            <div className="flex h-16 shrink-0 items-center border-b border-border px-5">
+          <aside className="sticky top-0 hidden h-screen w-[228px] shrink-0 flex-col lg:flex">
+            <div className="flex h-12 shrink-0 items-center px-5">
               <Wordmark />
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
-              <Suspense fallback={<div className="h-[240px]" />}>
+            <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 pt-2">
+              <Suspense fallback={<div className="h-[280px]" />}>
                 <NavSamping isAdmin={Boolean(user?.isAdmin)} />
               </Suspense>
             </div>
 
-            <div className="shrink-0 border-t border-border p-3">
+            <div className="shrink-0 p-3">
               {user ? (
-                <div className="flex items-center gap-2 px-1.5 py-1">
+                <div className="flex items-center gap-2 rounded-xl bg-surface px-2 py-2">
                   <Avatar username={user.username} size="sm" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-semibold leading-tight text-ink-strong">
@@ -81,85 +84,100 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                       type="submit"
                       aria-label="Keluar"
                       title="Keluar"
-                      className="flex h-8 w-8 items-center justify-center rounded-md text-ink-faint transition-colors hover:bg-sunken hover:text-ink-strong"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-wash hover:text-ink-strong"
                     >
                       <IkonKeluar className="h-4 w-4" />
                     </button>
                   </form>
                 </div>
               ) : (
-                <p className="px-1.5 text-[12px] leading-relaxed text-ink-faint">
-                  <Link href="/masuk" className="link text-[12px]">
-                    Masuk
-                  </Link>{" "}
-                  untuk ikut berdiskusi.
-                </p>
+                <div className="rounded-xl bg-surface px-3 py-2.5">
+                  <p className="text-[12.5px] leading-relaxed text-ink-faint">
+                    <Link href="/masuk" className="link text-[12.5px]">
+                      Masuk
+                    </Link>{" "}
+                    untuk ikut berdiskusi.
+                  </p>
+                </div>
               )}
             </div>
           </aside>
 
           <div className="flex min-w-0 flex-1 flex-col">
-            {/* Bilah atas 64px. Isinya nyata: pencarian, aksi, dan pemilih komunitas. */}
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-ground px-4 lg:h-16 lg:px-[29px]">
+            {/* Bilah atas 48px — tanpa garis pemisah dari sidebar; bingkai
+                terbaca dari warna, bukan dari aturan. */}
+            <header className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-3 bg-ground px-4 lg:px-6">
               <div className="lg:hidden">
                 <Wordmark />
               </div>
 
               <div className="hidden md:block">
-                <Suspense fallback={<span className="block h-9 w-[264px]" />}>
+                <Suspense fallback={<span className="block h-8 w-[300px]" />}>
                   <BilahCari />
                 </Suspense>
+              </div>
+
+              <div className="ml-2 hidden border-l border-border pl-4 lg:block">
+                <PemilihKomunitas topik={topik} denganLabel lebar="w-[124px]" />
               </div>
 
               <div className="ml-auto flex items-center gap-1.5">
                 {user ? (
                   <>
                     <NotifikasiBadge userId={user.id} />
-                    <Link href="/baru" aria-label="Tulis diskusi" className="btn btn-primary">
-                      <IkonPlus />
-                      <span className="hidden sm:inline">Tulis diskusi</span>
-                    </Link>
+                    <TombolTulis />
+                    <form action={keluar} className="lg:hidden">
+                      <button
+                        type="submit"
+                        aria-label="Keluar"
+                        title="Keluar"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-sunken hover:text-ink-strong"
+                      >
+                        <IkonKeluar className="h-4 w-4" />
+                      </button>
+                    </form>
                   </>
                 ) : (
-                  <>
-                    <Link href="/masuk" className="btn btn-quiet">
-                      Masuk
-                    </Link>
-                    <Link href="/daftar" className="btn btn-primary">
-                      Daftar
-                    </Link>
-                  </>
+                  <AksiTamu />
                 )}
-              </div>
-
-              <div className="hidden h-16 items-center self-stretch border-l border-border pl-4 lg:flex">
-                <Suspense fallback={<span className="w-[152px]" />}>
-                  <PemilihKomunitas topik={topik} denganLabel />
-                </Suspense>
               </div>
             </header>
 
-            <div className="flex-1 px-4 py-6 lg:px-[29px] lg:py-8">{children}</div>
+            {/* Kertas. Di ponsel ia menjadi layar penuh; di desktop ia masuk
+                8px dari tepi kanan dan bawah, radius 16, 1px, tanpa bayangan. */}
+            <div className="flex flex-1 flex-col lg:pr-2 lg:pb-2">
+              <div className="flex flex-1 flex-col bg-surface lg:rounded-2xl lg:border lg:border-border">
+                <div className="flex-1 px-4 py-5 sm:px-6 sm:py-6 lg:px-7 lg:py-7">
+                  {children}
+                </div>
 
-            <footer className="border-t border-border px-4 pb-24 pt-6 lg:px-[29px] lg:pb-6">
-              <div className="flex flex-col gap-2 text-[12.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
-                <p>unggas.net · Forum peternak unggas Indonesia.</p>
-                <nav aria-label="Tautan footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <Link href="/" className="hover:text-ink-soft">
-                    Semua diskusi
-                  </Link>
-                  <Link href="/?tag=puyuh" className="hover:text-ink-soft">
-                    Puyuh
-                  </Link>
-                  <Link href="/?tag=lobby" className="hover:text-ink-soft">
-                    Lobby
-                  </Link>
-                  <Link href="/baru" className="hover:text-ink-soft">
-                    Tulis
-                  </Link>
-                </nav>
+                <footer className="border-t border-rule px-4 pb-24 pt-5 sm:px-6 lg:px-7 lg:pb-5">
+                  <div className="flex flex-col gap-2 text-[12.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+                    <p>unggas.net · Forum peternak unggas Indonesia.</p>
+                    <nav
+                      aria-label="Tautan footer"
+                      className="flex flex-wrap items-center gap-x-4 gap-y-1"
+                    >
+                      <Link href="/" className="hover:text-ink-soft">
+                        Semua diskusi
+                      </Link>
+                      {topik.map((t) => (
+                        <Link
+                          key={t.slug}
+                          href={`/?tag=${t.slug}`}
+                          className="hover:text-ink-soft"
+                        >
+                          {t.name}
+                        </Link>
+                      ))}
+                      <Link href="/baru" className="hover:text-ink-soft">
+                        Tulis
+                      </Link>
+                    </nav>
+                  </div>
+                </footer>
               </div>
-            </footer>
+            </div>
           </div>
         </div>
 

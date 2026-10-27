@@ -12,7 +12,7 @@ export async function NotifikasiBadge({ userId }: { userId: number }) {
   return (
     <Link
       href="/notifikasi"
-      className="relative inline-flex h-9 w-9 items-center justify-center rounded-md text-ink-soft transition-colors hover:bg-sunken hover:text-ink-strong"
+      className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-sunken hover:text-ink-strong"
       aria-label={belumDibaca > 0 ? `Notifikasi, ${belumDibaca} belum dibaca` : "Notifikasi"}
       title="Notifikasi"
     >

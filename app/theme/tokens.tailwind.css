@@ -1,44 +1,53 @@
+/* Ringkasan token v5 untuk alat yang tidak membaca globals.css.
+   Sumber kebenaran tetap src/app/globals.css — jangan menambah token hanya di sini. */
 @theme {
-  --color-primary: #2e7d32;
-  --color-primary-hover: #27692b;
-  --color-tint: #e8f5e9;
-  --color-tint-hover: #c8e6c9;
-  --color-tint-text: #1b5e20;
-  --color-background: #ffffff;
-  --color-ink: #1e2939;
-  --color-ink-strong: #101828;
-  --color-ink-secondary: #4a5565;
-  --color-ink-muted: #6a7282;
-  --color-surface: #f3f4f6;
-  --color-border: #d1d5dc;
-  --color-border-subtle: #e5e7eb;
+  --color-ground: #edf2ea;
+  --color-surface: #ffffff;
+  --color-raised: #fbfdfb;
+  --color-wash: #f3f8f1;
+  --color-sunken: #e8eee5;
+
+  --color-border: #dfe6dc;
+  --color-rule: #eef2ec;
+  --color-control: #7d8d79;
+
+  --color-ink: #1b2621;
+  --color-ink-strong: #0f1714;
+  --color-ink-soft: #47524c;
+  --color-ink-faint: #5f6672;
+
+  --color-accent: #2e7d32;
+  --color-accent-deep: #236327;
+  --color-accent-ink: #1b5e20;
+  --color-accent-soft: #e8f5e9;
+  --color-accent-track: #c8e6c9;
+
+  --color-warn-soft: #fef3c7;
+  --color-warn-line: #fde68a;
+  --color-warn-ink: #92400e;
   --color-danger: #bf000f;
-  --font-font-stack: "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif";
-  --font-h1: "system-ui";
-  --font-h2: "system-ui";
-  --font-body-md: "system-ui";
-  --font-body-sm: "system-ui";
-  --font-label-xs: "system-ui";
-  --text-h1: 1.5rem;
-  --text-h2: 1.25rem;
-  --text-body-md: 1rem;
-  --text-body-sm: 0.875rem;
-  --text-label-xs: 0.75rem;
-  --tracking-h1: -0.01em;
-  --font-weight-h1: 700;
-  --font-weight-h2: 700;
-  --font-weight-body-md: 400;
-  --font-weight-body-sm: 400;
-  --font-weight-label-xs: 500;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-full: 9999px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 24px;
-  --spacing-xxl: 32px;
-  --spacing-container: 1024px;
+  --color-danger-soft: #fdecec;
+  --color-danger-line: #f4c7c9;
+
+  --color-av-hijau: #e8f5e9;
+  --color-av-hijau-ink: #1b5e20;
+  --color-av-hijau-line: #9ac59e;
+  --color-av-amber: #fef3c7;
+  --color-av-amber-ink: #92400e;
+  --color-av-amber-line: #e8b93a;
+  --color-av-biru: #e0f2fe;
+  --color-av-biru-ink: #075985;
+  --color-av-biru-line: #7cc7ee;
+  --color-av-oranye: #ffedd5;
+  --color-av-oranye-ink: #9a3412;
+  --color-av-oranye-line: #f5b473;
+  --color-av-teal: #ccfbf1;
+  --color-av-teal-ink: #115e59;
+  --color-av-teal-line: #42d3bb;
+  --color-av-rose: #ffe4e6;
+  --color-av-rose-ink: #9f1239;
+  --color-av-rose-line: #f9a6b0;
+
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-jakarta), system-ui, sans-serif;
 }

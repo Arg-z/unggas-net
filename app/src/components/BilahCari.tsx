@@ -14,7 +14,7 @@ export function BilahCari() {
   const urut = sp.get("urut");
 
   return (
-    <form action="/" role="search" className="relative w-[264px]">
+    <form action="/" role="search" className="relative w-[300px]">
       {tag && <input type="hidden" name="tag" value={tag} />}
       {saring && <input type="hidden" name="saring" value={saring} />}
       {urut && <input type="hidden" name="urut" value={urut} />}
@@ -26,9 +26,9 @@ export function BilahCari() {
         type="search"
         name="q"
         defaultValue={q}
-        placeholder="Cari diskusi"
+        placeholder="Cari judul atau isi diskusi"
         aria-label="Cari diskusi"
-        className="h-9 w-full rounded-md border border-control bg-surface pl-8 pr-2.5 text-[13.5px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15"
+        className="h-8 w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15"
       />
     </form>
   );

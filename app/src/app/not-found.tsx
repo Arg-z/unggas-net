@@ -26,8 +26,8 @@ export default async function TidakKetemu() {
     <main id="konten" tabIndex={-1} className="py-4 sm:py-8">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
         <div>
-          <p className="text-[12px] font-medium text-ink-faint">404</p>
-          <h1 className="mt-2 text-[24px] font-semibold leading-9 tracking-tight text-ink-strong">
+          <p className="eyebrow">404</p>
+          <h1 className="mt-2 font-display text-[30px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[34px]">
             Halaman ini tidak ada.
           </h1>
           <p className="mt-2 max-w-[46ch] text-[14px] leading-relaxed text-ink-soft">
@@ -50,23 +50,23 @@ export default async function TidakKetemu() {
               Diskusi terbaru
             </h2>
             <ul className="mt-2 divide-y divide-rule border-t border-rule">
-              {terbaru.map((d) => (
-                <li key={d.id}>
-                  <Link href={`/t/${d.id}`} className="block py-2.5">
-                    <span className="line-clamp-2 text-[14px] font-medium leading-snug text-ink-strong hover:text-accent-ink">
-                      {d.title}
-                    </span>
-                    <span className="mt-1 flex items-center gap-1.5 text-[12.5px] text-ink-faint">
-                      <span className="tabular">
-                        {Math.max(0, d._count.posts - 1)}{" "}
-                        {Math.max(0, d._count.posts - 1) === 0 ? "balasan" : "balasan"}
+              {terbaru.map((d) => {
+                const balasan = Math.max(0, d._count.posts - 1);
+                return (
+                  <li key={d.id}>
+                    <Link href={`/t/${d.id}`} className="block py-2.5">
+                      <span className="line-clamp-2 text-[14px] font-medium leading-snug text-ink-strong hover:text-accent-ink">
+                        {d.title}
                       </span>
-                      <span aria-hidden="true">·</span>
-                      <span>{relatif(d.lastPostAt)}</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
+                      <span className="mt-1 flex items-center gap-1.5 text-[12.5px] text-ink-faint">
+                        <span className="tabular">{balasan} balasan</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{relatif(d.lastPostAt)}</span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         )}
