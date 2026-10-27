@@ -58,13 +58,13 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
 
       <div className="mt-3 grid gap-x-8 gap-y-6 xl:grid-cols-[minmax(0,1fr)_280px]">
         <div className="min-w-0">
-          {/* Kepala thread adalah kartu putih pertama: judul serif, meta 13px,
-              satu aksi terisi hijau. Isi pembuka duduk di kartu yang sama. */}
+          {/* Kepala thread adalah garis bawah, bukan kartu: label, judul sans,
+              meta, lalu prosa serif di lebar baca. */}
           <article
             id="post-1"
-            className="scroll-mt-20 rounded-2xl border border-border bg-surface p-5 sm:p-7"
+            className="scroll-mt-20 border-b border-border pb-8"
           >
-            <div className="border-b border-rule pb-5">
+            <div>
               {/* Label dan aksi di baris pertama; judul lalu meta memakai
                   lebar penuh kartu supaya tidak terdesak tombol di ponsel. */}
               <div className="flex items-start justify-between gap-4">
@@ -83,7 +83,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 </div>
               </div>
 
-              <h1 className="mt-3 text-balance font-display text-[26px] font-semibold leading-[1.25] tracking-tight text-ink-strong sm:text-[30px]">
+              <h1 className="mt-3 text-balance font-display text-[25px] font-semibold leading-[1.28] tracking-tight text-ink-strong sm:text-[30px]">
                 {thread.title}
               </h1>
 
@@ -109,75 +109,71 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
             )}
           </article>
 
-          {/* Balasan: satu kartu putih, satu garis rambut per balasan. */}
-          <section aria-labelledby="judul-balasan" className="mt-6">
-            <div className="overflow-hidden rounded-2xl border border-border bg-surface">
-              <div className="flex items-baseline justify-between gap-3 border-b border-rule px-4 py-3 sm:px-5">
-                <h2 id="judul-balasan" className="text-[14px] font-semibold text-ink-strong">
-                  Balasan
-                </h2>
-                <span className="tabular text-[12.5px] text-ink-faint">{balasan.length}</span>
-              </div>
-
-              {balasan.length > 0 ? (
-                <ol className="divide-y divide-rule">
-                  {balasan.map((p) => {
-                    const adalahPenulis = p.user.username === thread.user.username;
-                    return (
-                      <li
-                        key={p.id}
-                        id={`post-${p.number}`}
-                        className="scroll-mt-20 px-4 py-5 sm:px-5"
-                      >
-                        <div className="flex flex-wrap items-center gap-x-1 gap-y-1 text-[13px] text-ink-faint">
-                          <span className="flex items-center gap-1.5 whitespace-nowrap after:ml-1 after:content-['·']">
-                            <Avatar username={p.user.username} size="xs" />
-                            <span className="font-semibold text-ink-strong">{p.user.username}</span>
-                            {adalahPenulis && (
-                              <span className="text-[11.5px] font-medium text-accent-ink">
-                                penulis
-                              </span>
-                            )}
-                            {p.user.isAdmin && <span className="text-[11.5px]">admin</span>}
-                          </span>
-                          <span className="whitespace-nowrap">{relatif(p.createdAt)}</span>
-                          <a
-                            href={`#post-${p.number}`}
-                            aria-label={`Tautan ke balasan ${p.number}`}
-                            className="tabular ml-auto text-[12px] font-medium text-ink-faint hover:text-accent-deep"
-                          >
-                            #{p.number}
-                          </a>
-                        </div>
-
-                        <div className="prosa mt-2.5 max-w-[68ch] whitespace-pre-wrap break-words text-ink">
-                          {p.content}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ol>
-              ) : (
-                <div className="px-4 py-4 sm:px-5">
-                  <div className="rounded-xl bg-accent-soft px-4 py-5">
-                    <p className="max-w-[62ch] text-[14px] leading-relaxed text-ink-soft">
-                      Belum ada yang menanggapi. Pengalaman sekecil apa pun berguna di sini, pemula
-                      lain pasti terbantu.
-                    </p>
-                    <a href="#balas" className="link mt-2 text-[13px]">
-                      Jadi yang pertama membalas
-                    </a>
-                  </div>
-                </div>
-              )}
+          {/* Balasan: baris bergaris, tanpa kartu pembungkus. */}
+          <section aria-labelledby="judul-balasan" className="mt-8">
+            <div className="flex items-baseline justify-between gap-3 border-b border-border pb-2.5">
+              <h2 id="judul-balasan" className="text-[13px] font-semibold text-ink-strong">
+                Balasan
+              </h2>
+              <span className="tabular text-[12.5px] text-ink-faint">{balasan.length}</span>
             </div>
+
+            {balasan.length > 0 ? (
+              <ol>
+                {balasan.map((p) => {
+                  const adalahPenulis = p.user.username === thread.user.username;
+                  return (
+                    <li
+                      key={p.id}
+                      id={`post-${p.number}`}
+                      className="scroll-mt-20 border-b border-rule py-5"
+                    >
+                      <div className="flex flex-wrap items-center gap-x-1 gap-y-1 text-[13px] text-ink-faint">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap after:ml-1 after:content-['·']">
+                          <Avatar username={p.user.username} size="xs" />
+                          <span className="font-semibold text-ink-strong">{p.user.username}</span>
+                          {adalahPenulis && (
+                            <span className="text-[11.5px] font-medium text-accent-ink">
+                              penulis
+                            </span>
+                          )}
+                          {p.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+                        </span>
+                        <span className="whitespace-nowrap">{relatif(p.createdAt)}</span>
+                        <a
+                          href={`#post-${p.number}`}
+                          aria-label={`Tautan ke balasan ${p.number}`}
+                          className="tabular ml-auto text-[12px] font-medium text-ink-faint hover:text-accent-deep"
+                        >
+                          #{p.number}
+                        </a>
+                      </div>
+
+                      <div className="prosa mt-2.5 max-w-[68ch] whitespace-pre-wrap break-words text-ink">
+                        {p.content}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            ) : (
+              <div className="py-6">
+                <p className="max-w-[62ch] text-[14px] leading-relaxed text-ink-soft">
+                  Belum ada yang menanggapi. Pengalaman sekecil apa pun berguna di sini, pemula
+                  lain pasti terbantu.
+                </p>
+                <a href="#balas" className="link mt-2 text-[13px]">
+                  Jadi yang pertama membalas
+                </a>
+              </div>
+            )}
           </section>
 
           <div id="balas" className="mt-6 scroll-mt-20">
             {user ? (
               <BalasForm discussionId={thread.id} />
             ) : (
-              <div className="panel-accent flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+              <div className="panel flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
                 <p className="text-[14px] text-ink-soft">
                   Masuk untuk menanggapi atau berbagi pengalaman di diskusi ini.
                 </p>
@@ -196,10 +192,10 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
 
         {/* Kolom kanan: fakta diskusi dan diskusi lain di komunitas yang sama. */}
         <aside className="hidden xl:block">
-          <div className="sticky top-8 space-y-4">
-            <div className="rounded-2xl border border-border bg-surface p-4">
+          <div className="sticky top-8 space-y-8">
+            <div className="border-t border-border pt-4">
               <h2 className="text-[12px] font-medium text-ink-faint">Tentang diskusi</h2>
-              <dl className="mt-2 border-t border-rule text-[13px]">
+              <dl className="mt-2 text-[13px]">
                 <div className="flex items-baseline justify-between gap-3 border-b border-rule py-2">
                   <dt className="text-ink-faint">Komunitas</dt>
                   <dd className="font-medium text-ink-strong">{topik ? topik.name : "—"}</dd>
@@ -219,7 +215,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
               </dl>
             </div>
 
-            <div className="rounded-2xl border border-border bg-surface p-4">
+            <div className="border-t border-border pt-4">
               <h2 className="text-[12px] font-medium text-ink-faint">
                 {topik ? `Lainnya di ${topik.name}` : "Diskusi lain"}
               </h2>

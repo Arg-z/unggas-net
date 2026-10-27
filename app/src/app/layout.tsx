@@ -59,8 +59,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <BilahCari penuh />
       </Suspense>
 
-      <div className="rounded-xl bg-accent-soft px-3 py-2.5">
-        <p className="px-1 text-[11.5px] font-medium text-accent-ink/75">Komunitas</p>
+      <div className="rounded-xl border border-border px-3 py-2.5">
+        <p className="px-1 text-[11.5px] font-medium text-ink-faint">Komunitas</p>
         <div className="mt-0.5">
           <Suspense fallback={<div className="h-8" />}>
             <PemilihKomunitas topik={topik} lebar="w-full" lembut />
@@ -109,21 +109,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             rambut memisahkannya dari kanvas. Tidak ada bilah atas di desktop;
             kartu putih duduk langsung di atas tanah. */}
         <div className="lg:flex lg:min-h-screen">
-          <aside className="sticky top-0 hidden h-screen w-[252px] shrink-0 flex-col border-r border-border px-4 lg:flex">
-            <div className="flex h-14 shrink-0 items-center">
+          <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col border-r border-border bg-surface px-3 lg:flex">
+            <div className="flex h-14 shrink-0 items-center px-1">
               <Wordmark />
             </div>
 
-            <div className="shrink-0 rounded-xl bg-accent-soft px-3 py-2.5">
-              <p className="px-1 text-[11.5px] font-medium text-accent-ink/75">Komunitas</p>
-              <div className="mt-0.5">
-                <Suspense fallback={<div className="h-8" />}>
-                  <PemilihKomunitas topik={topik} lebar="w-full" lembut />
-                </Suspense>
-              </div>
+            <div className="shrink-0">
+              <p className="mb-1.5 px-1 text-[11.5px] font-medium text-ink-faint">Komunitas</p>
+              <Suspense fallback={<div className="h-9" />}>
+                <PemilihKomunitas topik={topik} lebar="w-full" kotak />
+              </Suspense>
             </div>
 
-            <div className="mt-3 shrink-0">
+            <div className="mt-4 shrink-0">
               <Suspense fallback={<div className="h-9 rounded-lg bg-sunken" />}>
                 <BilahCari penuh />
               </Suspense>
@@ -137,7 +135,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             <div className="shrink-0 border-t border-border py-3">
               {user ? (
-                <div className="flex items-center gap-2 rounded-xl border border-border bg-surface px-2.5 py-2">
+                <div className="flex items-center gap-2 px-1 py-1">
                   <Avatar username={user.username} size="sm" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-semibold leading-tight text-ink-strong">
@@ -152,7 +150,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                       type="submit"
                       aria-label="Keluar"
                       title="Keluar"
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-accent-soft hover:text-accent-ink"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-wash hover:text-ink-strong"
                     >
                       <IkonKeluar className="h-4 w-4" />
                     </button>
@@ -167,7 +165,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="min-w-0 flex-1">
             {/* Bilah ponsel 48px: merek, satu aksi tulis, notifikasi, menu.
                 Tidak ada bilah bawah — keputusan pemilik 28 Okt. */}
-            <header className="sticky top-0 z-40 flex h-12 items-center justify-between gap-2 border-b border-border bg-ground/95 px-4 backdrop-blur lg:hidden">
+            <header className="sticky top-0 z-40 flex h-14 items-center justify-between gap-2 border-b border-border bg-surface/95 px-4 backdrop-blur lg:hidden">
               <Wordmark />
               <div className="flex items-center gap-1">
                 {user && <NotifikasiBadge userId={user.id} jumlah={belumDibaca} />}
@@ -176,7 +174,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </header>
 
-            <div className="mx-auto w-full max-w-[1120px] px-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-6 sm:px-6 lg:px-10 lg:pt-9">
+            <div className="mx-auto w-full max-w-[1080px] px-5 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-7 sm:px-8 lg:px-12 lg:pt-10">
               {children}
 
               <footer className="mt-12 border-t border-border pt-5">

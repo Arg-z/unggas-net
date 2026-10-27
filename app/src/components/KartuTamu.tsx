@@ -18,9 +18,9 @@ export function KartuTamu() {
   if (diHalamanAuth) return null;
 
   return (
-    <div className="rounded-xl bg-accent-soft p-3.5">
-      <p className="text-[13px] font-semibold text-accent-ink">Ikut berdiskusi</p>
-      <p className="mt-1 text-[12px] leading-relaxed text-accent-ink/80">
+    <div className="rounded-xl border border-border p-3.5">
+      <p className="text-[13px] font-semibold text-ink-strong">Ikut berdiskusi</p>
+      <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">
         Satu akun untuk semua komunitas unggas.net.
       </p>
       <div className="mt-3 flex gap-2">

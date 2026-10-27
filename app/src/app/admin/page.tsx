@@ -28,7 +28,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   return (
     <main id="konten" tabIndex={-1} className="w-full">
       <div className="min-w-0">
-        <h1 className="font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong">
+        <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[26px]">
           Panel admin
         </h1>
         <p className="mt-1 text-[13px] text-ink-faint">
@@ -36,16 +36,16 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         </p>
       </div>
 
-      <div className="scroll-x mt-5 flex items-center gap-1.5">
+      <div className="scroll-x mt-5 flex items-center gap-1 border-b border-border">
         {TABS.map((t) => (
           <Link
             key={t.id}
             href={`/admin?tab=${t.id}`}
             aria-current={aktif === t.id ? "page" : undefined}
-            className={`inline-flex h-9 shrink-0 items-center rounded-lg px-3 text-[13.5px] transition-colors ${
+            className={`-mb-px inline-flex h-9 shrink-0 items-center border-b-2 px-3 text-[13.5px] transition-colors ${
               aktif === t.id
-                ? "bg-accent-soft font-semibold text-accent-ink"
-                : "font-medium text-ink-soft hover:bg-wash hover:text-ink-strong"
+                ? "border-ink-strong font-semibold text-ink-strong"
+                : "border-transparent font-medium text-ink-soft hover:text-ink-strong"
             }`}
           >
             {t.label}
@@ -53,7 +53,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         ))}
       </div>
 
-      <section className="mt-4 overflow-hidden rounded-2xl border border-border bg-surface">
+      <section className="mt-1">
         {aktif === "diskusi" && <DaftarDiskusi />}
         {aktif === "post" && <PostTersembunyi />}
         {aktif === "user" && <DaftarPengguna akunId={user.id} />}
@@ -62,7 +62,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   );
 }
 
-const KEPALA = "hidden gap-x-5 px-4 pb-2 pt-3 text-[12px] font-medium text-ink-faint sm:grid sm:px-5";
+const KEPALA = "hidden gap-x-5 px-1 pb-2 pt-4 text-[12px] font-medium text-ink-faint sm:grid";
 
 async function DaftarDiskusi() {
   const rows = await prisma.discussion.findMany({
@@ -72,7 +72,7 @@ async function DaftarDiskusi() {
 
   if (rows.length === 0) {
     return (
-      <p className="px-5 py-6 text-[14px] text-ink-soft">
+      <p className="py-6 text-[14px] text-ink-soft">
         Belum ada diskusi.
       </p>
     );
@@ -84,10 +84,10 @@ async function DaftarDiskusi() {
         <span>Diskusi</span>
         <span className="text-right">Tindakan</span>
       </div>
-      <ul className="divide-y divide-rule border-t border-rule">
+      <ul className="border-t border-rule">
         {rows.map((d) => (
-          <li key={d.id} className="transition-colors hover:bg-accent-soft/35">
-            <div className="grid gap-x-5 gap-y-2 px-4 py-3 sm:grid-cols-[1fr_260px] sm:items-center sm:px-5">
+          <li key={d.id} className="border-b border-rule transition-colors last:border-0 hover:bg-wash">
+            <div className="grid gap-x-5 gap-y-2 px-1 py-3 sm:grid-cols-[1fr_260px] sm:items-center">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-1.5">
                   {d.isPinned && <BadgeSematkan />}
@@ -99,7 +99,7 @@ async function DaftarDiskusi() {
                 </div>
                 <Link
                   href={`/t/${d.id}`}
-                  className="mt-1 block truncate text-[14px] font-semibold text-ink-strong hover:text-accent-ink"
+                  className="mt-1 line-clamp-2 block text-[14px] font-semibold text-ink-strong hover:text-accent-ink"
                 >
                   {d.title}
                 </Link>
@@ -140,17 +140,17 @@ async function PostTersembunyi() {
 
   if (rows.length === 0) {
     return (
-      <p className="px-5 py-6 text-[14px] text-ink-soft">
+      <p className="py-6 text-[14px] text-ink-soft">
         Tidak ada post tersembunyi.
       </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-rule border-t border-rule">
+    <ul className="border-t border-rule">
       {rows.map((p) => (
-        <li key={p.id} className="transition-colors hover:bg-accent-soft/35">
-          <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-2 px-4 py-3.5 sm:px-5">
+        <li key={p.id} className="border-b border-rule transition-colors last:border-0 hover:bg-wash">
+          <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-2 px-1 py-3.5">
             <div className="min-w-0">
               <p className="tabular text-[12.5px] text-ink-faint">
                 <span className="font-medium text-ink-soft">{p.user.username}</span> · #{p.number} ·{" "}
@@ -191,10 +191,10 @@ async function DaftarPengguna({ akunId }: { akunId: number }) {
 
   return (
     <div>
-      <ul className="divide-y divide-rule border-t border-rule">
+      <ul className="border-t border-rule">
         {rows.map((u) => (
-          <li key={u.id} className="transition-colors hover:bg-accent-soft/35">
-            <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 px-4 py-3 sm:px-5">
+          <li key={u.id} className="border-b border-rule transition-colors last:border-0 hover:bg-wash">
+            <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 px-1 py-3">
               <div className="flex min-w-0 items-center gap-3">
                 <Avatar username={u.username} size="sm" />
                 <div className="min-w-0">

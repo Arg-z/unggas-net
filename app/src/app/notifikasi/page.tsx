@@ -29,7 +29,7 @@ export default async function NotifikasiPage() {
     <main id="konten" tabIndex={-1} className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
         <div className="min-w-0">
-          <h1 className="font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong">
+          <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[26px]">
             Notifikasi
           </h1>
           <p className="mt-1 text-[13px] text-ink-faint">
@@ -46,8 +46,8 @@ export default async function NotifikasiPage() {
       </div>
 
       {daftar.length === 0 ? (
-        <div className="mt-5 rounded-2xl border border-dashed border-accent-track bg-accent-soft/50 px-6 py-10 text-center">
-          <p className="mx-auto max-w-[28ch] font-display text-[21px] font-semibold leading-tight tracking-tight text-ink-strong">
+        <div className="mt-6 rounded-xl border border-border bg-surface px-6 py-12 text-center">
+          <p className="mx-auto max-w-[30ch] text-[19px] font-semibold leading-snug tracking-tight text-ink-strong">
             Belum ada notifikasi.
           </p>
           <p className="mx-auto mt-2 max-w-[46ch] text-[14px] leading-relaxed text-ink-soft">
@@ -61,63 +61,63 @@ export default async function NotifikasiPage() {
           </div>
         </div>
       ) : (
-        <div className="mt-5 overflow-hidden rounded-2xl border border-border bg-surface">
-          <div className="flex items-baseline justify-between gap-4 border-b border-rule px-4 py-3 sm:px-5">
-            <span className="text-[12px] font-medium text-ink-faint">Balasan terbaru</span>
+        <section className="mt-6">
+          <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
+            <h2 className="text-[13px] font-semibold text-ink-strong">Balasan terbaru</h2>
             <span className="tabular text-[12.5px] text-ink-faint">
               {belumDibaca > 0 ? `${belumDibaca} belum dibaca` : `${daftar.length} notifikasi`}
             </span>
           </div>
 
-          <ul className="divide-y divide-rule">
-          {daftar.map((n) => (
-            <li key={n.id}>
-              <form action={bukaNotifikasi}>
-                <input type="hidden" name="id" value={n.id} />
-                <input type="hidden" name="discussionId" value={n.discussionId} />
-                <input type="hidden" name="postNumber" value={n.postNumber} />
-                <button
-                  type="submit"
-                  className={`flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-accent-soft/60 sm:px-5 ${
-                    n.readAt ? "" : "bg-accent-soft/40"
-                  }`}
-                >
-                  <Avatar username={n.actor.username} size="sm" />
-                  <span className="min-w-0 flex-1">
-                    <span className="flex flex-wrap items-center gap-x-1.5 text-[12.5px] text-ink-faint">
-                      <span className="font-medium text-ink-soft">{n.actor.username}</span>
-                      <span>membalas</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="tabular">{relatif(n.createdAt)}</span>
+          <ul>
+            {daftar.map((n) => (
+              <li key={n.id} className="border-b border-rule last:border-0">
+                <form action={bukaNotifikasi}>
+                  <input type="hidden" name="id" value={n.id} />
+                  <input type="hidden" name="discussionId" value={n.discussionId} />
+                  <input type="hidden" name="postNumber" value={n.postNumber} />
+                  <button
+                    type="submit"
+                    className={`-mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3 px-3 py-4 text-left transition-colors hover:bg-wash ${
+                      n.readAt ? "" : "bg-wash"
+                    }`}
+                  >
+                    <Avatar username={n.actor.username} size="sm" />
+                    <span className="min-w-0 flex-1">
+                      <span className="flex flex-wrap items-center gap-x-1.5 text-[12.5px] text-ink-faint">
+                        <span className="font-medium text-ink-soft">{n.actor.username}</span>
+                        <span>membalas</span>
+                        <span aria-hidden="true">·</span>
+                        <span className="tabular">{relatif(n.createdAt)}</span>
+                      </span>
+                      <span
+                        className={`mt-1 line-clamp-2 block text-[15.5px] font-semibold leading-snug tracking-[-0.01em] ${
+                          n.readAt ? "text-ink-soft" : "text-ink-strong"
+                        }`}
+                      >
+                        {n.discussion.title}
+                      </span>
+                      <span className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] text-ink-faint">
+                        <span className="tabular">Balasan #{n.postNumber}</span>
+                        {!n.readAt && (
+                          <span className="rounded-[4px] bg-accent-soft px-1.5 py-0.5 text-[11px] font-semibold text-accent-ink">
+                            Baru
+                          </span>
+                        )}
+                      </span>
                     </span>
-                    <span
-                      className={`mt-1 line-clamp-2 block font-display text-[16.5px] font-semibold leading-snug tracking-[-0.01em] ${
-                        n.readAt ? "text-ink-soft" : "text-ink-strong"
-                      }`}
-                    >
-                      {n.discussion.title}
-                    </span>
-                    <span className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] text-ink-faint">
-                      <span className="tabular">Balasan #{n.postNumber}</span>
-                      {!n.readAt && (
-                        <span className="rounded-[4px] border border-accent-track bg-surface px-1.5 py-0.5 text-[11px] font-semibold text-accent-ink">
-                          Baru
-                        </span>
-                      )}
-                    </span>
-                  </span>
-                  {!n.readAt && (
-                    <span className="mt-2 flex shrink-0 items-center">
-                      <span aria-hidden="true" className="h-2 w-2 rounded-full bg-accent" />
-                      <span className="sr-only">Belum dibaca</span>
-                    </span>
-                  )}
-                </button>
-              </form>
-            </li>
-          ))}
+                    {!n.readAt && (
+                      <span className="mt-2 flex shrink-0 items-center">
+                        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-accent" />
+                        <span className="sr-only">Belum dibaca</span>
+                      </span>
+                    )}
+                  </button>
+                </form>
+              </li>
+            ))}
           </ul>
-        </div>
+        </section>
       )}
     </main>
   );

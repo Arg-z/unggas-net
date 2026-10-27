@@ -46,7 +46,7 @@ export function MenuPonsel({ children }: { children: ReactNode }) {
         aria-label="Buka menu"
         aria-expanded={buka}
         aria-controls="menu-ponsel"
-        className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-accent-soft hover:text-accent-ink"
+        className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-wash hover:text-ink-strong"
       >
         <IkonMenu />
       </button>
@@ -73,7 +73,7 @@ export function MenuPonsel({ children }: { children: ReactNode }) {
               type="button"
               onClick={() => setBuka(false)}
               aria-label="Tutup menu"
-              className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-accent-soft hover:text-accent-ink"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-wash hover:text-ink-strong"
             >
               <IkonTutup />
             </button>

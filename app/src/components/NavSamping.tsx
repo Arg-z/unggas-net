@@ -5,10 +5,9 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { IkonAdmin, IkonIndeks, IkonNotifikasi, IkonTulis } from "./Ikon";
 
-/* Navigasi utama. Baris aktif adalah pil tint daun dengan teks hijau tua —
-   tanpa garis tepi bawah, tanpa bilah kiri. Satu-satunya hijau penuh di sini
-   adalah angka notifikasi. Grup Komunitas tidak ada: pemilih komunitas duduk
-   sebagai sakelar cakupan di atas, keputusan pemilik 28 Okt. */
+/* Navigasi utama. Baris aktif netral dengan ikon hijau; hijau penuh hanya di
+   angka notifikasi. Tidak ada garis kiri atau tint besar. Grup Komunitas tidak
+   ada: pemilih komunitas duduk di atas sebagai sakelar cakupan. */
 export function NavSamping({
   isAdmin,
   belumDibaca = 0,
@@ -67,10 +66,10 @@ function Baris({
       href={href}
       aria-current={aktif ? "page" : undefined}
       className={`flex items-center gap-2.5 rounded-lg px-2.5 text-[14px] transition-colors ${
-        ponsel ? "h-11" : "h-8"
+        ponsel ? "h-11" : "h-9"
       } ${
         aktif
-          ? "bg-accent-soft font-semibold text-accent-ink"
+          ? "bg-wash font-semibold text-ink-strong"
           : "font-medium text-ink-soft hover:bg-wash hover:text-ink-strong"
       }`}
     >

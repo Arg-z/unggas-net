@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-/** Merek produk: telur puyuh bergaris di atas tint daun, lalu kata.
- *  Tanda duduk di bidang tint — satu-satunya bidang hijau di kepala sidebar —
- *  supaya merek terbaca sebagai milik produk ini, bukan ikon generik. */
+/** Merek produk: telur puyuh bergaris, lalu kata.
+ *  Tanda duduk di kotak hijau penuh — satu-satunya bidang hijau di kepala
+ *  sidebar — supaya merek terbaca sebagai milik produk ini, bukan ikon generik. */
 export function Wordmark() {
   return (
     <Link
@@ -10,7 +10,7 @@ export function Wordmark() {
       aria-label="unggas.net, beranda"
       className="inline-flex items-center gap-2.5"
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-accent-soft text-accent">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-accent text-white">
         <svg
           width="18"
           height="18"
@@ -30,7 +30,7 @@ export function Wordmark() {
         </svg>
       </span>
       <span className="font-display text-[18.5px] font-semibold leading-none tracking-tight text-ink-strong">
-        unggas<span className="text-accent-ink/55">.net</span>
+        unggas<span className="text-ink-faint">.net</span>
       </span>
     </Link>
   );

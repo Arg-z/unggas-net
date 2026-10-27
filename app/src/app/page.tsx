@@ -185,8 +185,8 @@ export default async function Beranda({
         )}
 
         {rows.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-accent-track bg-accent-soft/50 px-6 py-10 text-center sm:py-12">
-            <p className="mx-auto max-w-[30ch] font-display text-[21px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[23px]">
+          <div className="rounded-xl border border-border bg-surface px-6 py-12 text-center">
+            <p className="mx-auto max-w-[30ch] font-display text-[20px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[22px]">
               {kosong.judul}
             </p>
             <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-ink-soft">
@@ -202,13 +202,13 @@ export default async function Beranda({
             </div>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-border bg-surface">
-            <div className="flex items-baseline justify-between gap-4 border-b border-rule px-4 py-3 sm:px-5">
+          <div>
+            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
               <h2 className="text-[12.5px] font-medium text-ink-faint">{labelDaftar}</h2>
             </div>
 
             {daftar.length > 0 && (
-              <ul className="divide-y divide-rule">
+              <ul>
                 {daftar.map((d) => (
                   <BarisDaftar key={d.id} d={d} />
                 ))}
@@ -249,7 +249,8 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <article className="rounded-2xl border border-accent-track bg-accent-soft">
+    <article className="relative overflow-hidden rounded-xl border border-border bg-surface">
+      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-accent" />
       <div className="px-5 py-5 sm:px-6 sm:py-6">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <span className="label-aksen inline-flex items-center gap-1.5">
@@ -266,14 +267,14 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
           ))}
         </div>
 
-        <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[25px]">
+        <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[22px]">
           <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
             {d.title}
           </Link>
         </h2>
 
         {isi && (
-          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
+          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[13.8px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
             {isi}
           </p>
         )}
@@ -305,9 +306,9 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <li className="group relative">
-      <div className="px-4 py-4 transition-colors group-hover:bg-accent-soft/35 sm:px-5 sm:py-5">
-        <h2 className="font-display text-[18px] font-semibold leading-[1.35] tracking-[-0.01em] text-ink-strong sm:text-[20px]">
+    <li className="group relative border-b border-rule last:border-0">
+      <div className="-mx-3 px-3 py-4 transition-colors group-hover:bg-wash sm:py-5">
+        <h2 className="font-display text-[16.5px] font-semibold leading-[1.4] tracking-[-0.01em] text-ink-strong sm:text-[18px]">
           {d.isPinned && (
             <span
               className="mr-1.5 inline-block translate-y-[2px] text-accent"
@@ -326,7 +327,7 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
         </h2>
 
         {isi && (
-          <p className="mt-1.5 line-clamp-2 max-w-[70ch] text-[13.8px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
+          <p className="mt-1.5 line-clamp-2 max-w-[70ch] text-[13.5px] leading-[1.6] text-ink-soft sm:text-[14px]">
             {isi}
           </p>
         )}

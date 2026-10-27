@@ -47,7 +47,7 @@ export default async function TidakKetemu() {
         {terbaru.length > 0 && (
           <section
             aria-labelledby="judul-terbaru"
-            className="rounded-2xl border border-border bg-surface p-4 sm:p-5"
+            className="rounded-xl border border-border bg-surface p-4 sm:p-5"
           >
             <h2 id="judul-terbaru" className="text-[12px] font-medium text-ink-faint">
               Diskusi terbaru

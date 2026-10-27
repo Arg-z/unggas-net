@@ -3,9 +3,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 
 /**
- * Pemilih komunitas. Di sidebar ia duduk di dalam bidang tint daun sebagai
- * sakelar cakupan: latar transparan, teks hijau tua. Di dalam halaman (ponsel)
- * ia menjadi kontrol bergaris supaya terbaca sebagai pilihan, bukan teks.
+ * Pemilih komunitas. Di sidebar ia kontrol bergaris penuh supaya terbaca
+ * sebagai pilihan. Di lembar ponsel ia duduk tanpa kotak, dengan hover netral.
  */
 export function PemilihKomunitas({
   topik,
@@ -35,10 +34,10 @@ export function PemilihKomunitas({
         }}
         className={`input min-h-0 cursor-pointer py-0 pr-7 focus:bg-surface ${lebar} ${
           lembut
-            ? "h-8 border-transparent bg-transparent pl-1 text-[14px] font-semibold text-accent-ink hover:bg-accent-track/40"
+            ? "h-9 border-border bg-surface pl-2 text-[13.5px] font-medium text-ink-strong hover:bg-wash"
             : kotak
               ? "h-9 border-control bg-surface pl-2 text-[13px] font-semibold text-ink-strong"
-              : "h-9 border-transparent bg-transparent pl-2 text-[13px] font-semibold text-ink-strong hover:bg-sunken"
+              : "h-9 border-transparent bg-transparent pl-2 text-[13px] font-semibold text-ink-strong hover:bg-wash"
         }`}
       >
         <option value="">{denganLabel ? "Semua" : "Semua komunitas"}</option>

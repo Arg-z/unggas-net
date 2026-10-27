@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/** Label tag: topik memakai tint aksen (hijau muda, teks hijau tua), wilayah
- *  netral dengan ikon pin. Radius 4px, bukan pil penuh — label melekat pada
- *  barisnya, tidak mengambang seperti tombol. */
+/** Label tag: satu bentuk netral untuk topik dan wilayah. Topik dibedakan
+ *  lewat teks hijau tua, bukan bidang tint. Radius 4px, bukan pil penuh —
+ *  label melekat pada barisnya, tidak mengambang seperti tombol. */
 export function TagPill({
   slug,
   children,
@@ -31,7 +31,7 @@ export function TagPill({
   return (
     <Link
       href={`/?tag=${slug}`}
-      className={`${dasar} border border-accent-track/70 bg-accent-soft font-semibold text-accent-ink hover:border-accent-track hover:bg-accent-track/60`}
+      className={`${dasar} border border-border bg-surface font-semibold text-accent-ink hover:border-accent-track hover:bg-accent-soft`}
     >
       {children}
     </Link>
