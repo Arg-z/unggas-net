@@ -1,6 +1,6 @@
 # Proyek unggas.net: forum komunitas peternak unggas
 
-Status per 28 Oktober 2026: **UI v5.1 (framed sheet, daftar ala Medium) live di https://unggas.net, dengan login sementara tanpa email**. Bingkai hijau-kelabu memegang sidebar dan bilah atas, kertas putih masuk 8px dari tepi kanan dan bawah. Sidebar hanya satu grup Forum, pemilih komunitas ada di bilah atas dan di baris judul beranda pada ponsel, tanpa tab, tanpa jumlah, tanpa pemilih urutan. Beranda dibaca seperti feed: judul serif, cuplikan dua baris, byline, tanpa header kolom dan tanpa angka rata kanan. Pendaftaran dan masuk hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `6nROVtdqVHfOeDiU3bolq`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan publik 0 FAIL di 1440, 768, dan 390. Backup pra-deploy `~/backup-unggas-20261028-040027`.
+Status per 28 Oktober 2026: **UI v5.2 (framed sheet, daftar ala Medium, tanpa nav bawah di ponsel) live di https://unggas.net, dengan login sementara tanpa email**. Bingkai hijau-kelabu memegang sidebar dan bilah atas, kertas putih masuk 8px dari tepi kanan dan bawah. Sidebar hanya satu grup Forum, pemilih komunitas ada di bilah atas dan di baris judul beranda pada ponsel, tanpa tab, tanpa jumlah, tanpa pemilih urutan. Beranda dibaca seperti feed: judul serif, cuplikan dua baris, byline, tanpa header kolom dan tanpa angka rata kanan. Ponsel tidak lagi memakai bilah navigasi bawah; Tulis menjadi tombol plus 44x44 di bilah atas, sementara wordmark, lonceng, dan keluar memegang navigasi. Pendaftaran dan masuk hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `ypSU5sbcr5CgT7_GQCNjf`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan publik 0 FAIL di 1440, 768, dan 390. Backup pra-deploy `~/backup-unggas-20261028-041002`.
 
 Dokumen ini adalah serah terima. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
 
@@ -53,7 +53,7 @@ Pemilik menilai v5 masih kaku dan meminta acuan Medium. Yang diambil adalah cara
 
 Bilah samping 228px dan bilah atas 48px duduk di satu bingkai tanpa garis pemisah; batasnya terbaca dari warna. Bilah samping memuat wordmark, satu grup Forum (Semua diskusi, Tulis diskusi, Notifikasi, Panel admin), dan blok akun di bawah. Bilah atas memuat wordmark ponsel, kotak cari mulai 768px, pemilih komunitas mulai 1024px di balik garis pemisah, lalu notifikasi dan satu tombol primary. Halaman menulis menyembunyikan tombol primary bilah atas lewat `TombolTulis` supaya hanya tombol Terbitkan yang terisi.
 
-Ponsel memakai kertas penuh dan bilah bawah 54px berisi empat tujuan: Beranda, satu komunitas teratas, Tulis, Notifikasi. Pemilih komunitas pindah ke baris judul beranda, pencarian ke baris di bawahnya.
+Ponsel memakai kertas penuh tanpa bilah navigasi bawah. Tujuan utama tinggal di bilah atas: wordmark ke beranda, lonceng ke notifikasi, tombol plus 44x44 ke `/baru`, dan keluar. Label "Tulis diskusi" muncul mulai 768px. Komunitas tetap terjangkau dari pemilih di baris judul beranda, pencarian di baris bawahnya, dan tautan footer. Footer memakai padding bawah `calc(1.5rem + env(safe-area-inset-bottom))` agar tidak menabrak home indicator.
 
 ### Papan komunitas
 
@@ -272,6 +272,8 @@ Cek email: `aws sesv2 get-account --region ap-southeast-1` untuk `ProductionAcce
 
 24. Revisi UI v5.1, daftar ala Medium (28 Okt, permintaan pemilik). v5 dinilai masih kaku: judul 15px sans, header kolom Diskusi/Balasan/Aktivitas, dan angka nol rata kanan membuat beranda terbaca sebagai tabel. Header kolom dicabut dan diganti satu label bagian; baris diskusi memakai judul Fraunces 18/20px dua baris, cuplikan dua baris 13.8/14.5px, lalu byline avatar + nama + waktu + balasan + tag, dengan overlay judul agar seluruh baris bisa diklik dan `TagPill` di z-10 agar tag tetap bisa diklik. Papan komunitas naik ke 22/25px. Notifikasi memakai byline "nama membalas · waktu", judul diskusi serif 16.5px, nomor balasan, dan chip "Baru". Keadaan kosong beranda, notifikasi, dan balasan thread memakai blok `wash` tanpa garis putus-putus; form auth memakai panel `wash` tanpa garis. Rute, field, Server Action, palet, dan font tidak berubah. Gerbang: `tsc` bersih, 59 test hijau di 9 berkas di server, build `6nROVtdqVHfOeDiU3bolq`, marker CSS `bg-wash/70`, `text-[13.8px]`, `after:inset-0`, dan `sm:py-5` ditemukan sebelum restart. Inspect beranda 1440/768/390 0 FAIL dengan `--allow headline-lines` untuk satu judul diskusi nyata sepanjang tiga baris di 390; /masuk 0 FAIL 1 WARN `hero-void` yang diterima sebagai komposisi satu kolom. Screenshot produksi 1440 dan 390 diperiksa. Backup pra-deploy `~/backup-unggas-20261028-040027`.
 
+25. Hapus nav bawah ponsel (28 Okt, permintaan pemilik). `NavBawah` dicabut dari layout dan berkasnya dihapus; footer turun dari `pb-24` ke `calc(1.5rem + env(safe-area-inset-bottom))` supaya kertas memakai tinggi penuh tanpa menabrak home indicator. Karena nav bawah adalah satu-satunya jalan ke Tulis di ponsel, `TombolTulis` tidak lagi disembunyikan di bawah 640px: di ponsel ia menjadi tombol plus 44x44 near-black di bilah atas, label "Tulis diskusi" muncul mulai 768px. Wordmark, lonceng, dan keluar tetap; pemilih komunitas tetap di baris judul beranda. Tidak ada rute, field, atau Server Action yang berubah. Gerbang: `tsc` bersih, 59 test hijau, build `ypSU5sbcr5CgT7_GQCNjf`, marker CSS `w-11`, `sm:w-auto`, dan `safe-area-inset-bottom` ditemukan sebelum restart. Inspect beranda 1440/768/390 0 FAIL; halaman berlogin diperiksa lewat sesi sementara `arga` (0 elemen "Navigasi bawah", 1 tombol Tulis), lalu sesi dihapus. Backup pra-deploy `~/backup-unggas-20261028-041002`.
+
 **Status sekarang: mati.** `EMAIL_AKTIF=false` di `/var/www/unggas-app/.env`. Selama mati, tidak ada satu pun jalur yang memanggil SES.
 
 Yang berlaku saat `EMAIL_AKTIF` bernilai selain `"true"`:
@@ -319,6 +321,7 @@ Catatan teknis:
 - UI v4 accent ladder, sudah live (28 Okt).
 - UI v5 framed sheet, sudah live (28 Okt).
 - UI v5.1 daftar ala Medium, sudah live (28 Okt).
+- UI v5.2 tanpa nav bawah ponsel, sudah live (28 Okt).
 - Nyalakan lagi verifikasi email dan lupa password (`EMAIL_AKTIF=true`) setelah ada anggota nyata. Sebelum itu, tentukan cara memberi email asli ke akun yang dibuat selama mode mati.
 - Kalkulator pakan interaktif, dibatalkan pemilik, bisa dipertimbangkan lagi nanti.
 - CloudFront CDN saat trafik naik.
