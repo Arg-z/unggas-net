@@ -8,7 +8,7 @@ diperbarui: 28 Oktober 2026
 
 Status per 28 Oktober 2026: **UI v6.0 "tangga aksen" live di https://unggas.net, dengan login sementara tanpa email**. Tanah hijau-kelabu pucat `#f4f7f1` dan kartu putih duduk langsung di atasnya; sidebar 252px menyatu dengan tanah dan desktop tidak memakai bilah atas. Hijau daun penuh hanya ada di penanda kecil: satu gaya tombol terisi, ikon nav aktif, angka notifikasi, dan tautan. Tint `accent-soft` memikul baris nav aktif, papan komunitas, kepala kartu auth, dan keadaan kosong. Sidebar hanya satu grup Forum dan satu pemilih komunitas, tanpa indeks komunitas; beranda tanpa tab, jumlah, urutan, dan rel kanan; auth tanpa kolom kedua; ponsel tanpa navigasi bawah. Pendaftaran dan masuk hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `cLUIk599zawNyLC5EpoXP`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi produksi 0 FAIL 0 WARN di beranda dan masuk, thread 0 FAIL 1 WARN `ragged-row` yang diterima sebagai dua kartu bertumpuk. Backup pra-deploy `~/backup-unggas-20261028-061454`.
 
-Dokumen ini adalah serah terima sekaligus satu-satunya dokumen proyek. Sejak 28 Oktober 2026 isi `docs/PROYEK.md`, `app/theme/DESIGN.md`, dan `app/README.md` digabung ke sini, lalu ketiga berkas itu dihapus supaya tidak ada dua versi yang saling bertentangan. `app/AGENTS.md` tetap ada karena dibuat ulang otomatis oleh `next dev`. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
+Dokumen ini adalah serah terima sekaligus satu-satunya dokumen proyek. Sejak 28 Oktober 2026 isi `docs/PROYEK.md`, `app/theme/DESIGN.md`, dan `app/README.md` digabung ke sini, lalu ketiga berkas itu dihapus supaya tidak ada dua versi yang saling bertentangan. Salinan `app/theme/DESIGN.md` dan `.bak` yang sempat tertinggal di salinan kerja dan di `/var/www/unggas-app/theme/` ikut dihapus pada hari yang sama, jadi tidak ada lagi rujukan desain di luar dokumen ini. `app/AGENTS.md` tetap ada karena dibuat ulang otomatis oleh `next dev`. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
 
 Cara memakai dokumen ini:
 
@@ -122,7 +122,7 @@ Berubah di v6: `app/layout.tsx`, `app/page.tsx`, `app/t/[id]/page.tsx`, `app/not
 
 ## Sistem desain
 
-Bagian ini adalah pengganti `app/theme/DESIGN.md` (versi terakhir v5.2). Mulai v6, `DESIGN.md` dan `README.md` tidak dihidupkan kembali di repo; dokumen ini satu-satunya catatan desain. Sumber eksekusi tetap `src/app/globals.css` blok `@theme`; kalau ada selisih, CSS yang menang dan bagian ini harus diperbarui.
+Bagian ini adalah pengganti `app/theme/DESIGN.md` (versi terakhirnya v6.0). Sejak 28 Oktober 2026 seluruh salinan `DESIGN.md` dan `.bak`-nya dihapus dari repo, salinan kerja, dan `/var/www/unggas-app/theme/`; `README.md` juga tidak dihidupkan kembali. Dokumen ini satu-satunya catatan desain. Sumber eksekusi tetap `src/app/globals.css` blok `@theme`; kalau ada selisih, CSS yang menang dan bagian ini harus diperbarui.
 
 ### Token
 
@@ -452,7 +452,7 @@ Jangan pernah restart PM2 kalau build belum sukses. `test -f .next/BUILD_ID` ada
 ```bash
 ssh aws 'cd ~/unggas-net \
   && rsync -a --exclude node_modules --exclude .next --exclude .env --exclude ".taste-skill/**" --exclude .git \
-       --exclude README.md --exclude theme/DESIGN.md /var/www/unggas-app/ app/ \
+       /var/www/unggas-app/ app/ \
   && git add -A && git commit -m "Sinkron dari produksi" && git push'
 ```
 
