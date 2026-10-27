@@ -69,6 +69,25 @@ export default async function Beranda({
     return null;
   })();
 
+  // Satu baris pengantar saat tidak ada keterangan hasil. Fungsinya memberi
+  // nada, bukan menjelaskan antarmuka.
+  const pengantar =
+    subline ?? "Pertanyaan, pengalaman, dan angka dari peternak lain.";
+
+  // Label di atas daftar menggantikan baris kepala tabel: satu penanda kecil,
+  // bukan kolom angka yang membuat halaman terasa seperti spreadsheet.
+  const labelDaftar = q
+    ? "Hasil pencarian"
+    : saring === "disematkan"
+      ? "Diskusi disematkan"
+      : saring === "belum-dijawab"
+        ? "Menunggu jawaban"
+        : urut === "terlama"
+          ? "Diskusi terlama"
+          : urut === "dibalas"
+            ? "Paling banyak dibalas"
+            : "Diskusi terbaru";
+
   const kosong = (() => {
     if (q) {
       return {
@@ -124,7 +143,9 @@ export default async function Beranda({
                   ? "Belum dijawab"
                   : "Semua diskusi"}
           </h1>
-          {subline && <p className="mt-1 text-[13px] text-ink-faint">{subline}</p>}
+          <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-ink-soft">
+            {pengantar}
+          </p>
         </div>
         <div className="shrink-0 lg:hidden">
           <Suspense fallback={<span className="block h-9 w-[172px]" />}>
@@ -164,12 +185,14 @@ export default async function Beranda({
         )}
 
         {rows.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-control/60 bg-wash/60 px-5 py-8">
-            <p className="text-[15px] font-semibold text-ink-strong">{kosong.judul}</p>
-            <p className="mt-1.5 max-w-[52ch] text-[14px] leading-relaxed text-ink-soft">
+          <div className="rounded-2xl bg-wash/70 px-6 py-10 text-center sm:py-12">
+            <p className="mx-auto max-w-[30ch] font-display text-[21px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[23px]">
+              {kosong.judul}
+            </p>
+            <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-ink-soft">
               {kosong.isi}
             </p>
-            <div className="mt-4">
+            <div className="mt-5 flex justify-center">
               <Link href={kosong.aksi.href} className="btn btn-outline">
                 {kosong.aksi.label}
               </Link>
@@ -177,14 +200,12 @@ export default async function Beranda({
           </div>
         ) : (
           <div>
-            <div className="hidden grid-cols-[minmax(0,1fr)_56px_100px] gap-x-5 px-2 pb-2 text-[12px] font-medium text-ink-faint sm:grid">
-              <span>Diskusi</span>
-              <span className="text-right">Balasan</span>
-              <span className="text-right">Aktivitas</span>
+            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
+              <h2 className="text-[12.5px] font-medium text-ink-faint">{labelDaftar}</h2>
             </div>
 
             {daftar.length > 0 && (
-              <ul className="divide-y divide-rule border-t border-rule">
+              <ul className="divide-y divide-rule">
                 {daftar.map((d) => (
                   <BarisDaftar key={d.id} d={d} />
                 ))}
@@ -227,7 +248,7 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   return (
     <article className="relative overflow-hidden rounded-xl border border-border bg-wash">
       <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[2px] bg-accent" />
-      <div className="px-4 py-4 sm:px-5 sm:py-5">
+      <div className="px-5 py-5 sm:px-6 sm:py-6">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <span className="eyebrow inline-flex items-center gap-1.5">
             <IkonSematkan className="h-3.5 w-3.5" />
@@ -243,21 +264,21 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
           ))}
         </div>
 
-        <h2 className="mt-2 font-display text-[20px] font-semibold leading-snug tracking-tight text-ink-strong sm:text-[22px]">
-          <Link href={`/t/${d.id}`} className="hover:text-accent-ink">
+        <h2 className="mt-2.5 max-w-[34ch] font-display text-[22px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:text-[25px]">
+          <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
             {d.title}
           </Link>
         </h2>
 
         {isi && (
-          <p className="mt-1.5 line-clamp-2 max-w-[68ch] text-[13.5px] leading-relaxed text-ink-soft">
+          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
             {isi}
           </p>
         )}
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-faint">
+        <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
           <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username={d.user.username} size="xs" />
+            <Avatar username={d.user.username} size="sm" />
             <span className="font-medium text-ink-soft">{d.user.username}</span>
             {d.user.isAdmin && <span className="text-[11.5px]">admin</span>}
           </span>
@@ -282,60 +303,64 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <li className="group relative transition-colors hover:bg-wash/70">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-5 px-2 py-3.5 sm:grid-cols-[minmax(0,1fr)_56px_100px] sm:items-center">
-        <div className="min-w-0">
-          <h2 className="text-[15px] font-semibold leading-6 text-ink-strong">
-            {d.isPinned && (
-              <span
-                className="mr-1.5 inline-block translate-y-[2px] text-warn-ink"
-                title="Disematkan"
-              >
-                <IkonSematkan className="h-3.5 w-3.5" />
-                <span className="sr-only">Disematkan</span>
-              </span>
-            )}
-            <Link
-              href={`/t/${d.id}`}
-              className="line-clamp-2 after:absolute after:inset-0 after:content-[''] group-hover:text-accent-ink group-hover:underline group-hover:underline-offset-2 sm:line-clamp-1"
+    <li className="group relative">
+      <div className="px-2 py-4 transition-colors group-hover:bg-wash/50 sm:-mx-2 sm:rounded-xl sm:px-4 sm:py-5">
+        <h2 className="font-display text-[18px] font-semibold leading-[1.35] tracking-[-0.01em] text-ink-strong sm:text-[20px]">
+          {d.isPinned && (
+            <span
+              className="mr-1.5 inline-block translate-y-[2px] text-warn-ink"
+              title="Disematkan"
             >
-              {d.title}
-            </Link>
-          </h2>
-
-          {isi && (
-            <p className="mt-0.5 line-clamp-1 max-w-[74ch] text-[13px] leading-5 text-ink-soft">
-              {isi}
-            </p>
-          )}
-
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-faint">
-            {d.tags.slice(0, 2).map(({ tag: t }) => (
-              <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
-                {t.name}
-              </TagPill>
-            ))}
-            <span className="flex items-center gap-1.5 whitespace-nowrap">
-              <Avatar username={d.user.username} size="xs" />
-              <span className="font-medium text-ink-soft">{d.user.username}</span>
-              {d.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+              <IkonSematkan className="h-3.5 w-3.5" />
+              <span className="sr-only">Disematkan</span>
             </span>
-            <span className="whitespace-nowrap sm:hidden">
-              <span aria-hidden="true" className="mr-1.5">
+          )}
+          <Link
+            href={`/t/${d.id}`}
+            className="line-clamp-2 transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-ink"
+          >
+            {d.title}
+          </Link>
+        </h2>
+
+        {isi && (
+          <p className="mt-1.5 line-clamp-2 max-w-[70ch] text-[13.8px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
+            {isi}
+          </p>
+        )}
+
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
+          <span className="flex items-center gap-1.5 whitespace-nowrap">
+            <Avatar username={d.user.username} size="xs" />
+            <span className="font-medium text-ink-soft">{d.user.username}</span>
+            {d.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+          </span>
+          <span aria-hidden="true">·</span>
+          <span className="tabular whitespace-nowrap">{relatif(d.lastPostAt)}</span>
+          <span aria-hidden="true">·</span>
+          <span
+            className={
+              balasan === 0
+                ? "whitespace-nowrap text-ink-faint"
+                : "whitespace-nowrap font-medium text-ink-soft"
+            }
+          >
+            {balasan} balasan
+          </span>
+          {d.tags.length > 0 && (
+            <>
+              <span aria-hidden="true" className="hidden sm:inline">
                 ·
               </span>
-              {relatif(d.lastPostAt)}
-            </span>
-          </div>
-        </div>
-
-        <div className="tabular flex items-center justify-end gap-1.5 text-[13px] text-ink-soft sm:text-[14px]">
-          <span className={balasan === 0 ? "text-ink-faint" : "font-medium"}>{balasan}</span>
-          <span className="text-[12px] text-ink-faint sm:hidden">balasan</span>
-        </div>
-
-        <div className="tabular hidden text-right text-[12.5px] text-ink-faint sm:block">
-          {relatif(d.lastPostAt)}
+              <span className="flex flex-wrap items-center gap-1.5">
+                {d.tags.slice(0, 2).map(({ tag: t }) => (
+                  <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
+                    {t.name}
+                  </TagPill>
+                ))}
+              </span>
+            </>
+          )}
         </div>
       </div>
     </li>

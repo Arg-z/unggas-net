@@ -148,7 +148,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 })}
               </ol>
             ) : (
-              <div className="mt-4 rounded-xl border border-dashed border-control/60 bg-wash/60 px-4 py-5">
+              <div className="mt-4 rounded-2xl bg-wash/70 px-5 py-6">
                 <p className="max-w-[62ch] text-[14px] leading-relaxed text-ink-soft">
                   Belum ada yang menanggapi. Pengalaman sekecil apa pun berguna di sini, pemula lain
                   pasti terbantu.

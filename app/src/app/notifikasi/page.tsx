@@ -53,13 +53,15 @@ export default async function NotifikasiPage() {
       </div>
 
       {daftar.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed border-control/60 bg-wash/60 px-5 py-8">
-          <p className="text-[15px] font-semibold text-ink-strong">Belum ada notifikasi.</p>
-          <p className="mt-1.5 max-w-[52ch] text-[14px] leading-relaxed text-ink-soft">
+        <div className="mt-4 rounded-2xl bg-wash/70 px-6 py-10 text-center">
+          <p className="mx-auto max-w-[28ch] font-display text-[21px] font-semibold leading-tight tracking-tight text-ink-strong">
+            Belum ada notifikasi.
+          </p>
+          <p className="mx-auto mt-2 max-w-[46ch] text-[14px] leading-relaxed text-ink-soft">
             Setiap balasan baru pada diskusimu akan muncul di sini, beserta tautan langsung ke
             balasannya.
           </p>
-          <div className="mt-4">
+          <div className="mt-5 flex justify-center">
             <Link href="/" className="btn btn-outline">
               Lihat semua diskusi
             </Link>
@@ -75,23 +77,32 @@ export default async function NotifikasiPage() {
                 <input type="hidden" name="postNumber" value={n.postNumber} />
                 <button
                   type="submit"
-                  className={`flex w-full items-start gap-3 px-2 py-3.5 text-left transition-colors hover:bg-wash/70 ${
+                  className={`flex w-full items-start gap-3 px-2 py-4 text-left transition-colors hover:bg-wash/60 ${
                     n.readAt ? "" : "bg-wash/40"
                   }`}
                 >
                   <Avatar username={n.actor.username} size="sm" />
                   <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-x-1.5 text-[12.5px] text-ink-faint">
+                      <span className="font-medium text-ink-soft">{n.actor.username}</span>
+                      <span>membalas</span>
+                      <span aria-hidden="true">·</span>
+                      <span className="tabular">{relatif(n.createdAt)}</span>
+                    </span>
                     <span
-                      className={`block text-[14px] leading-relaxed ${
+                      className={`mt-1 line-clamp-2 block font-display text-[16.5px] font-semibold leading-snug tracking-[-0.01em] ${
                         n.readAt ? "text-ink-soft" : "text-ink-strong"
                       }`}
                     >
-                      <span className="font-semibold">{n.actor.username}</span>
-                      {" membalas "}
-                      <span className={n.readAt ? "" : "font-semibold"}>{n.discussion.title}</span>
+                      {n.discussion.title}
                     </span>
-                    <span className="tabular mt-0.5 block text-[12.5px] text-ink-faint">
-                      Balasan #{n.postNumber} · {relatif(n.createdAt)}
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] text-ink-faint">
+                      <span className="tabular">Balasan #{n.postNumber}</span>
+                      {!n.readAt && (
+                        <span className="rounded-[4px] bg-accent-soft px-1.5 py-0.5 text-[11px] font-semibold text-accent-ink">
+                          Baru
+                        </span>
+                      )}
                     </span>
                   </span>
                   {!n.readAt && (

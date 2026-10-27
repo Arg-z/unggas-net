@@ -19,7 +19,7 @@ export function AuthShell({
         {judul}
       </h1>
       <p className="mt-1 text-[13.5px] leading-relaxed text-ink-faint">{sub}</p>
-      <section className="panel mt-5 p-5 sm:p-6">{children}</section>
+      <section className="mt-6 rounded-2xl bg-wash/60 p-5 sm:p-6">{children}</section>
     </div>
   );
 }
