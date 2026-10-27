@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+/*
+  Unggas.net UI v4 — "tangga aksen" (accent ladder).
+  Satu hue merek (daun #2e7d32) hanya di tanda kecil: aksi terisi, indikator tab,
+  ikon nav aktif, dot belum-dibaca. Tint-nya (50–200) yang mengerjakan area.
+  Aksi utama near-black — bukan hijau — supaya hijau tetap jadi penanda, bukan cat.
+
+  Peran token mengikuti lembar arah: ground, surface, raised, border, rule,
+  control, ink (teks), ink-faint (meta), accent + tint-nya, status pill.
+  Setiap pasangan teks–latar diukur AA:
+  putih di atas ink-strong 17.8:1, ink-faint di ground 5.5:1, ink-soft di ground 7.9:1,
+  accent-ink di accent-soft 6.9:1, control di putih 3.52:1 (WCAG 1.4.11 non-teks).
+*/
+@theme {
+  /* Permukaan */
+  --color-ground: #f8faf7;      /* latar halaman & krom — satu langkah ke tint daun */
+  --color-surface: #ffffff;     /* permukaan konten, baris hover, kontrol */
+  --color-raised: #fbfdfb;      /* blok disematkan */
+  --color-sunken: #f1f5f0;      /* isian toolbar, hover nav */
+
+  /* Garis */
+  --color-border: #e3e9e1;      /* batas panel 1px */
+  --color-rule: #edf1ec;        /* pemisah baris di dalam panel */
+  --color-control: #7d8d79;     /* batas kontrol — 3.52:1 di putih */
+
+  /* Teks */
+  --color-ink: #1b2621;         /* teks isi */
+  --color-ink-strong: #0f1714;  /* judul & aksi utama */
+  --color-ink-soft: #47524c;    /* teks sekunder */
+  --color-ink-faint: #5f6672;   /* meta, waktu, label kolom */
+
+  /* Tangga aksen */
+  --color-accent: #2e7d32;
+  --color-accent-deep: #236327;
+  --color-accent-ink: #1b5e20;
+  --color-accent-soft: #e8f5e9;
+  --color-accent-track: #c8e6c9;
+
+  /* Status */
+  --color-warn-soft: #fef3c7;
+  --color-warn-line: #fde68a;
+  --color-warn-ink: #92400e;
+  --color-danger: #bf000f;
+  --color-danger-soft: #fdecec;
+  --color-danger-line: #f4c7c9;
+
+  /* Tint avatar — 6 seri deterministik. Teks 6.37–7.00:1 di bg-nya;
+     border ~1.8–1.9:1 di putih supaya tepi terbaca. */
+  --color-av-hijau: #e8f5e9;      --color-av-hijau-ink: #1b5e20;      --color-av-hijau-line: #9ac59e;
+  --color-av-amber: #fef3c7;      --color-av-amber-ink: #92400e;      --color-av-amber-line: #e8b93a;
+  --color-av-biru: #e0f2fe;       --color-av-biru-ink: #075985;       --color-av-biru-line: #7cc7ee;
+  --color-av-oranye: #ffedd5;     --color-av-oranye-ink: #9a3412;     --color-av-oranye-line: #f5b473;
+  --color-av-teal: #ccfbf1;       --color-av-teal-ink: #115e59;       --color-av-teal-line: #42d3bb;
+  --color-av-rose: #ffe4e6;       --color-av-rose-ink: #9f1239;       --color-av-rose-line: #f9a6b0;
+
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-jakarta), system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* === Tombol ===
+     Satu gaya terisi: near-black. Hijau tidak dipakai untuk mengisi tombol besar —
+     ia penanda, bukan cat. Tinggi 36px di desktop, 40px di layar sentuh. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-sm {
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+  .btn-primary {
+    background: var(--color-ink-strong);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background: var(--color-ink);
+  }
+  .btn-outline {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border-color: var(--color-control);
+  }
+  .btn-outline:hover {
+    background: var(--color-sunken);
+    border-color: var(--color-ink-soft);
+  }
+  .btn-quiet {
+    background: transparent;
+    color: var(--color-ink-soft);
+  }
+  .btn-quiet:hover {
+    background: var(--color-sunken);
+    color: var(--color-ink-strong);
+  }
+
+  /* === Panel ===
+     Satu bidang: 1px garis, tanpa bayangan. Kalau butuh pemisah di dalamnya,
+     pakai garis rambut --color-rule, jangan tambah bayangan. */
+  .panel {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+  }
+
+  /* === Kontrol form ===
+     Font 16px supaya iOS tidak men-zoom saat fokus. */
+  .input {
+    display: block;
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-control);
+    border-radius: 6px;
+    background: var(--color-surface);
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--color-ink);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  }
+  .input::placeholder {
+    color: var(--color-ink-faint);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(46 125 50 / 0.15);
+  }
+  select.input {
+    appearance: none;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%235f6672' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+  textarea.input {
+    min-height: 0;
+    resize: vertical;
+  }
+
+  .label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink-strong);
+  }
+  .hint {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-ink-faint);
+  }
+
+  .alert-error,
+  .alert-ok {
+    border-radius: 6px;
+    border: 1px solid;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    padding: 8px 12px;
+  }
+  .alert-error {
+    border-color: var(--color-danger-line);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+  .alert-ok {
+    border-color: var(--color-accent-track);
+    background: var(--color-accent-soft);
+    color: var(--color-accent-ink);
+  }
+}
+
+/* Angka di kolom jumlah: digit tabel agar tidak goyang. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Prosa pembacaan di halaman thread — permukaan baca serif. */
+.prosa {
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.72;
+  letter-spacing: 0.001em;
+}
+
+/* Tautan teks: target sentuh 24px, garis bawah saat hover. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--color-accent-deep);
+  font-weight: 600;
+  transition: color 0.12s ease;
+}
+.link:hover {
+  color: var(--color-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Baris tab yang bisa digeser di ponsel tanpa memunculkan scrollbar. */
+.scroll-x {
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hormati preferensi sistem: matikan transisi/animasi, bukan sekadar mempercepat. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Lewati navigasi (WCAG 2.4.1) — hanya tampil saat difokus keyboard. */
+.lewati-nav {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.lewati-nav:focus {
+  left: 12px;
+  top: 12px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: var(--color-ink-strong);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}

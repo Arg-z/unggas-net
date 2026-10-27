@@ -1,0 +1,209 @@
+"use server";
+
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { hashPassword, verifyPassword } from "@/lib/password";
+import { validateSignup } from "@/lib/validate";
+import { createSession, destroySession, getSessionUser } from "@/lib/session";
+import { rateLimit } from "@/lib/ratelimit";
+import { buatToken, pakaiToken } from "@/lib/emailtoken";
+import { emailResetPassword, emailVerifikasi, kirimEmail } from "@/lib/email";
+
+export type ActionResult = { ok: true } | { ok: false; alasan: string };
+
+// Pembatasan percobaan masuk (anti brute-force): 5/menit per identitas, 20/menit per IP.
+const LIMIT_IDENTITAS = 5;
+const LIMIT_IP = 20;
+const JENDELA_MS = 60_000;
+
+// Email keluar dibatasi lebih ketat supaya tidak bisa dipakai membanjiri inbox orang.
+const LIMIT_EMAIL_IP = 5;
+const LIMIT_EMAIL_ALAMAT = 3;
+const JENDELA_EMAIL_MS = 10 * 60_000;
+
+/** IP pengirim dari header nginx (X-Real-IP). Aman dipanggil di luar konteks request. */
+async function ipPengirim(): Promise<string> {
+  try {
+    const h = await headers();
+    const ip = h.get("x-real-ip") ?? h.get("x-forwarded-for")?.split(",")[0]?.trim();
+    return ip || "tanpa-ip";
+  } catch {
+    return "tanpa-ip";
+  }
+}
+
+/** Guard untuk Server Action yang datang dari build lama (formData bisa undefined). */
+function sesiKedaluwarsa(formData: FormData | undefined): ActionResult | null {
+  return formData ? null : { ok: false, alasan: "Halaman sudah usang. Muat ulang lalu coba lagi." };
+}
+
+async function bolehKirimEmail(alamat: string): Promise<boolean> {
+  const ip = await ipPengirim();
+  const bolehIp = rateLimit(`email:ip:${ip}`, LIMIT_EMAIL_IP, JENDELA_EMAIL_MS);
+  const bolehAlamat = rateLimit(`email:alamat:${alamat}`, LIMIT_EMAIL_ALAMAT, JENDELA_EMAIL_MS);
+  return bolehIp && bolehAlamat;
+}
+
+export async function daftar(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const usang = sesiKedaluwarsa(formData);
+  if (usang) return usang;
+
+  const hasil = validateSignup({
+    username: String(formData.get("username") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    password: String(formData.get("password") ?? ""),
+    honeypot: String(formData.get("website") ?? ""),
+  });
+  if (!hasil.ok) return hasil;
+
+  const bentrok = await prisma.user.findFirst({
+    where: { OR: [{ username: hasil.username }, { email: hasil.email }] },
+    select: { username: true, email: true },
+  });
+  if (bentrok) {
+    return { ok: false, alasan: bentrok.username === hasil.username ? "Username sudah dipakai" : "Email sudah terdaftar" };
+  }
+
+  const user = await prisma.user.create({
+    data: {
+      username: hasil.username,
+      email: hasil.email,
+      passwordHash: await hashPassword(hasil.password),
+      // emailVerifiedAt sengaja null: akun baru harus verifikasi dulu.
+    },
+  });
+
+  const token = await buatToken(user.id, "verifikasi");
+  await kirimEmail({ ke: user.email, ...emailVerifikasi(user.username, token) });
+
+  // Belum ada sesi — login baru bisa setelah email diverifikasi.
+  redirect("/cek-email");
+}
+
+export async function masuk(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const usang = sesiKedaluwarsa(formData);
+  if (usang) return usang;
+
+  const identitas = String(formData.get("identitas") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+  if (!identitas || !password) return { ok: false, alasan: "Isi username dan password" };
+
+  const bolehIp = rateLimit(`masuk:ip:${await ipPengirim()}`, LIMIT_IP, JENDELA_MS);
+  const bolehIdentitas = rateLimit(`masuk:identitas:${identitas}`, LIMIT_IDENTITAS, JENDELA_MS);
+  if (!bolehIp || !bolehIdentitas) {
+    return { ok: false, alasan: "Terlalu banyak percobaan masuk. Tunggu sebentar lalu coba lagi." };
+  }
+
+  const user = await prisma.user.findFirst({
+    where: { OR: [{ username: identitas }, { email: identitas }] },
+  });
+  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+    return { ok: false, alasan: "Username atau password salah" };
+  }
+  if (user.isBanned) return { ok: false, alasan: "Akun ini diblokir. Hubungi admin." };
+  if (!user.emailVerifiedAt) {
+    return {
+      ok: false,
+      alasan: "Akun belum diverifikasi. Buka tautan di email kami, atau kirim ulang di /cek-email.",
+    };
+  }
+
+  await createSession(user.id);
+  redirect("/");
+}
+
+export async function keluar(): Promise<void> {
+  await destroySession();
+  redirect("/");
+}
+
+/** Kirim tautan reset password. Selalu balas netral agar email tidak bisa ditebak. */
+export async function lupaPassword(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const usang = sesiKedaluwarsa(formData);
+  if (usang) return usang;
+
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) return { ok: false, alasan: "Isi alamat email" };
+  if (!(await bolehKirimEmail(email))) {
+    return { ok: false, alasan: "Terlalu banyak permintaan. Tunggu beberapa menit lalu coba lagi." };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user && !user.isBanned) {
+    const token = await buatToken(user.id, "reset");
+    await kirimEmail({ ke: user.email, ...emailResetPassword(user.username, token) });
+  }
+
+  return { ok: true };
+}
+
+/** Simpan password baru dari tautan reset. */
+export async function resetPassword(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const usang = sesiKedaluwarsa(formData);
+  if (usang) return usang;
+
+  const token = String(formData.get("token") ?? "");
+  const password = String(formData.get("password") ?? "");
+  const ulangi = String(formData.get("ulangi") ?? "");
+
+  if (password.length < 8) return { ok: false, alasan: "Password minimal 8 karakter" };
+  if (password !== ulangi) return { ok: false, alasan: "Dua password tidak sama" };
+
+  const userId = await pakaiToken(token, "reset");
+  if (userId === null) {
+    return { ok: false, alasan: "Tautan tidak berlaku atau sudah kedaluwarsa. Minta tautan baru." };
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash: await hashPassword(password) },
+  });
+  // Semua sesi lama diputus: kalau password diganti karena akun dibajak,
+  // penyerang ikut terlempar keluar.
+  await prisma.session.deleteMany({ where: { userId } });
+
+  redirect("/masuk?reset=1");
+}
+
+/** Kirim ulang tautan verifikasi untuk akun yang belum aktif. */
+export async function kirimUlangVerifikasi(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const usang = sesiKedaluwarsa(formData);
+  if (usang) return usang;
+
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) return { ok: false, alasan: "Isi alamat email" };
+  if (!(await bolehKirimEmail(email))) {
+    return { ok: false, alasan: "Terlalu banyak permintaan. Tunggu beberapa menit lalu coba lagi." };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user && !user.isBanned && !user.emailVerifiedAt) {
+    const token = await buatToken(user.id, "verifikasi");
+    await kirimEmail({ ke: user.email, ...emailVerifikasi(user.username, token) });
+  }
+
+  return { ok: true };
+}
+
+/** Aktifkan akun dari tautan verifikasi. */
+export async function aktifkanAkun(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const usang = sesiKedaluwarsa(formData);
+  if (usang) return usang;
+
+  const token = String(formData.get("token") ?? "");
+  const userId = await pakaiToken(token, "verifikasi");
+  if (userId === null) {
+    return { ok: false, alasan: "Tautan tidak berlaku atau sudah kedaluwarsa. Minta tautan baru." };
+  }
+
+  await prisma.user.update({ where: { id: userId }, data: { emailVerifiedAt: new Date() } });
+  redirect("/masuk?verified=1");
+}
+
+/** Helper guard dipakai action lain: user login aktif atau null. */
+export async function requireUser() {
+  const user = await getSessionUser();
+  if (!user || user.isBanned) return null;
+  return user;
+}

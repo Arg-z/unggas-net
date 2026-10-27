@@ -1,0 +1,137 @@
+---
+version: v3.1
+name: Unggas.net
+description: Forum komunitas peternak unggas berbahasa Indonesia — hijau kebun di atas kertas putih hangat, tipografi Fraunces (serif, display + prosa) + Plus Jakarta Sans, tombol besar yang jelas ditekan dari ponsel. Referensi UI: medium.com (satu ide warna, satu aksi per layar, permukaan baca serif, suara editorial di copy kecil).
+colors:
+  canvas: "#f6f8f5"
+  card: "#ffffff"
+  raised: "#fbfefb"
+  panel: "#eef4ea"
+  paper: "#f3f6f2"
+  paper-deep: "#e7ede5"
+  unread: "#f2f9f3"
+  line: "#dfe6dc"
+  line-soft: "#eef2ec"
+  line-strong: "#cbd8c7"
+  ink: "#1e2939"
+  ink-strong: "#101828"
+  ink-soft: "#4a5565"
+  ink-faint: "#6a7282"
+  leaf: "#2e7d32"
+  leaf-deep: "#236327"
+  leaf-press: "#1d5521"
+  leaf-tint: "#e8f5e9"
+  leaf-tint-deep: "#c8e6c9"
+  leaf-ink: "#1b5e20"
+  amber-tint: "#fef3c7"
+  amber-line: "#fde68a"
+  amber-ink: "#92400e"
+  danger: "#bf000f"
+  danger-tint: "#fdecec"
+  danger-line: "#f4c7c9"
+typography:
+  display:
+    fontFamily: "Fraunces (next/font, variable opsz; self-hosted)"
+    peran: "h1 halaman, judul thread, wordmark logo, copy editorial (404, empty state)"
+    bobot: 600
+    tracking: "-0.02em"
+  prose:
+    fontFamily: "Fraunces text optical size, kelas .prosa"
+    peran: "isi post pembuka & balasan di halaman thread — permukaan baca serif ala Medium"
+    ukuran: "17px, leading 1.75"
+  body:
+    fontFamily: "Plus Jakarta Sans (next/font, self-hosted; foundry Tokotype, Indonesia)"
+    peran: "semua teks UI lain — daftar, meta, tombol, form, sidebar"
+  skala:
+    h1-beranda: "26px mobile / 32px desktop, display 600"
+    h1-thread: "26px mobile / 32px desktop, display 600"
+    h1-404: "40–56px display 600 (halaman editorial)"
+    judul-kartu: "18px, body 700"
+    isi-post: "17px/1.75 serif (.prosa)"
+    meta: "13px ink-faint"
+    label-form: "15px, 600, ink-strong"
+rounded:
+  card: 20px
+  control: 12px   # tombol, input, select
+  chip-sm: 10px   # tombol ukuran sm
+  pill: 9999px    # tag, badge
+spacing:
+  container: "max-w-6xl beranda & chrome, max-w-4xl thread & admin, max-w-2xl form & notifikasi, max-w-md auth"
+  kartu-padding: "20px mobile / 28px desktop"
+  gap-kartu: 12px
+  gap-section: 24px
+---
+
+## Overview
+
+Unggas.net UI v3.1 "kertas kebun": kanvas hangat `#f6f8f5`, kartu putih radius 20px berbatas
+`#dfe6dc`, dan hijau kebun `#2e7d32` hanya untuk aksi utama + identitas komunitas. Perubahan
+dari v2: pasangan font sungguhan (Fraunces untuk judul & prosa, Plus Jakarta Sans untuk
+body — keduanya self-hosted via `next/font`, tanpa request runtime), sistem tombol
+terpusat (`.btn`), token warna semantik di `@theme` Tailwind v4 (habis hex liar di
+komponen), dan target sentuh lebih besar. Tidak ada dark mode — keputusan pemilik.
+
+## Warna — pasangan terukur WCAG AA
+
+- putih di atas `leaf` **5.13:1** (label tombol primary)
+- `ink-faint` di putih **4.84:1** (meta; ambang bawah teks abu)
+- `ink-soft` di `canvas` **7.08:1**
+- `leaf-ink` di `panel` **7.03:1**
+- `amber-ink` di `amber-tint` **6.37:1**
+
+Peran: `canvas` latar halaman & krom; `card` permukaan konten; `panel` banner komunitas &
+kartu Tentang; `raised` kartu disematkan; `paper` pill wilayah. Hijau (`leaf*`) hanya untuk
+tombol primary, link, tab aktif, badge penulis/admin, dan ikon topik. Amber khusus
+`Disematkan`. Merah `danger` khusus galat & status blokir. Jangan menambah warna baru tanpa
+mengukurnya dulu dan mencatatnya di sini.
+
+## Tipografi
+
+- **Fraunces** untuk identitas & permukaan baca: h1, judul thread, wordmark, copy editorial
+  (404, empty state), dan isi post via `.prosa` (17px/1.75). Optical sizing (`opsz`) bikin
+  huruf seriptajam di ukuran besar dan tenang di ukuran kecil.
+- **Plus Jakarta Sans** untuk semua UI: daftar, meta, tombol, form, sidebar. Digit jumlah
+  memakai `.tabular` (`font-variant-numeric: tabular-nums`).
+- Halaman thread dibatasi `max-w-3xl` agar baris prosa ±70 karakter seperti Medium.
+- Input font 16px — mencegah iOS auto-zoom saat fokus.
+- Label section sidebar sentence case 13px — tidak ada uppercase tracking.
+
+## Komponen inti (kelas di `globals.css`)
+
+- **`.btn`** — tinggi default 44px (nyaman di jempol), radius 12px, label 15px/600,
+  kata kerja jelas. Varian: `.btn-primary` (hijau, satu per pandangan, hover `leaf-deep`,
+  pressed `leaf-press`), `.btn-secondary` (putih + border `line-strong`), `.btn-tint`
+  (hijau tint, aksi admin sekunder), `.btn-ghost` (teks). Ukuran: `.btn-sm` 36px untuk
+  header/baris admin, `.btn-lg` 48px untuk CTA banner. Disabled: opacity 55%.
+- **`.card`** — putih, border `line`, radius 20px, tanpa bayangan. Kedalaman dari langkah
+  warna, bukan shadow.
+- **`.input`** — putih, border `line-strong`, radius 12px, min-height 46px; fokus: border
+  `leaf` + ring `rgb(46 125 50 / .16)` 3px.
+- **`.alert-error` / `.alert-ok`** — pesan galat/sukses form, radius 12px, pasangan
+  danger/leaf yang sudah terukur.
+- **`.link-hijau`** — link teks, hover underline offset 3.
+- **TagPill** — topik: tint hijau + dot; wilayah: `paper` + ikon pin. Radius full, tinggi
+  sentuh ≥28px.
+- **Avatar** — inisial, 6 tint hangat deterministik (hijau, amber, biru, oranye, teal,
+  rose), border 1px satu langkah lebih gelap.
+- **Cincin fokus global** `:focus-visible` 2px `leaf` offset 2 — jangan dihapus.
+
+## Layout
+
+- Beranda: banner komunitas panel tonal (ikon topik dalam disc putih, judul display,
+  "N diskusi" tabular, CTA `btn-lg`) → bar komunitas pill mobile → grid `250px_1fr`
+  sidebar/daftar (desktop) → kartu diskusi.
+- Thread: post pembuka kartu ber-border `leaf-tint-deep` terpisah dari daftar balasan;
+  balasan kartu putih standar; form balasan `btn` full-width di mobile.
+- Wilayah tidak pernah jadi panel filter di beranda (keputusan pemilik 27 Okt 2026) — hanya
+  pill berikon pin pada kartu.
+
+## Do's and Don'ts
+
+- **Do** tambah token baru di `@theme` dulu sebelum memakai warna/kelas baru.
+- **Do** jaga target sentuh ≥44px untuk aksi utama, ≥36px untuk kontrol padat.
+- **Do** satu tombol primary per pandangan; sisanya secondary/tint/ghost.
+- **Don't** memakai shadow, gradien, glass/backdrop-blur, atau emoji sebagai ikon.
+- **Don't** pakai `gray-*` Tailwind — pakai tangga `ink*` yang sudah terukur.
+- **Don't** pakai hijau untuk teks biasa atau latar besar di luar panel yang disebut.
+- **Don't** ganti font tanpa alasan brand; Fraunces = identitas + prosa, PJS = UI.
