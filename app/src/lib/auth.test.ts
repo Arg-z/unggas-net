@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { hashPassword, verifyPassword } from "./password";
-import { validateSignup, parseId } from "./validate";
+import { validateSignup, validateSignupTanpaEmail, parseId } from "./validate";
+import { emailAktif, emailInternal } from "./fitur";
 
 describe("password", () => {
   it("hash dan verify cocok", async () => {
@@ -45,6 +46,45 @@ describe("validateSignup", () => {
 
   it("menolak email invalid", () => {
     expect(validateSignup({ username: "arga", email: "bukan-email", password: "T3sP3t3rnak!2026", honeypot: "" }).ok).toBe(false);
+  });
+});
+
+describe("validateSignupTanpaEmail", () => {
+  it("menerima username dan password tanpa email", () => {
+    const r = validateSignupTanpaEmail({
+      username: "peternak_puyuh",
+      password: "T3sP3t3rnak!2026",
+      honeypot: "",
+    });
+    expect(r).toEqual({ ok: true, username: "peternak_puyuh", password: "T3sP3t3rnak!2026" });
+  });
+
+  it("tetap menolak honeypot, username reserved, dan password pendek", () => {
+    const dasar = { username: "peternak", password: "T3sP3t3rnak!2026", honeypot: "" };
+    expect(validateSignupTanpaEmail({ ...dasar, honeypot: "spam" }).ok).toBe(false);
+    expect(validateSignupTanpaEmail({ ...dasar, username: "moderator" }).ok).toBe(false);
+    expect(validateSignupTanpaEmail({ ...dasar, password: "pendek" }).ok).toBe(false);
+  });
+});
+
+describe("sakelar email", () => {
+  it("emailAktif hanya menyala bila EMAIL_AKTIF bernilai true", () => {
+    const asli = process.env.EMAIL_AKTIF;
+    try {
+      delete process.env.EMAIL_AKTIF;
+      expect(emailAktif()).toBe(false);
+      process.env.EMAIL_AKTIF = "false";
+      expect(emailAktif()).toBe(false);
+      process.env.EMAIL_AKTIF = "true";
+      expect(emailAktif()).toBe(true);
+    } finally {
+      if (asli === undefined) delete process.env.EMAIL_AKTIF;
+      else process.env.EMAIL_AKTIF = asli;
+    }
+  });
+
+  it("emailInternal menurunkan alamat placeholder dari username", () => {
+    expect(emailInternal("Peternak_Puyuh")).toBe("peternak_puyuh@unggas.local");
   });
 });
 

@@ -4,7 +4,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
-import { validateSignup } from "@/lib/validate";
+import { validateSignup, validateSignupTanpaEmail } from "@/lib/validate";
+import { emailAktif, emailInternal } from "@/lib/fitur";
 import { createSession, destroySession, getSessionUser } from "@/lib/session";
 import { rateLimit } from "@/lib/ratelimit";
 import { buatToken, pakaiToken } from "@/lib/emailtoken";
@@ -49,30 +50,55 @@ export async function daftar(_prev: ActionResult | null, formData: FormData): Pr
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
 
-  const hasil = validateSignup({
+  const emailNyala = emailAktif();
+  const isian = {
     username: String(formData.get("username") ?? ""),
-    email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
     honeypot: String(formData.get("website") ?? ""),
-  });
-  if (!hasil.ok) return hasil;
+  };
+
+  let username: string;
+  let email: string;
+  let password: string;
+
+  if (emailNyala) {
+    const hasil = validateSignup({ ...isian, email: String(formData.get("email") ?? "") });
+    if (!hasil.ok) return hasil;
+    ({ username, email, password } = hasil);
+  } else {
+    const hasil = validateSignupTanpaEmail(isian);
+    if (!hasil.ok) return hasil;
+    ({ username, password } = hasil);
+    email = emailInternal(username);
+  }
 
   const bentrok = await prisma.user.findFirst({
-    where: { OR: [{ username: hasil.username }, { email: hasil.email }] },
+    where: emailNyala
+      ? { OR: [{ username }, { email }] }
+      : { username: { equals: username, mode: "insensitive" } },
     select: { username: true, email: true },
   });
   if (bentrok) {
-    return { ok: false, alasan: bentrok.username === hasil.username ? "Username sudah dipakai" : "Email sudah terdaftar" };
+    return {
+      ok: false,
+      alasan: emailNyala && bentrok.email === email ? "Email sudah terdaftar" : "Username sudah dipakai",
+    };
   }
 
   const user = await prisma.user.create({
     data: {
-      username: hasil.username,
-      email: hasil.email,
-      passwordHash: await hashPassword(hasil.password),
-      // emailVerifiedAt sengaja null: akun baru harus verifikasi dulu.
+      username,
+      email,
+      passwordHash: await hashPassword(password),
+      // Saat email dimatikan, akun langsung aktif supaya bisa dipakai tanpa verifikasi.
+      emailVerifiedAt: emailNyala ? null : new Date(),
     },
   });
+
+  if (!emailNyala) {
+    await createSession(user.id);
+    redirect("/");
+  }
 
   const token = await buatToken(user.id, "verifikasi");
   await kirimEmail({ ke: user.email, ...emailVerifikasi(user.username, token) });
@@ -85,6 +111,7 @@ export async function masuk(_prev: ActionResult | null, formData: FormData): Pro
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
 
+  const emailNyala = emailAktif();
   const identitas = String(formData.get("identitas") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   if (!identitas || !password) return { ok: false, alasan: "Isi username dan password" };
@@ -96,13 +123,15 @@ export async function masuk(_prev: ActionResult | null, formData: FormData): Pro
   }
 
   const user = await prisma.user.findFirst({
-    where: { OR: [{ username: identitas }, { email: identitas }] },
+    where: emailNyala
+      ? { OR: [{ username: identitas }, { email: identitas }] }
+      : { username: { equals: identitas, mode: "insensitive" } },
   });
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
-    return { ok: false, alasan: "Username atau password salah" };
+    return { ok: false, alasan: emailNyala ? "Username/email atau password salah" : "Username atau password salah" };
   }
   if (user.isBanned) return { ok: false, alasan: "Akun ini diblokir. Hubungi admin." };
-  if (!user.emailVerifiedAt) {
+  if (emailNyala && !user.emailVerifiedAt) {
     return {
       ok: false,
       alasan: "Akun belum diverifikasi. Buka tautan di email kami, atau kirim ulang di /cek-email.",
@@ -123,6 +152,10 @@ export async function lupaPassword(_prev: ActionResult | null, formData: FormDat
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
 
+  if (!emailAktif()) {
+    return { ok: false, alasan: "Lupa password sedang dimatikan. Hubungi admin untuk mereset password akunmu." };
+  }
+
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   if (!email) return { ok: false, alasan: "Isi alamat email" };
   if (!(await bolehKirimEmail(email))) {
@@ -142,6 +175,10 @@ export async function lupaPassword(_prev: ActionResult | null, formData: FormDat
 export async function resetPassword(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
+
+  if (!emailAktif()) {
+    return { ok: false, alasan: "Reset password lewat email sedang dimatikan. Hubungi admin untuk mereset password akunmu." };
+  }
 
   const token = String(formData.get("token") ?? "");
   const password = String(formData.get("password") ?? "");
@@ -168,6 +205,10 @@ export async function resetPassword(_prev: ActionResult | null, formData: FormDa
 
 /** Kirim ulang tautan verifikasi untuk akun yang belum aktif. */
 export async function kirimUlangVerifikasi(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (!emailAktif()) {
+    return { ok: false, alasan: "Verifikasi email sedang dimatikan. Akun baru langsung aktif saat mendaftar." };
+  }
+
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
 
@@ -188,6 +229,8 @@ export async function kirimUlangVerifikasi(_prev: ActionResult | null, formData:
 
 /** Aktifkan akun dari tautan verifikasi. */
 export async function aktifkanAkun(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (!emailAktif()) redirect("/masuk");
+
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
 

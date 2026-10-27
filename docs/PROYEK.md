@@ -1,6 +1,6 @@
 # Proyek unggas.net: forum komunitas peternak unggas
 
-Status per 28 Oktober 2026: **UI v4 (accent ladder) live di https://unggas.net, termasuk empat pemangkasan UI 28 Okt** — sidebar tanpa grup Komunitas, tanpa baris tab, tanpa jumlah+urutan, halaman masuk/daftar satu kolom. Build `VQhMKwJx5aNaBJrYTINCI`, `tsc` bersih, 52 test hijau, inspeksi tampilan 0 FAIL.
+Status per 28 Oktober 2026: **UI v4 (accent ladder) live di https://unggas.net, dengan login sementara tanpa email**: sidebar tanpa grup Komunitas, tanpa baris tab, tanpa jumlah+urutan, halaman masuk/daftar satu kolom. Pendaftaran dan masuk kini hanya username dan password; alur verifikasi, lupa password, dan reset lewat email dimatikan lewat `EMAIL_AKTIF=false`, jadi SES tidak dipanggil. Build `vZ-eLgI8x5pYluKsyp2hp`, `tsc` bersih, 59 test hijau di 9 berkas, inspeksi tampilan 0 FAIL.
 
 Dokumen ini adalah serah terima. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
 
@@ -22,7 +22,7 @@ Backup    -> cron 03:15 harian -> S3 unggas-backups-385207569778 (lifecycle 30 h
 - Server: AWS EC2 t8i.small, ap-southeast-1, Ubuntu 26.04 (`ssh aws`)
 - Stack: Next.js 16 (App Router, TypeScript, Tailwind v4), Prisma 6, PostgreSQL 16, PM2
 - Repo GitHub: `Arg-z/unggas-net` (private, https://github.com/Arg-z/unggas-net). Salinan kerja di server: `~/unggas-net` (app/ + docs/PROYEK.md + app/.taste-skill/direction.json), disinkron dari produksi 28 Okt. Setiap perubahan produksi: commit + push dari situ.
-- Aplikasi di server: `/var/www/unggas-app`, bukan repo git — pembanding sebelum deploy adalah salinan kerja `~/unggas-net`. Repo lama `~/unggas-forum` di macbook masih v3.1 (plus docs/ops/theme/archive dan riwayat commit lama) dan belum direkonsiliasi; jangan dijadikan dasar deploy sampai disatukan.
+- Aplikasi di server: `/var/www/unggas-app`, bukan repo git. Pembanding sebelum deploy adalah salinan kerja `~/unggas-net`. Repo lama `~/unggas-forum` di macbook masih v3.1 (plus docs/ops/theme/archive dan riwayat commit lama) dan belum direkonsiliasi; jangan dijadikan dasar deploy sampai disatukan.
 - Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual sejak v4. `theme/DESIGN.md` (v3.2) sudah usang dan masih mencatat palet serta radius v3, jangan dipakai sebagai acuan. Lembar arah v4 tersimpan di `.taste-skill/direction.json`.
 - Pernah terjadi drift: 26 Okt kode di server lebih baru daripada repo karena diedit langsung di server. Sudah diselamatkan lewat commit `c87850e`. Selalu diff dulu sebelum deploy.
 
@@ -109,7 +109,8 @@ Konfigurasi: `vitest.config.ts` diganti `vitest.config.mts` karena Vitest 5 memu
 
 ### Yang belum selesai
 
-- Deploy ke produksi belum dilakukan.
+- Verifikasi email, lupa password, dan reset password sengaja mati sejak 28 Okt lewat `EMAIL_AKTIF=false`.
+- Akun yang dibuat selama mode mati memakai email placeholder dan belum punya alamat email asli.
 - Dua warning ESLint yang belum disentuh: `LIMIT_DISKUSI_BARU` di `app/actions/forum.ts` tidak terpakai, dan parameter `_user` di `getTags` (`lib/forum.ts`). Keduanya bukan error.
 
 ## Syarat skill untuk agen berikutnya
@@ -143,7 +144,7 @@ node ~/.claude/skills/design-taste-frontend/scripts/inspect.mjs \
   http://127.0.0.1:3100/ --app --out .taste-skill/after-home --widths 1440,768,390
 ```
 
-Token desain:
+Token desain diambil dengan perintah ini.
 
 ```bash
 python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "forum komunitas diskusi" --design-system
@@ -162,7 +163,7 @@ python3 ~/.claude/skills/anti-ai-slop/scripts/slopcheck.py unggas-net-PROYEK.md
 
 1. `npx tsc --noEmit` keluar 0.
 2. `NODE_OPTIONS=--max-old-space-size=1280 npx next build` sukses dan `.next/BUILD_ID` ada.
-3. `npx vitest run` 52 test hijau di 8 berkas.
+3. `npx vitest run` 59 test hijau di 9 berkas.
 4. `inspect.mjs --app` di 1440, 768, 390 tanpa FAIL. WARN boleh, tapi harus bisa dijelaskan.
 5. Buka ketiga tangkapan layar dan lihat sendiri. Meter yang lulus bukan nilai akhir.
 6. `slopcheck.py` minimal 90 untuk setiap dokumen atau copy yang berubah.
@@ -270,10 +271,25 @@ Cek email: `aws sesv2 get-account --region ap-southeast-1` untuk `ProductionAcce
 19. Hapus seksi Komunitas di kolom kanan halaman masuk/daftar (28 Okt, permintaan pemilik): daftar topik berjumlah dan baris "N diskusi sejauh ini" dihilang dari `PanelKomunitas.tsx`; `getTags`, `topik`, `total`, dan import `TopicIcon` ikut dibuang, sisa satu query `terbaru`. Panel kini hanya memuat "Sedang dibahas". Akibatnya inspeksi /masuk 1440 menemukan WARN `hero-void` (33% layar kosong di bawah kartu, sebelumnya 0 WARN), dibereskan dengan menengahkan blok auth secara vertikal: `lg:min-h-[calc(100svh-12rem)] lg:content-center` pada `main` /masuk dan /daftar. Re-inspeksi /masuk dan /daftar: 0 FAIL 0 WARN di 1440/768/390. Gerbang lain: tsc bersih, 52 test hijau. Build `9DoyyemJjsNpkqJB9QbP4`, backup pra-deploy `~/backup-unggas-20261028-013939`.
 20. Hapus seluruh kolom kanan halaman masuk/daftar (28 Okt, permintaan pemilik): `<PanelKomunitas />` dicabut dari kedua halaman, layout main jadi satu kolom `mx-auto max-w-[392px]` dengan penengahan vertikal dari item 19, dan berkas `components/PanelKomunitas.tsx` dihapus karena tak terpakai. Inspeksi /masuk dan /daftar 1440 memberi WARN `hero-void` (blok kosong 600×600, 28% layar) dan sengaja diterima: halaman auth adalah satu form di tengah, kekosongan simetris di sekelilingnya adalah komposisinya, sama seperti pola lupa-password dan cek-email. Gerbang lain: tsc bersih, 52 test hijau, 0 FAIL. Build `VQhMKwJx5aNaBJrYTINCI`, backup pra-deploy `~/backup-unggas-20261028-015708`.
 21. Repo GitHub `Arg-z/unggas-net` dibuat dari server (28 Okt, private): `gh` CLI 2.103.3 terpasang, login perangkat dengan akun `Arg-z`. Salinan kerja `~/unggas-net` di-commit dan didorong (`2d5312d`); `.env`, `node_modules`, dan `.next` dikecualikan dan diverifikasi bebas nilai rahasia. Tujuannya mematahkan pola drift: produksi kini punya pembanding permanen dan cadangan di luar server. Riwayat commit lama di repo macbook belum ikut.
+22. Login tanpa email sementara (28 Okt, permintaan pemilik). Web belum punya user dan alur auth sudah menempel ke SES, jadi verifikasi dan reset lewat email dimatikan dulu. Sakelar `EMAIL_AKTIF` di `src/lib/fitur.ts` menjaga semua jalur; `.env` produksi diisi `EMAIL_AKTIF=false`. Daftar kini cukup username dan password, email diisi `<username>@unggas.local`, akun langsung aktif, sesi langsung dibuat. Masuk memakai username saja dan tidak peduli huruf besar/kecil. Empat Server Action email menolak dengan pesan jelas, halaman lupa password menampilkan pemberitahuan, dan tiga rute email mengalihkan ke `/masuk`. Test bertambah: `validateSignupTanpaEmail`, sakelar, pendaftaran tanpa email, dan masuk sukses (59 test, 9 berkas). Build `vZ-eLgI8x5pYluKsyp2hp`, backup pra-deploy `~/backup-unggas-20261028-030516`. Uji asap di produksi: daftar sebagai `uji_emailless_a1b2c3`, langsung masuk, keluar, lalu masuk lagi dengan username huruf besar; akun uji dihapus sesudahnya.
 
-## Email (aktif sejak 26 Okt 2026)
+## Email (aktif 26 Okt 2026, dimatikan sementara 28 Okt 2026)
 
-Pengirim `no-reply@unggas.net`. Region SES `ap-southeast-1`. Kuota 50.000 per 24 jam.
+**Status sekarang: mati.** `EMAIL_AKTIF=false` di `/var/www/unggas-app/.env`. Selama mati, tidak ada satu pun jalur yang memanggil SES.
+
+Yang berlaku saat `EMAIL_AKTIF` bernilai selain `"true"`:
+
+- Daftar di `/daftar` hanya meminta username dan password. Tidak ada field email. Akun langsung dibuat dengan `emailVerifiedAt = now()`, sesi langsung dibuat, lalu pengguna diarahkan ke beranda.
+- Email placeholder diisi `<username>@unggas.local` karena kolom `email` di database masih `@unique` dan belum ada migrasi. Jangan menganggap alamat itu bisa dikirimi email.
+- Masuk di `/masuk` memakai username saja, tanpa peduli huruf besar/kecil. Pemeriksaan "akun belum diverifikasi" dilewati.
+- `/lupa-password` menampilkan pemberitahuan bahwa reset lewat email dimatikan, tanpa form. `/cek-email`, `/verifikasi/[token]`, dan `/reset-password/[token]` mengalihkan ke `/masuk`.
+- Server Action `lupaPassword`, `resetPassword`, `kirimUlangVerifikasi`, dan `aktifkanAkun` tetap menolak dengan pesan yang jelas bila dipanggil langsung.
+
+Menyalakan lagi: set `EMAIL_AKTIF=true` di `.env`, build ulang, lalu restart PM2. Kode email tidak dihapus, hanya dijaga sakelar di `src/lib/fitur.ts`. Akun yang dibuat selama mode mati tidak punya email asli, jadi verifikasi dan reset untuk akun itu tidak akan pernah sampai; kalau email dinyalakan lagi, akun tersebut perlu diberi email lewat jalur admin atau database.
+
+### Alur email bila sakelar menyala
+
+Pengirim `no-reply@unggas.net`, region SES `ap-southeast-1`, kuota 50.000 per 24 jam.
 
 Alur yang berjalan:
 
@@ -303,6 +319,7 @@ Catatan teknis:
 - UI v2 kartu organik, sudah live.
 - UI v3 tipografi dan sistem tombol, sudah live. Font judul v3 sudah digantikan Fraunces di v3.1.
 - UI v4 accent ladder, sudah live (28 Okt).
+- Nyalakan lagi verifikasi email dan lupa password (`EMAIL_AKTIF=true`) setelah ada anggota nyata. Sebelum itu, tentukan cara memberi email asli ke akun yang dibuat selama mode mati.
 - Kalkulator pakan interaktif, dibatalkan pemilik, bisa dipertimbangkan lagi nanti.
 - CloudFront CDN saat trafik naik.
 - Login Google (OAuth) kalau hambatan pendaftaran terlihat.

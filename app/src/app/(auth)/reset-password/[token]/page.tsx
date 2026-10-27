@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { tokenMasihBerlaku } from "@/lib/emailtoken";
+import { emailAktif } from "@/lib/fitur";
 import { ResetForm } from "@/app/actions/EmailForm";
 
 export const metadata = { title: "Atur ulang password" };
@@ -10,6 +12,8 @@ export default async function ResetPasswordPage({
 }: {
   params: Promise<{ token: string }>;
 }) {
+  if (!emailAktif()) redirect("/masuk");
+
   const { token } = await params;
 
   if (!(await tokenMasihBerlaku(token, "reset"))) {

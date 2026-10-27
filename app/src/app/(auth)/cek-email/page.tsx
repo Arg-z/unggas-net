@@ -1,9 +1,13 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { emailAktif } from "@/lib/fitur";
 import { KirimUlangForm } from "@/app/actions/EmailForm";
 
 export const metadata = { title: "Cek email" };
+export const dynamic = "force-dynamic";
 
 export default function CekEmailPage() {
+  if (!emailAktif()) redirect("/masuk");
   return (
     <main id="konten" tabIndex={-1} className="mx-auto max-w-[392px] py-4 sm:py-10">
       <h1 className="text-[22px] font-semibold leading-8 tracking-tight text-ink-strong">

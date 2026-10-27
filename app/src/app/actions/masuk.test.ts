@@ -6,10 +6,20 @@ vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined, set: () => {}, delete: () => {} }),
 }));
 
+const sesiMasuk: number[] = [];
+
 vi.mock("@/lib/session", () => ({
   getSessionUser: async () => null,
-  createSession: async () => {},
+  createSession: async (id: number) => {
+    sesiMasuk.push(id);
+  },
   destroySession: async () => {},
+}));
+
+vi.mock("next/navigation", () => ({
+  redirect: (path: string) => {
+    throw new Error("NEXT_REDIRECT " + path);
+  },
 }));
 
 import { _resetBuckets } from "@/lib/ratelimit";
@@ -88,5 +98,17 @@ describe("masuk — pembatasan percobaan", () => {
     }
     const r = await masuk(null, fd({ identitas: nyasar, password: "apa-saja" }));
     expect(r).toEqual({ ok: false, alasan: TERLALU_BANYAK });
+  });
+});
+
+describe("masuk saat email dimatikan", () => {
+  it("username (tanpa peduli besar-kecil) dan password benar langsung membuat sesi", async () => {
+    const user = await prisma.user.findUnique({ where: { username: uname } });
+    expect(user).not.toBeNull();
+
+    await expect(
+      masuk(null, fd({ identitas: uname.toUpperCase(), password: PASS })),
+    ).rejects.toThrow("NEXT_REDIRECT /");
+    expect(sesiMasuk).toContain(user?.id);
   });
 });

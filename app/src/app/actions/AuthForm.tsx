@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { daftar, masuk, type ActionResult } from "@/app/actions/auth";
 
-export function DaftarForm() {
+export function DaftarForm({ denganEmail }: { denganEmail: boolean }) {
   const [state, action, pending] = useActionState<ActionResult | null, FormData>(daftar, null);
   return (
     <form action={action} className="flex flex-col gap-4">
@@ -27,17 +27,19 @@ export function DaftarForm() {
           className="input mt-2"
         />
       </label>
-      <label className="block">
-        <span className="label">Email</span>
-        <input
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="nama@email.com"
-          className="input mt-2"
-        />
-      </label>
+      {denganEmail && (
+        <label className="block">
+          <span className="label">Email</span>
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="nama@email.com"
+            className="input mt-2"
+          />
+        </label>
+      )}
       <label className="block">
         <span className="label">Password</span>
         <input
@@ -62,13 +64,19 @@ export function DaftarForm() {
   );
 }
 
-export function MasukForm() {
+export function MasukForm({ denganEmail }: { denganEmail: boolean }) {
   const [state, action, pending] = useActionState<ActionResult | null, FormData>(masuk, null);
   return (
     <form action={action} className="flex flex-col gap-4">
       <label className="block">
-        <span className="label">Username atau email</span>
-        <input name="identitas" required autoComplete="username" className="input mt-2" />
+        <span className="label">{denganEmail ? "Username atau email" : "Username"}</span>
+        <input
+          name="identitas"
+          required
+          autoComplete="username"
+          placeholder={denganEmail ? undefined : "peternak_puyuh"}
+          className="input mt-2"
+        />
       </label>
       <label className="block">
         <span className="label">Password</span>

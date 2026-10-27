@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/session";
+import { emailAktif } from "@/lib/fitur";
 import { MasukForm } from "@/app/actions/AuthForm";
 
 export const metadata = { title: "Masuk" };
@@ -20,6 +21,7 @@ export default async function MasukPage({
 
   const { verified, reset } = await searchParams;
   const pesan = verified ? PESAN.verified : reset ? PESAN.reset : null;
+  const denganEmail = emailAktif();
 
   return (
     <main id="konten" tabIndex={-1} className="grid content-center mx-auto max-w-[392px] py-2 sm:py-8 lg:min-h-[calc(100svh-12rem)]">
@@ -35,13 +37,17 @@ export default async function MasukPage({
               {pesan}
             </p>
           )}
-          <MasukForm />
+          <MasukForm denganEmail={denganEmail} />
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-[13px] text-ink-faint">
-          <Link href="/lupa-password" className="link">
-            Lupa password?
-          </Link>
+        <div className="mt-4 flex flex-col gap-1.5 text-[13px] text-ink-faint sm:flex-row sm:items-center sm:justify-between sm:gap-0">
+          {denganEmail ? (
+            <Link href="/lupa-password" className="link">
+              Lupa password?
+            </Link>
+          ) : (
+            <span>Lupa password? Hubungi admin.</span>
+          )}
           <span>
             Belum punya akun?{" "}
             <Link href="/daftar" className="link">

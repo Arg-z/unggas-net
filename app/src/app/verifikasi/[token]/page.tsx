@@ -1,11 +1,15 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { tokenMasihBerlaku } from "@/lib/emailtoken";
+import { emailAktif } from "@/lib/fitur";
 import { VerifikasiForm } from "@/app/actions/EmailForm";
 
 export const metadata = { title: "Verifikasi akun" };
 export const dynamic = "force-dynamic";
 
 export default async function VerifikasiPage({ params }: { params: Promise<{ token: string }> }) {
+  if (!emailAktif()) redirect("/masuk");
+
   const { token } = await params;
 
   if (!(await tokenMasihBerlaku(token, "verifikasi"))) {
