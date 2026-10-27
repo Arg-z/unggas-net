@@ -1,6 +1,6 @@
 # Proyek unggas.net: forum komunitas peternak unggas
 
-Status per 27 Oktober 2026, 22:15 WIB: **UI v4 sudah dibangun penuh di server, belum di-deploy.** Yang live di https://unggas.net masih v3.1 (kertas kebun). `tsc` bersih, build sukses, 52 test hijau, inspeksi tampilan 0 FAIL.
+Status per 28 Oktober 2026: **UI v4 (accent ladder) live di https://unggas.net, termasuk empat pemangkasan UI 28 Okt** — sidebar tanpa grup Komunitas, tanpa baris tab, tanpa jumlah+urutan, halaman masuk/daftar satu kolom. Build `VQhMKwJx5aNaBJrYTINCI`, `tsc` bersih, 52 test hijau, inspeksi tampilan 0 FAIL.
 
 Dokumen ini adalah serah terima. Bagian "Syarat skill" dan "Jebakan" ditulis untuk agen berikutnya, bukan untuk manusia yang sudah hafal proyeknya.
 
@@ -21,8 +21,8 @@ Backup    -> cron 03:15 harian -> S3 unggas-backups-385207569778 (lifecycle 30 h
 
 - Server: AWS EC2 t8i.small, ap-southeast-1, Ubuntu 26.04 (`ssh aws`)
 - Stack: Next.js 16 (App Router, TypeScript, Tailwind v4), Prisma 6, PostgreSQL 16, PM2
-- Repo lokal: `~/unggas-forum` (macbook), sumber kebenaran kode dan skrip ops
-- Aplikasi di server: `/var/www/unggas-app`, bukan repo git
+- Repo GitHub: `Arg-z/unggas-net` (private, https://github.com/Arg-z/unggas-net). Salinan kerja di server: `~/unggas-net` (app/ + docs/PROYEK.md + app/.taste-skill/direction.json), disinkron dari produksi 28 Okt. Setiap perubahan produksi: commit + push dari situ.
+- Aplikasi di server: `/var/www/unggas-app`, bukan repo git — pembanding sebelum deploy adalah salinan kerja `~/unggas-net`. Repo lama `~/unggas-forum` di macbook masih v3.1 (plus docs/ops/theme/archive dan riwayat commit lama) dan belum direkonsiliasi; jangan dijadikan dasar deploy sampai disatukan.
 - Data desain: `src/app/globals.css` blok `@theme` adalah sumber kebenaran visual sejak v4. `theme/DESIGN.md` (v3.2) sudah usang dan masih mencatat palet serta radius v3, jangan dipakai sebagai acuan. Lembar arah v4 tersimpan di `.taste-skill/direction.json`.
 - Pernah terjadi drift: 26 Okt kode di server lebih baru daripada repo karena diedit langsung di server. Sudah diselamatkan lewat commit `c87850e`. Selalu diff dulu sebelum deploy.
 
@@ -197,6 +197,7 @@ Empat hal ini sudah memakan waktu di sesi sebelumnya. Tulis di sini supaya tidak
 | Secret sesi aplikasi | `/var/www/unggas-app/.env`, variabel `SESSION_SECRET` |
 | Kredensial AWS untuk kirim email | Tidak disimpan di mana pun. Memakai IAM role `HermesFullAdminRole` yang menempel di instance |
 | Token API Cloudflare (DNS) | `~/.cf_token` (chmod 600) |
+| Token GitHub (gh CLI, akun `Arg-z`) | `~/.config/gh/hosts.yml` di server (HTTPS, scope repo) |
 
 ## Operasional harian
 
@@ -219,6 +220,15 @@ ssh aws 'set -e; set -o pipefail; cd /var/www/unggas-app \
 Jangan pernah restart PM2 kalau build belum sukses. `test -f .next/BUILD_ID` adalah penggereknya. Restart saat build gagal membuat aplikasi crash-loop "Could not find a production build" sampai dibuild ulang, dan itu pernah terjadi 58 restart pada 26 Okt. `set -o pipefail` wajib karena perintahnya di-pipe, tanpa itu kegagalan build tertelan oleh `tail`.
 
 `prisma generate` wajib karena klien Prisma tidak ikut dibangun Next.js. `migrate deploy` hanya menjalankan migrasi yang belum jalan, aman diulang, tapi wajib setiap kali `prisma/schema.prisma` berubah.
+
+**Simpan perubahan produksi ke GitHub** (setiap kali kode di server berubah):
+```bash
+ssh aws 'cd ~/unggas-net \
+  && rsync -a --exclude node_modules --exclude .next --exclude .env --exclude ".taste-skill/**" --exclude .git /var/www/unggas-app/ app/ \
+  && cp ~/unggas-net-PROYEK.md docs/PROYEK.md \
+  && git add -A && git commit -m "Sinkron dari produksi" && git push'
+```
+`.env`, `node_modules`, dan `.next` selalu keluar dari commit; `app/.taste-skill/direction.json` sengaja dipertahankan.
 
 Backup sebelum deploy:
 
@@ -259,6 +269,7 @@ Cek email: `aws sesv2 get-account --region ap-southeast-1` untuk `ProductionAcce
 18. Hapus jumlah diskusi dan dropdown urutan di beranda (28 Okt, permintaan pemilik). Blok kanan toolbar ("N diskusi" + Pemilih `urut`) dihilang dari `page.tsx` beserta konstanta `URUTAN`, import `Pemilih`, dan variabel `total`; pembungkus toolbar jadi `md:hidden` karena isinya tinggal kotak cari ponsel. `parseUrutan` dan `?urut=` tetap berfungsi untuk tautan langsung, begitu juga `?q=`. Gerbang: tsc bersih, 52 test hijau, inspect.mjs 0 FAIL 0 WARN di 1440/768/390. Build `o9elqJRoRn3S2W_1I9eSC`, backup pra-deploy `~/backup-unggas-20261028-010722`.
 19. Hapus seksi Komunitas di kolom kanan halaman masuk/daftar (28 Okt, permintaan pemilik): daftar topik berjumlah dan baris "N diskusi sejauh ini" dihilang dari `PanelKomunitas.tsx`; `getTags`, `topik`, `total`, dan import `TopicIcon` ikut dibuang, sisa satu query `terbaru`. Panel kini hanya memuat "Sedang dibahas". Akibatnya inspeksi /masuk 1440 menemukan WARN `hero-void` (33% layar kosong di bawah kartu, sebelumnya 0 WARN), dibereskan dengan menengahkan blok auth secara vertikal: `lg:min-h-[calc(100svh-12rem)] lg:content-center` pada `main` /masuk dan /daftar. Re-inspeksi /masuk dan /daftar: 0 FAIL 0 WARN di 1440/768/390. Gerbang lain: tsc bersih, 52 test hijau. Build `9DoyyemJjsNpkqJB9QbP4`, backup pra-deploy `~/backup-unggas-20261028-013939`.
 20. Hapus seluruh kolom kanan halaman masuk/daftar (28 Okt, permintaan pemilik): `<PanelKomunitas />` dicabut dari kedua halaman, layout main jadi satu kolom `mx-auto max-w-[392px]` dengan penengahan vertikal dari item 19, dan berkas `components/PanelKomunitas.tsx` dihapus karena tak terpakai. Inspeksi /masuk dan /daftar 1440 memberi WARN `hero-void` (blok kosong 600×600, 28% layar) dan sengaja diterima: halaman auth adalah satu form di tengah, kekosongan simetris di sekelilingnya adalah komposisinya, sama seperti pola lupa-password dan cek-email. Gerbang lain: tsc bersih, 52 test hijau, 0 FAIL. Build `VQhMKwJx5aNaBJrYTINCI`, backup pra-deploy `~/backup-unggas-20261028-015708`.
+21. Repo GitHub `Arg-z/unggas-net` dibuat dari server (28 Okt, private): `gh` CLI 2.103.3 terpasang, login perangkat dengan akun `Arg-z`. Salinan kerja `~/unggas-net` di-commit dan didorong (`2d5312d`); `.env`, `node_modules`, dan `.next` dikecualikan dan diverifikasi bebas nilai rahasia. Tujuannya mematahkan pola drift: produksi kini punya pembanding permanen dan cadangan di luar server. Riwayat commit lama di repo macbook belum ikut.
 
 ## Email (aktif sejak 26 Okt 2026)
 
@@ -291,7 +302,7 @@ Catatan teknis:
 - Notifikasi in-app saat diskusi dibalas (selesai 26 Okt, revisi keputusan pemilik). Tabel `notifications` lewat migrasi `20261026220000`, kolom `notify_replies` dihapus lagi. Self-reply dan penulis yang diblokir tidak dinotifikasi. 52 test hijau.
 - UI v2 kartu organik, sudah live.
 - UI v3 tipografi dan sistem tombol, sudah live. Font judul v3 sudah digantikan Fraunces di v3.1.
-- UI v4 accent ladder, dibangun penuh, menunggu deploy.
+- UI v4 accent ladder, sudah live (28 Okt).
 - Kalkulator pakan interaktif, dibatalkan pemilik, bisa dipertimbangkan lagi nanti.
 - CloudFront CDN saat trafik naik.
 - Login Google (OAuth) kalau hambatan pendaftaran terlihat.
