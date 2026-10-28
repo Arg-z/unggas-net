@@ -290,18 +290,6 @@ body {
   }
 }
 
-.lp-hanyut {
-  animation: lp-hanyut 26s ease-in-out infinite alternate;
-}
-@keyframes lp-hanyut {
-  from {
-    transform: scale(1.03);
-  }
-  to {
-    transform: scale(1.1);
-  }
-}
-
 .lp-gerak [data-reveal] {
   opacity: 0;
   transform: translateY(24px);
