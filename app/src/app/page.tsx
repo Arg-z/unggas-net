@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { getSessionUser } from "@/lib/session";
 import {
   listDiscussions,
@@ -8,7 +7,6 @@ import {
   type DaftarDiskusi,
 } from "@/lib/forum";
 import { relatif } from "@/lib/relatif";
-import { TagPill } from "@/components/TagPill";
 import { Avatar } from "@/components/Avatar";
 import { IkonCari, IkonSematkan } from "@/components/Ikon";
 
@@ -19,7 +17,7 @@ type BarisDiskusi = DaftarDiskusi["rows"][number];
 export default async function Beranda({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string; page?: string; saring?: string; urut?: string; q?: string }>;
+  searchParams: Promise<{ page?: string; saring?: string; urut?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const user = await getSessionUser();
@@ -29,8 +27,7 @@ export default async function Beranda({
   const halaman = Number(params.page);
   const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
 
-  const { rows, tag, hasNext, total } = await listDiscussions({
-    tagSlug: params.tag,
+  const { rows, hasNext, total } = await listDiscussions({
     page,
     user,
     saring,
@@ -38,14 +35,9 @@ export default async function Beranda({
     q,
   });
 
-  // Tag yang tidak ada jangan jatuh diam-diam ke "semua diskusi": URL-nya menjanjikan
-  // filter, halamannya menampilkan hal lain. 404 yang jujur lebih baik.
-  if (params.tag && !tag) notFound();
-
   // Filter dan urutan tetap hidup di URL untuk tautan lama, tetapi tidak lagi
   // punya baris tab atau dropdown sendiri — keputusan pemilik 28 Okt.
   const dasar = new URLSearchParams();
-  if (params.tag) dasar.set("tag", params.tag);
   if (q) dasar.set("q", q);
   if (urut !== "terbaru") dasar.set("urut", urut);
   if (saring !== "semua") dasar.set("saring", saring);
@@ -108,13 +100,6 @@ export default async function Beranda({
         aksi: { href: tautan({ saring: undefined }), label: "Lihat semua diskusi" },
       };
     }
-    if (tag) {
-      return {
-        judul: `Belum ada diskusi di ${tag.name}.`,
-        isi: "Pertanyaan yang terdengar sepele sering jadi yang paling berguna untuk peternak lain.",
-        aksi: { href: "/baru", label: "Tulis diskusi pertama" },
-      };
-    }
     return {
       judul: "Belum ada diskusi.",
       isi: "Forum ini baru dibuka. Diskusi pertama akan menentukan isinya.",
@@ -133,13 +118,11 @@ export default async function Beranda({
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
         <div className="min-w-0">
           <h1 className="truncate font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[28px]">
-            {tag
-              ? tag.name
-              : saring === "disematkan"
-                ? "Disematkan"
-                : saring === "belum-dijawab"
-                  ? "Belum dijawab"
-                  : "Semua diskusi"}
+            {saring === "disematkan"
+              ? "Disematkan"
+              : saring === "belum-dijawab"
+                ? "Belum dijawab"
+                : "Semua diskusi"}
           </h1>
           <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-ink-soft">
             {pengantar}
@@ -151,7 +134,6 @@ export default async function Beranda({
           sidebar. Tidak ada urutan atau jumlah di sampingnya. */}
       <div className="mt-3 lg:hidden">
         <form action="/" role="search" className="relative">
-          {params.tag && <input type="hidden" name="tag" value={params.tag} />}
           {saring !== "semua" && <input type="hidden" name="saring" value={saring} />}
           {urut !== "terbaru" && <input type="hidden" name="urut" value={urut} />}
           <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint">
@@ -250,18 +232,6 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
             <IkonSematkan className="h-3.5 w-3.5" />
             Pengumuman
           </span>
-          {d.tags.length > 0 && (
-            <>
-              <span aria-hidden="true" className="text-[11px] text-ink-faint">
-                ·
-              </span>
-              {d.tags.slice(0, 2).map(({ tag: t }) => (
-                <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
-                  {t.name}
-                </TagPill>
-              ))}
-            </>
-          )}
         </div>
 
         <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[22px]">
@@ -347,20 +317,6 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
           >
             {balasan} balasan
           </span>
-          {d.tags.length > 0 && (
-            <>
-              <span aria-hidden="true" className="hidden sm:inline">
-                ·
-              </span>
-              <span className="flex flex-wrap items-center gap-1.5">
-                {d.tags.slice(0, 2).map(({ tag: t }) => (
-                  <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
-                    {t.name}
-                  </TagPill>
-                ))}
-              </span>
-            </>
-          )}
         </div>
       </div>
     </li>

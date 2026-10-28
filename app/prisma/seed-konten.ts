@@ -28,33 +28,33 @@ async function admin() {
 }
 
 // 3. Konten awal — pinned welcome + topik dari panduan
-type Topik = { tag: string; wilayah?: string; judul: string; isi: string };
+type Topik = { judul: string; isi: string };
 const TOPIK: Topik[] = [
-  { tag: "lobby", judul: "Selamat datang di Forum Peternak Unggas — perkenalkan dirimu di sini",
+  { judul: "Selamat datang di Forum Peternak Unggas — perkenalkan dirimu di sini",
     isi: "Selamat datang!\n\nIni forum peternak unggas Indonesia: satu akun untuk semua topik, wilayah jadi filter bukan tembok.\n\nAturan singkat:\n- Sopan dan saling bantu.\n- Jual-beli nanti punya tempatnya sendiri (masih dibersiapkan).\n- Jaga data pribadi — jangan bagikan nomor HP ke publik kalau tidak yakin.\n\nMulai dari sini: perkenalkan dirimu — daerah mana, ternak apa yang kamu pelihara, dan sudah berapa lama beternak." },
-  { tag: "puyuh", judul: "Memilih DOQ puyuh: ciri mana yang paling menentukan menurut pengalamanmu?",
+  { judul: "Memilih DOQ puyuh: ciri mana yang paling menentukan menurut pengalamanmu?",
     isi: "Dari panduan unggas.net: DOQ sehat itu aktif, bersuara jernih, pupur tidak menggumpal, kaki lurus.\n\nDi lapangan, kalau harus memilih satu ciri yang paling menentukan — kalian pilih yang mana? Pernah beli DOQ bagus tampaknya tapi hasilnya kecewa?" },
-  { tag: "puyuh", judul: "Kandang baterai vs aviary di tanah — mana yang cocok untuk skala rumahan?",
+  { judul: "Kandang baterai vs aviary di tanah — mana yang cocok untuk skala rumahan?",
     isi: "Kandang aviary memang lebih mirip habitat asli dan telurnya jauh lebih subur, tapi tidak semua bisa meniru tanah sebagai dasarnya.\n\nYang jalanin baterai dan yang aviary — share pengalaman: biaya, kotoran, hasil telur, sakit kaki. Kalau mulai dari nol lagi, kalian pilih yang mana?" },
-  { tag: "puyuh", judul: "Ventilasi kandang: kandang panas = telur turun. Kalian atur suhu & kelembapan bagaimana?",
+  { judul: "Ventilasi kandang: kandang panas = telur turun. Kalian atur suhu & kelembapan bagaimana?",
     isi: "Puyuh betelur optimal di 18-25°C, kelembapan 40-60%. Di iklim tropis seperti kita, siang terik itu musuh utama.\n\nBagaimana kalian mengaturnya? Lokasi kandang, atap, kasa silang — apa yang terbukti di tempatmu, dan seberapa terlihat bedanya ke produksi?" },
-  { tag: "puyuh", judul: "Ransum campuran sendiri vs pakan jadi: hitung-hitungan nyata di lapangan",
+  { judul: "Ransum campuran sendiri vs pakan jadi: hitung-hitungan nyata di lapangan",
     isi: "Banyak yang bilang campur sendiri lebih hemat, tapi banyak juga yang akhirnya balik ke pakan jadi karena repot atau salah proporsi.\n\nYang sudah mencoba keduanya: berapa selisih biayanya sebenarnya, dan apakah produksinya beda jauh?" },
-  { tag: "puyuh", judul: "Panen telur: jam berapa kalian panen, dan bagaimana menjaga kerabang tetap bagus?",
+  { judul: "Panen telur: jam berapa kalian panen, dan bagaimana menjaga kerabang tetap bagus?",
     isi: "Puyuh bertelur sore-malam, jadi panen pagi adalah rutinitas. Tapi kerabang tipis dan pecah tetap jadi masalah klasik.\n\nShare: jam panenmu, kandang kapan terakhir dilimeat/kalsium tambahan, dan berapa persen telur pecah di tempatmu?" },
-  { tag: "puyuh", judul: "Campuran pakan hemat: resep andalan kalian dan hasil produksinya?",
+  { judul: "Campuran pakan hemat: resep andalan kalian dan hasil produksinya?",
     isi: "Berbagi resep yuk: komposisi, harga per kg di daerahmu, dan hasil produksi (persen bertelur) dengan resep itu.\n\nTulis sejelas mungkin — banyak pemula yang belajar dari thread ini." },
-  { tag: "puyuh", judul: "Harga bahan pakan di daerahmu sekarang — naik lagi atau stabil?",
-    isi: "Jagung, bekatul, konsentrat: harga selalu bergerak dan beda antardaerah.\n\nTulis harga terkini di daerahmu (sebutkan wilayah!) supaya kita punya gambaran nasional. Thread ini bisa jadi rujukan saat mau beli." , wilayah: "jawa-barat" },
-  { tag: "puyuh", judul: "Daya tetas turun: kapan ganti pejantan, dan bagaimana pasangkan ulang?",
+  { judul: "Harga bahan pakan di daerahmu sekarang — naik lagi atau stabil?",
+    isi: "Jagung, bekatul, konsentrat: harga selalu bergerak dan beda antardaerah.\n\nTulis harga terkini di daerahmu (sebutkan wilayah!) supaya kita punya gambaran nasional. Thread ini bisa jadi rujukan saat mau beli." },
+  { judul: "Daya tetas turun: kapan ganti pejantan, dan bagaimana pasangkan ulang?",
     isi: "Rasio pejantan-betina, umur pejantan, dan cara pasangkan ulang tanpa perebutan — tiga hal yang sering ditanya pemula.\n\nPengalaman kalian: berapa rasio yang jalan, dan kapan tahu pejantan harus pensiun?" },
-  { tag: "puyuh", judul: "Pencatatan harian: catat apa saja yang ternyata penting untuk margin?",
+  { judul: "Pencatatan harian: catat apa saja yang ternyata penting untuk margin?",
     isi: "Banyak peternak tidak mencatat, lalu kaget saat rekap bulanan rugi.\n\nYang sudah terbiasa mencatat: formatmu seperti apa? Hanya pakan-telur-mati, atau lebih detail? Dampaknya ke keputusan usaha terasa di mana?" },
-  { tag: "puyuh", judul: "Harga telur puyuh sekarang di daerahmu — bertahan atau tergolek?",
+  { judul: "Harga telur puyuh sekarang di daerahmu — bertahan atau tergolek?",
     isi: "Harga telur berfluktuasi terus dan peternak kecil paling kena.\n\nTulis harga telur terbaru di daerahmu + menurutmu apa penyebabnya. Kalau mau, sertakan juga harga DOQ dan bibit." },
-  { tag: "lobby", judul: "Kenapa memilih puyuh (bukan ayam)? Ceritakan awal mulamu",
+  { judul: "Kenapa memilih puyuh (bukan ayam)? Ceritakan awal mulamu",
     isi: "Modal kecil, siklus cepat, tapi juga ada tantangannya.\n\nApa yang bikin kamu milih puyuh di awal? Dulu mulai dari berapa ekor, dan sekarang jadi apa?" },
-  { tag: "lobby", judul: "Kesalahan pemula paling mahal yang pernah kamu alami?",
+  { judul: "Kesalahan pemula paling mahal yang pernah kamu alami?",
     isi: "Kandang bocor saat hujan, pakan salah takaran, beli bibit murah tanpa cek — semua pernah ada yang alami.\n\nShare kesalahan paling mahalmu biar pemula lain tidak mengulanginya." },
 ];
 
@@ -67,23 +67,18 @@ async function main() {
   }
 
   // Pinned welcome
-  const lobby = await prisma.tag.findUniqueOrThrow({ where: { slug: "lobby" } });
   const welcome = await prisma.discussion.create({
     data: {
       userId: a.id, title: TOPIK[0].judul, isPinned: true,
-      tags: { create: [{ tagId: lobby.id }] },
       posts: { create: { userId: a.id, number: 1, content: TOPIK[0].isi } },
     },
   });
   console.log("pinned welcome:", welcome.id);
 
   for (const t of TOPIK.slice(1)) {
-    const topik = await prisma.tag.findUniqueOrThrow({ where: { slug: t.tag } });
-    const wilayah = t.wilayah ? await prisma.tag.findUniqueOrThrow({ where: { slug: t.wilayah } }) : null;
     await prisma.discussion.create({
       data: {
         userId: a.id, title: t.judul,
-        tags: { create: [{ tagId: topik.id }, ...(wilayah ? [{ tagId: wilayah.id }] : [])] },
         posts: { create: { userId: a.id, number: 1, content: t.isi } },
       },
     });

@@ -47,14 +47,10 @@ const tunda = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 export default async function Mulai() {
   const diskusi = await prisma.discussion.findMany({
-    where: {
-      isHidden: false,
-      tags: { none: { tag: { isRestricted: true } } },
-    },
+    where: { isHidden: false },
     orderBy: [{ isPinned: "desc" }, { lastPostAt: "desc" }],
     take: 6,
     include: {
-      tags: { include: { tag: true } },
       _count: { select: { posts: { where: { isHidden: false } } } },
     },
   });
@@ -156,12 +152,11 @@ export default async function Mulai() {
           Yang sedang dibicarakan
         </h2>
         <p data-reveal className="mt-4 text-[17px] leading-[1.6] text-ink-soft">
-          Untuk sekarang baru Puyuh dan Lobby.
+          Untuk sekarang semua diskusi ada di satu ruang yang sama.
         </p>
 
         <ul className="mt-8 md:mt-12">
           {diskusi.map((d, i) => {
-            const topik = d.tags.find((t) => t.tag.kind === "topik")?.tag.name ?? "Diskusi";
             const balasan = Math.max(0, d._count.posts - 1);
 
             return (
@@ -177,7 +172,6 @@ export default async function Mulai() {
                   </h3>
                   <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-ink-faint md:col-span-4 md:mt-0 md:justify-end">
                     {d.isPinned && <span>Disematkan</span>}
-                    <span>{topik}</span>
                     <span>{balasan} balasan</span>
                     <span>{relatif(d.lastPostAt)}</span>
                   </p>

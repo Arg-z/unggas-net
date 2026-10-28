@@ -9,13 +9,11 @@ import { IkonCari } from "./Ikon";
 export function BilahCari({ penuh = false }: { penuh?: boolean }) {
   const sp = useSearchParams();
   const q = sp.get("q") ?? "";
-  const tag = sp.get("tag");
   const saring = sp.get("saring");
   const urut = sp.get("urut");
 
   return (
     <form action="/" role="search" className={`relative ${penuh ? "w-full" : "w-[300px]"}`}>
-      {tag && <input type="hidden" name="tag" value={tag} />}
       {saring && <input type="hidden" name="saring" value={saring} />}
       {urut && <input type="hidden" name="urut" value={urut} />}
       <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint">

@@ -2,9 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/lib/session";
 import { getThread } from "@/lib/forum";
-import { prisma } from "@/lib/db";
 import { relatif } from "@/lib/relatif";
-import { TagPill } from "@/components/TagPill";
 import { Avatar } from "@/components/Avatar";
 import { BadgeSematkan } from "@/components/BadgeSematkan";
 import { IkonPanah } from "@/components/Ikon";
@@ -23,22 +21,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   if (!thread) notFound();
 
   const [pembuka, ...balasan] = thread.posts;
-  const topik = thread.tags.find(({ tag }) => tag.kind === "topik")?.tag;
-
-  // Diskusi lain di topik yang sama: jalan keluar nyata setelah membaca,
-  // bukan rekomendasi karangan.
-  const lain = topik
-    ? await prisma.discussion.findMany({
-        where: {
-          isHidden: false,
-          id: { not: thread.id },
-          tags: { some: { tag: { slug: topik.slug } } },
-        },
-        orderBy: { lastPostAt: "desc" },
-        take: 3,
-        select: { id: true, title: true, lastPostAt: true },
-      })
-    : [];
 
   const dibuka = thread.createdAt.toLocaleDateString("id-ID", {
     day: "numeric",
@@ -49,11 +31,11 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   return (
     <main id="konten" tabIndex={-1} className="w-full">
       <Link
-        href={topik ? `/?tag=${topik.slug}` : "/"}
+        href="/"
         className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-accent-ink"
       >
         <IkonPanah className="h-3.5 w-3.5 text-accent" />
-        {topik ? topik.name : "Semua diskusi"}
+        Semua diskusi
       </Link>
 
       <div className="mt-3 grid gap-x-8 gap-y-6 xl:grid-cols-[minmax(0,1fr)_280px]">
@@ -70,11 +52,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
               <div className="flex items-start justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-1.5">
                   {thread.isPinned && <BadgeSematkan />}
-                  {thread.tags.map(({ tag: t }) => (
-                    <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
-                      {t.name}
-                    </TagPill>
-                  ))}
                 </div>
                 <div className="shrink-0">
                   <a href="#balas" className="btn btn-primary">
@@ -209,38 +186,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                   <dd className="truncate font-medium text-ink-strong">{thread.user.username}</dd>
                 </div>
               </dl>
-            </div>
-
-            <div className="border-t border-border pt-4">
-              <h2 className="text-[12px] font-medium text-ink-faint">
-                {topik ? `Lainnya di ${topik.name}` : "Diskusi lain"}
-              </h2>
-              {lain.length > 0 ? (
-                <ul className="mt-1 divide-y divide-rule">
-                  {lain.map((d) => (
-                    <li key={d.id}>
-                      <Link href={`/t/${d.id}`} className="block py-2.5">
-                        <span className="line-clamp-2 text-[13.5px] font-medium leading-snug text-ink-strong hover:text-accent-ink">
-                          {d.title}
-                        </span>
-                        <span className="mt-1 block text-[12px] text-ink-faint">
-                          {relatif(d.lastPostAt)}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-2 text-[13px] leading-relaxed text-ink-faint">
-                  Belum ada diskusi lain.
-                </p>
-              )}
-
-              {topik && (
-                <Link href={`/?tag=${topik.slug}`} className="link mt-3 text-[13px]">
-                  Lihat semua di {topik.name}
-                </Link>
-              )}
             </div>
           </div>
         </aside>

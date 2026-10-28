@@ -15,7 +15,6 @@ export function parseUrutan(value?: string): Urutan {
 }
 
 export async function listDiscussions(opts: {
-  tagSlug?: string;
   page?: number;
   user?: SessionUser | null;
   saring?: Saringan;
@@ -28,13 +27,9 @@ export async function listDiscussions(opts: {
   const saring = opts.saring ?? "semua";
   const urut = opts.urut ?? "terbaru";
   const q = (opts.q ?? "").trim().slice(0, 80);
-  const tag = opts.tagSlug
-    ? await prisma.tag.findUnique({ where: { slug: opts.tagSlug } })
-    : null;
 
   const where = {
     isHidden: false,
-    ...(tag ? { tags: { some: { tagId: tag.id } } } : {}),
     ...(saring === "disematkan" ? { isPinned: true } : {}),
     ...(saring === "belum-dijawab"
       ? { posts: { none: { number: { gt: 1 }, isHidden: false } } }
@@ -69,7 +64,6 @@ export async function listDiscussions(opts: {
       take: limit + 1,
       include: {
         user: { select: { username: true, isAdmin: true } },
-        tags: { include: { tag: true } },
         _count: { select: { posts: { where: { isHidden: false } } } },
         posts: { where: { number: 1 }, select: { content: true }, take: 1 },
       },
@@ -78,7 +72,6 @@ export async function listDiscussions(opts: {
   ]);
 
   return {
-    tag,
     rows: rows.slice(0, limit),
     hasNext: rows.length > limit,
     page,
@@ -91,7 +84,6 @@ export async function getThread(id: number, user?: SessionUser | null) {
     where: { id },
     include: {
       user: { select: { username: true, isAdmin: true } },
-      tags: { include: { tag: true } },
       posts: {
         where: { isHidden: false },
         orderBy: { number: "asc" },
@@ -103,6 +95,3 @@ export async function getThread(id: number, user?: SessionUser | null) {
   return discussion;
 }
 
-export async function getTagSlugs() {
-  return prisma.tag.findMany({ select: { id: true, kind: true, isRestricted: true } });
-}
