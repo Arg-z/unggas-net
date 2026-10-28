@@ -50,7 +50,7 @@ export default function Mulai() {
             unggas<span className="text-ink-faint">.net</span>
           </Link>
           <nav aria-label="Navigasi halaman" className="flex items-center gap-4 text-ink-soft sm:gap-5">
-            <Link href="/masuk" className="transition-colors hover:text-ink-strong">
+            <Link href="/masuk" className="transition-colors hover:text-accent-ink">
               Masuk
             </Link>
           </nav>
@@ -78,14 +78,14 @@ export default function Mulai() {
           </p>
           <Link
             href="/daftar"
-            className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-invert px-7 text-[14px] font-semibold text-on-invert transition-colors hover:bg-accent hover:text-on-accent md:w-auto"
+            className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-accent px-7 text-[14px] font-semibold text-on-accent transition-colors hover:bg-accent-hover md:w-auto"
           >
             Buat akun
           </Link>
         </div>
       </section>
 
-      <section aria-labelledby="isinya" className="px-6 py-16 md:px-12 md:py-20">
+      <section aria-labelledby="isinya" className="bg-accent-soft px-6 py-16 md:px-12 md:py-20">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
           <h2
             id="isinya"
@@ -98,7 +98,7 @@ export default function Mulai() {
             {FITUR.map((f, i) => (
               <li
                 key={f.judul}
-                className="grid gap-2 border-t border-rule py-5 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-baseline lg:gap-10 lg:py-6"
+                className="grid gap-2 py-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-baseline lg:gap-10 lg:py-7"
               >
                 <h3
                   data-reveal
@@ -127,7 +127,7 @@ export default function Mulai() {
         <h2
           id="ajakan"
           data-reveal
-          className="font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-[0.9] tracking-[-0.05em]"
+          className="font-display text-[clamp(3rem,12vw,10.5rem)] font-semibold leading-[0.9] tracking-[-0.05em]"
         >
           Ada yang
           <br />
@@ -138,7 +138,7 @@ export default function Mulai() {
           <div className="flex shrink-0 flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
             <Link
               href="/daftar"
-              className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-on-invert px-7 text-[14px] font-semibold text-invert transition-colors hover:bg-accent hover:text-on-accent"
+              className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-accent px-7 text-[14px] font-semibold text-on-accent transition-colors hover:bg-accent-hover"
             >
               Buat akun
             </Link>
@@ -147,7 +147,7 @@ export default function Mulai() {
       </section>
 
       <footer className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-12 md:px-12 md:pt-16">
-        <p className="font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-none tracking-[-0.05em] text-ink-strong">
+        <p className="font-display text-[clamp(3rem,12vw,10.5rem)] font-semibold leading-none tracking-[-0.05em] text-ink-strong">
           unggas<span className="text-ink-faint">.net</span>
         </p>
 
