@@ -85,7 +85,7 @@ export default function Mulai() {
         </div>
       </section>
 
-      <section aria-labelledby="isinya" className="px-6 py-20 md:px-12 md:py-24">
+      <section aria-labelledby="isinya" className="px-6 py-16 md:px-12 md:py-20">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
           <h2
             id="isinya"
@@ -122,7 +122,7 @@ export default function Mulai() {
 
       <section
         aria-labelledby="ajakan"
-        className="flex flex-col bg-invert px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-20 text-on-invert md:px-12 md:pb-24 md:pt-28"
+        className="flex flex-col bg-invert px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-16 text-on-invert md:px-12 md:pb-20 md:pt-20"
       >
         <h2
           id="ajakan"
@@ -146,7 +146,7 @@ export default function Mulai() {
         </div>
       </section>
 
-      <footer className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-16 md:px-12 md:pt-28">
+      <footer className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-12 md:px-12 md:pt-16">
         <p className="font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-none tracking-[-0.05em] text-ink-strong">
           unggas<span className="text-ink-faint">.net</span>
         </p>
