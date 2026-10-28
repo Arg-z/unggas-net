@@ -69,12 +69,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </Suspense>
 
       <div className="rounded-xl border border-border px-3 py-2.5">
-        <p className="px-1 text-[11.5px] font-medium text-ink-faint">Komunitas</p>
-        <div className="mt-0.5">
-          <Suspense fallback={<div className="h-8" />}>
-            <PemilihKomunitas topik={topik} lebar="w-full" lembut />
-          </Suspense>
-        </div>
+        <Suspense fallback={<div className="h-8" />}>
+          <PemilihKomunitas topik={topik} lebar="w-full" lembut />
+        </Suspense>
       </div>
 
       <Suspense fallback={<div className="h-44" />}>
