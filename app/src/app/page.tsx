@@ -6,12 +6,12 @@ import { Pengungkap } from "@/components/Pengungkap";
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
   description:
-    "Forum peternak unggas Indonesia. Baca tanpa akun; untuk menulis, buat akun. Nama penulis tampil anonim.",
+    "Forum peternak unggas Indonesia. Baca tanpa akun, dan bikin akun kalau mau menulis. Nama penulis tetap anonim.",
   alternates: { canonical: "https://unggas.net" },
   openGraph: {
     title: "Forum Peternak Unggas Indonesia",
     description:
-      "Forum peternak unggas Indonesia. Baca tanpa akun; untuk menulis, buat akun. Nama penulis tampil anonim.",
+      "Forum peternak unggas Indonesia. Baca tanpa akun, dan bikin akun kalau mau menulis. Nama penulis tetap anonim.",
     url: "https://unggas.net/",
     siteName: "unggas.net",
     locale: "id_ID",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const FITUR = [
   {
     judul: "Cari",
-    isi: "Semua isi diskusi bisa dicari, termasuk balasan.",
+    isi: "Semua isi diskusi bisa dicari, termasuk balasannya.",
   },
   {
     judul: "Anonim",
@@ -30,7 +30,7 @@ const FITUR = [
   },
   {
     judul: "Tautan",
-    isi: "Tiap diskusi punya tautan sendiri untuk dibagikan.",
+    isi: "Tiap diskusi punya tautan sendiri buat dibagikan.",
   },
 ];
 
@@ -76,7 +76,7 @@ export default function Mulai() {
 
         <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
           <p className="max-w-[44ch] text-balance text-[22px] leading-[1.4] text-ink-soft">
-            Forum peternak unggas Indonesia. Baca tanpa akun; untuk menulis, buat akun — nama
+            Forum peternak unggas Indonesia. Baca tanpa akun, dan bikin akun kalau mau menulis. Nama
             penulis tetap anonim.
           </p>
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end md:w-auto md:shrink-0">
@@ -84,7 +84,7 @@ export default function Mulai() {
               href="/daftar"
               className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-accent px-7 text-[14px] font-semibold text-on-accent transition-colors hover:bg-accent-hover sm:w-auto"
             >
-              Buat akun
+              Bikin akun
             </Link>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function Mulai() {
               href="/daftar"
               className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-accent px-7 text-[14px] font-semibold text-on-accent transition-colors hover:bg-accent-hover"
             >
-              Buat akun
+              Bikin akun
             </Link>
           </div>
         </div>
@@ -159,7 +159,7 @@ export default function Mulai() {
         <div className="mt-10 flex flex-col gap-6 text-[14px] md:flex-row md:items-center md:justify-between">
           <nav aria-label="Tautan footer" className="flex flex-wrap gap-x-6 gap-y-2 text-ink-soft">
             <Link href="/daftar" className="inline-flex min-h-11 items-center transition-colors hover:text-accent-ink sm:min-h-0">
-              Buat akun
+              Bikin akun
             </Link>
             <Link href="/masuk" className="inline-flex min-h-11 items-center transition-colors hover:text-accent-ink sm:min-h-0">
               Masuk
