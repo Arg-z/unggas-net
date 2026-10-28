@@ -100,7 +100,7 @@ export default function Mulai() {
             {FITUR.map((f, i) => (
               <li
                 key={f.judul}
-                className="flex flex-col gap-2 py-5 lg:flex-row lg:items-baseline lg:gap-10 lg:py-6"
+                className="grid gap-2 border-t border-rule py-5 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-baseline lg:gap-10 lg:py-6"
               >
                 <h3
                   data-reveal
