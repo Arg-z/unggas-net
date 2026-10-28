@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import { relatif } from "@/lib/relatif";
 import { Avatar } from "@/components/Avatar";
 import { BadgeSematkan } from "@/components/BadgeSematkan";
+import { TombolBagikan } from "@/components/TombolBagikan";
 import { IkonPanah } from "@/components/Ikon";
 import { parseId } from "@/lib/validate";
 import { BalasForm } from "../../BalasForm";
@@ -108,6 +109,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 <span className="whitespace-nowrap">{relatif(thread.createdAt)}</span>
                 <span aria-hidden="true">·</span>
                 <span className="tabular whitespace-nowrap">{balasan.length} balasan</span>
+                <TombolBagikan className="ml-auto -mr-1" />
               </p>
             </div>
 

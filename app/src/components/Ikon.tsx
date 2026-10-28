@@ -21,6 +21,16 @@ export function IkonCari({ className = "h-4 w-4" }: Props) {
   );
 }
 
+export function IkonTautan({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="M8.8 11.2 11.2 8.8" />
+      <path d="M9.2 12.9 7.8 14.3a2.9 2.9 0 0 1-4.1-4.1l1.4-1.4" />
+      <path d="M10.8 7.1 12.2 5.7a2.9 2.9 0 0 1 4.1 4.1l-1.4 1.4" />
+    </svg>
+  );
+}
+
 export function IkonSematkan({ className = "h-3.5 w-3.5" }: Props) {
   return (
     <svg viewBox="0 0 16 16" className={className} {...dasar}>
