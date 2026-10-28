@@ -1,5 +1,5 @@
 const USERNAME_RE = /^[a-zA-Z0-9_]+$/;
-const RESERVED = new Set(["admin", "administrator", "moderator", "root", "unggas", "support", "staff"]);
+const RESERVED = new Set(["admin", "administrator", "moderator", "root", "unggas", "support", "staff", "arga"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /** ID numerik positif dari segmen URL; null kalau tidak valid (mis. "abc", "0", "-1"). */

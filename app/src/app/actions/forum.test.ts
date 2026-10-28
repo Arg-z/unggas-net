@@ -14,6 +14,7 @@ vi.mock("@/lib/session", () => {
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
 import { _resetBuckets } from "@/lib/ratelimit";
+import { getThread, listDiscussions } from "@/lib/forum";
 
 import { buatDiskusi, balas } from "./forum";
 import { setCurrentUser } from "@/lib/session";
@@ -117,6 +118,31 @@ describe("balas", () => {
     try {
       const r = await balas(null, fd({ discussionId: String(discussionId), content: "Balasan ke diskusi tersembunyi." }));
       expect(r).toEqual({ ok: false, alasan: "Diskusi tidak ditemukan." });
+    } finally {
+      await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: false } });
+    }
+  });
+
+  it("post pembuka yang disembunyikan tidak muncul di daftar", async () => {
+    const pembuka = await prisma.post.findFirstOrThrow({ where: { discussionId, number: 1 } });
+    await prisma.post.update({ where: { id: pembuka.id }, data: { isHidden: true } });
+    try {
+      const { rows } = await listDiscussions({ q: "Tes kandang panas" });
+      const baris = rows.find((r) => r.id === discussionId);
+      expect(baris).toBeDefined();
+      expect(baris?.posts).toHaveLength(0);
+    } finally {
+      await prisma.post.update({ where: { id: pembuka.id }, data: { isHidden: false } });
+    }
+  });
+
+  it("admin yang diblokir tidak bisa membaca diskusi tersembunyi", async () => {
+    await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: true } });
+    try {
+      const bannedAdmin = { id: userId, username: uname, email: "", isAdmin: true, isBanned: true };
+      const activeAdmin = { ...bannedAdmin, isBanned: false };
+      expect(await getThread(discussionId, bannedAdmin)).toBeNull();
+      expect(await getThread(discussionId, activeAdmin)).not.toBeNull();
     } finally {
       await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: false } });
     }

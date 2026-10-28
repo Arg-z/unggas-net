@@ -64,7 +64,7 @@ export async function listDiscussions(opts: {
       take: limit + 1,
       include: {
         _count: { select: { posts: { where: { isHidden: false } } } },
-        posts: { where: { number: 1 }, select: { content: true }, take: 1 },
+        posts: { where: { number: 1, isHidden: false }, select: { content: true }, take: 1 },
       },
     }),
     prisma.discussion.count({ where }),
@@ -88,7 +88,7 @@ export async function getThread(id: number, user?: SessionUser | null) {
       },
     },
   });
-  if (!discussion || (discussion.isHidden && !user?.isAdmin)) return null;
+  if (!discussion || (discussion.isHidden && !(user?.isAdmin && !user.isBanned))) return null;
   return discussion;
 }
 

@@ -7,12 +7,22 @@ import { prisma } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { validateSignup, validateSignupTanpaEmail } from "@/lib/validate";
 import { emailAktif, emailInternal } from "@/lib/fitur";
-import { createSession, destroySession, getSessionUser } from "@/lib/session";
+import { createSession, destroySession } from "@/lib/session";
 import { rateLimit } from "@/lib/ratelimit";
 import { buatToken, pakaiToken } from "@/lib/emailtoken";
 import { emailResetPassword, emailVerifikasi, kirimEmail } from "@/lib/email";
 
 export type ActionResult = { ok: true } | { ok: false; alasan: string };
+
+type LoginRow = {
+  id: number;
+  username: string;
+  email: string;
+  passwordHash: string;
+  isAdmin: boolean;
+  isBanned: boolean;
+  emailVerifiedAt: Date | null;
+};
 
 // Pembatasan percobaan masuk (anti brute-force): 5/menit per identitas, 20/menit per IP.
 const LIMIT_IDENTITAS = 5;
@@ -81,13 +91,14 @@ export async function daftar(_prev: ActionResult | null, formData: FormData): Pr
     email = emailInternal(username);
   }
 
-  const bentrok = await prisma.user.findFirst({
-    // Cek bentrok username juga tanpa peduli besar-kecil, sama seperti saat masuk.
-    where: emailNyala
-      ? { OR: [{ username: { equals: username, mode: "insensitive" } }, { email }] }
-      : { username: { equals: username, mode: "insensitive" } },
-    select: { username: true, email: true },
-  });
+  // Cek bentrok username tanpa peduli besar-kecil. Jangan pakai mode "insensitive":
+  // Prisma menerjemahkannya ke ILIKE sehingga "%" dan "_" jadi wildcard.
+  const [bentrok] = await prisma.$queryRaw<{ username: string; email: string }[]>`
+    SELECT username, email
+    FROM users
+    WHERE lower(username) = ${username.toLowerCase()} OR email = ${email}
+    LIMIT 1
+  `;
   if (bentrok) {
     return {
       ok: false,
@@ -149,12 +160,19 @@ export async function masuk(_prev: ActionResult | null, formData: FormData): Pro
     return { ok: false, alasan: "Terlalu banyak percobaan masuk. Tunggu sebentar lalu coba lagi." };
   }
 
-  const user = await prisma.user.findFirst({
-    // Username selalu dicocokkan tanpa peduli besar-kecil; email sudah tersimpan lowercase.
-    where: emailNyala
-      ? { OR: [{ username: { equals: identitas, mode: "insensitive" } }, { email: identitas }] }
-      : { username: { equals: identitas, mode: "insensitive" } },
-  });
+  // Bandingkan username sebagai nilai, bukan pola. mode "insensitive" di Prisma
+  // menjadi ILIKE: input "%" atau "_" bisa mencocokkan akun lain dan melewati
+  // throttle per-identitas. Query parameter ini memakai lower() tanpa wildcard.
+  const [user] = await prisma.$queryRaw<LoginRow[]>`
+    SELECT id, username, email,
+           "passwordHash",
+           is_admin AS "isAdmin",
+           is_banned AS "isBanned",
+           email_verified_at AS "emailVerifiedAt"
+    FROM users
+    WHERE lower(username) = ${identitas} OR email = ${identitas}
+    LIMIT 1
+  `;
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
     return { ok: false, alasan: emailNyala ? "Username/email atau password salah" : "Username atau password salah" };
   }
@@ -270,11 +288,4 @@ export async function aktifkanAkun(_prev: ActionResult | null, formData: FormDat
 
   await prisma.user.update({ where: { id: userId }, data: { emailVerifiedAt: new Date() } });
   redirect("/masuk?verified=1");
-}
-
-/** Helper guard dipakai action lain: user login aktif atau null. */
-export async function requireUser() {
-  const user = await getSessionUser();
-  if (!user || user.isBanned) return null;
-  return user;
 }

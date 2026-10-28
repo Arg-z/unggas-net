@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { requireUser } from "./auth";
+import { requireUser } from "@/lib/current-user";
 
 /** Buka notifikasi: tandai dibaca (milik sendiri saja) lalu lompat ke balasannya. */
 export async function bukaNotifikasi(formData: FormData): Promise<void> {

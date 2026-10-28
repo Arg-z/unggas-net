@@ -1,15 +1,23 @@
 import { defineConfig } from "vitest/config";
+import { createRequire } from "node:module";
 import path from "node:path";
 
 // Test WAJIB memakai database terpisah (unggas_test) — jangan pernah menyentuh
-// database produksi. Datanya di-reset aman kapan pun: DATABASE_URL di sini
-// menimpa .env, jadi test tidak tergantung file mana pun.
+// database produksi. Kredensial TIDAK disimpan di repo: isi TEST_DATABASE_URL
+// di .env server (gitignored), lalu jalankan test dari folder app.
+const require = createRequire(import.meta.url);
+const { loadEnvConfig } = require("@next/env") as typeof import("@next/env");
+loadEnvConfig(process.cwd());
+const databaseUrl = process.env.TEST_DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("TEST_DATABASE_URL belum di-set. Tambahkan di .env (jangan commit).");
+}
+
 export default defineConfig({
   test: {
     environment: "node",
     env: {
-      DATABASE_URL:
-        "postgresql://unggas:3ud3nu668zLUYc3gYabrr47QCZlm@127.0.0.1:5433/unggas_test",
+      DATABASE_URL: databaseUrl,
       SESSION_SECRET: "test-secret",
     },
   },

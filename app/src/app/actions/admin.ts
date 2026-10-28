@@ -89,13 +89,26 @@ export async function setSematkan(id: number, pinned: boolean): Promise<ActionRe
 }
 
 export async function setBan(userId: number, banned: boolean): Promise<ActionResult> {
-  if (!(await guardAdmin())) return { ok: false, alasan: "Khusus admin" };
+  const admin = await guardAdmin();
+  if (!admin) return { ok: false, alasan: "Khusus admin" };
   if (!Number.isInteger(userId)) return { ok: false, alasan: "User tidak ditemukan." };
+  if (userId === admin.id) return { ok: false, alasan: "Tidak bisa memblokir akun sendiri." };
+
+  if (banned) {
+    const target = await prisma.user.findUnique({ where: { id: userId }, select: { isAdmin: true } });
+    if (target?.isAdmin) {
+      const adminAktif = await prisma.user.count({ where: { isAdmin: true, isBanned: false } });
+      if (adminAktif <= 1) return { ok: false, alasan: "Tidak bisa memblokir admin terakhir." };
+    }
+  }
 
   const user = await prisma.user
     .update({ where: { id: userId }, data: { isBanned: Boolean(banned) }, select: { id: true } })
     .catch(() => null);
   if (!user) return { ok: false, alasan: "User tidak ditemukan." };
+
+  // Blokir harus langsung mencabut akses: sesi lama tidak boleh tetap membaca halaman privat.
+  if (banned) await prisma.session.deleteMany({ where: { userId } });
 
   revalidatePath("/");
   revalidatePath("/admin");

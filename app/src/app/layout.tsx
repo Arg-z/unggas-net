@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </Suspense>
 
       <Suspense fallback={<div className="h-44" />}>
-        <NavSamping isAdmin={Boolean(user?.isAdmin)} belumDibaca={belumDibaca} ponsel />
+        <NavSamping isAdmin={Boolean(user?.isAdmin && !user.isBanned)} belumDibaca={belumDibaca} ponsel />
       </Suspense>
 
       {user ? (
@@ -109,7 +109,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
       <div className="mt-6 min-h-0 flex-1 overflow-y-auto">
         <Suspense fallback={<div className="h-[200px]" />}>
-          <NavSamping isAdmin={Boolean(user?.isAdmin)} belumDibaca={belumDibaca} />
+          <NavSamping isAdmin={Boolean(user?.isAdmin && !user.isBanned)} belumDibaca={belumDibaca} />
         </Suspense>
       </div>
 

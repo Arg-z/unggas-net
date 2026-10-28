@@ -3,9 +3,10 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-// 1. Bersihkan data integration test
+// 1. Bersihkan data integration test — hanya pola nama yang dibuat test (tes + 8 hex).
 async function bersih() {
-  const tesUsers = await prisma.user.findMany({ where: { username: { startsWith: "tes" } }, select: { id: true } });
+  const semua = await prisma.user.findMany({ select: { id: true, username: true } });
+  const tesUsers = semua.filter((u) => /^tes[0-9a-f]{8}$/.test(u.username));
   const ids = tesUsers.map((u) => u.id);
   await prisma.discussion.deleteMany({ where: { userId: { in: ids } } });
   await prisma.session.deleteMany({ where: { userId: { in: ids } } });
@@ -13,8 +14,18 @@ async function bersih() {
   console.log(`bersih: ${ids.length} user tes dihapus beserta diskusinya`);
 }
 
-// 2. Admin user
+// 2. Admin user — buat sekali, jangan pernah menaikkan akun yang sudah ada.
 async function admin() {
+  const existing = await prisma.user.findUnique({ where: { username: "arga" } });
+  if (existing) {
+    if (!existing.isAdmin) {
+      console.error("Username arga sudah dipakai akun non-admin — hentikan seed.");
+      process.exit(1);
+    }
+    console.log("admin sudah ada:", existing.username);
+    return existing;
+  }
+
   const pass = process.env.ADMIN_PASS ?? "";
   const data = {
     username: "arga",
@@ -22,7 +33,7 @@ async function admin() {
     passwordHash: await bcrypt.hash(pass, 10),
     isAdmin: true,
   };
-  const admin = await prisma.user.upsert({ where: { username: "arga" }, create: data, update: { isAdmin: true } });
+  const admin = await prisma.user.create({ data });
   console.log("admin siap:", admin.username);
   return admin;
 }
@@ -60,11 +71,11 @@ const TOPIK: Topik[] = [
 
 async function main() {
   await bersih();
-  const a = await admin();
   if (!process.env.ADMIN_PASS) {
-    console.error("ADMIN_PASS env kosong — admin dibuat tanpa password baru? hentikan.");
+    console.error("ADMIN_PASS env kosong — hentikan sebelum membuat admin.");
     process.exit(1);
   }
+  const a = await admin();
 
   // Pinned welcome
   const welcome = await prisma.discussion.create({

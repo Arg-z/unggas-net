@@ -15,8 +15,8 @@ describe("password", () => {
 describe("validateSignup", () => {
   it("menerima pendaftaran valid", () => {
     const r = validateSignup({
-      username: "arga",
-      email: "arga@unggas.net",
+      username: "peternak_ku",
+      email: "peternak@unggas.net",
       password: "T3sP3t3rnak!2026",
       honeypot: "",
     });

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { requireUser } from "./auth";
+import { requireUser } from "@/lib/current-user";
 import { rateLimit } from "@/lib/ratelimit";
 
 export type ActionResult = { ok: true } | { ok: false; alasan: string };

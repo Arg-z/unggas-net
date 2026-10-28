@@ -27,7 +27,7 @@ export async function generateMetadata({
     select: {
       title: true,
       isHidden: true,
-      posts: { where: { number: 1 }, select: { content: true }, take: 1 },
+      posts: { where: { number: 1, isHidden: false }, select: { content: true }, take: 1 },
     },
   });
   if (!diskusi || diskusi.isHidden) return {};

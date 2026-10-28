@@ -111,6 +111,12 @@ describe("masuk saat email dimatikan", () => {
     ).rejects.toThrow("NEXT_REDIRECT /");
     expect(sesiMasuk).toContain(user?.id);
   });
+
+  it("pola wildcard tidak mencocokkan akun", async () => {
+    _resetBuckets();
+    const r = await masuk(null, fd({ identitas: `${uname.slice(0, 3)}%`, password: PASS }));
+    expect(r).toEqual({ ok: false, alasan: SALAH });
+  });
 });
 
 describe("masuk saat email menyala", () => {
