@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 const TAG_TOPIK = [
   { name: "Puyuh", description: "Semua tentang budidaya puyuh: telur, daging, kandang, pakan, penyakit." },
   { name: "Lobby", description: "Perkenalan anggota baru, ngobrol santai, dan topik umum seputar peternakan." },
-  { name: "Ayam", description: "Komunitas ayam: kampung, broiler, layer. Dibuka saat anggotanya siap.", restricted: true },
-  { name: "Bebek & Entok", description: "Komunitas bebek dan entok. Dibuka saat anggotanya siap.", restricted: true },
+  { name: "Ayam", description: "Ayam kampung, broiler, dan layer. Dibuka saat anggotanya siap.", restricted: true },
+  { name: "Bebek & Entok", description: "Bebek dan entok. Dibuka saat anggotanya siap.", restricted: true },
   { name: "Jual-Beli", description: "Jual-beli ternak, telur, pakan, dan peralatan. Dibuka saat anggotanya siap.", restricted: true },
 ];
 
