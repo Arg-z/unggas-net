@@ -336,8 +336,8 @@ body {
   display: block;
   overflow: hidden;
   /* Beri ruang untuk ascender/descender; margin negatif menjaga jarak baris. */
-  padding: 0.16em 0;
-  margin: -0.16em 0;
+  padding: 0.3em 0;
+  margin: -0.3em 0;
 }
 .lp-naik {
   display: block;
@@ -345,7 +345,7 @@ body {
 }
 @keyframes lp-naik {
   from {
-    transform: translateY(125%);
+    transform: translateY(150%);
   }
   to {
     transform: none;
