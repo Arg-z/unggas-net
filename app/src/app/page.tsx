@@ -1,8 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { prisma } from "@/lib/db";
-import { relatif } from "@/lib/relatif";
 import { Pengungkap } from "@/components/Pengungkap";
 import { TombolTema } from "@/components/Tema";
 
@@ -58,16 +56,7 @@ const FAQ = [
 
 const tunda = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
-export default async function Mulai() {
-  const diskusi = await prisma.discussion.findMany({
-    where: { isHidden: false },
-    orderBy: [{ isPinned: "desc" }, { lastPostAt: "desc" }],
-    take: 6,
-    include: {
-      _count: { select: { posts: { where: { isHidden: false } } } },
-    },
-  });
-
+export default function Mulai() {
   return (
     <main id="konten" tabIndex={-1} className="mx-auto w-full max-w-[1600px] bg-ground">
       <Pengungkap />
@@ -155,51 +144,6 @@ export default async function Mulai() {
             ))}
           </ul>
         </div>
-      </section>
-
-      <section aria-labelledby="ramai" className="px-6 py-20 md:px-12 md:py-24">
-        <h2
-          id="ramai"
-          className="max-w-[16ch] text-[clamp(2rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-ink-strong"
-        >
-          Yang sedang dibicarakan
-        </h2>
-        <p data-reveal className="mt-4 text-[17px] leading-[1.6] text-ink-soft">
-          Untuk sekarang semua diskusi ada di satu ruang yang sama.
-        </p>
-
-        <ul className="mt-8 md:mt-12">
-          {diskusi.map((d, i) => {
-            const balasan = Math.max(0, d._count.posts - 1);
-
-            return (
-              <li key={d.id}>
-                <Link
-                  href={`/t/${d.id}`}
-                  data-reveal
-                  style={tunda(i * 60)}
-                  className="group -mx-3 block px-3 py-5 transition-colors hover:bg-wash md:grid md:grid-cols-12 md:items-baseline md:gap-6"
-                >
-                  <h3 className="text-[17px] font-semibold leading-snug tracking-[-0.01em] text-ink-strong transition-colors group-hover:text-accent-ink md:col-span-8 md:text-[22px]">
-                    {d.title}
-                  </h3>
-                  <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-ink-faint md:col-span-4 md:mt-0 md:justify-end">
-                    {d.isPinned && <span>Disematkan</span>}
-                    <span>{balasan} balasan</span>
-                    <span>{relatif(d.lastPostAt)}</span>
-                  </p>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        <Link
-          href="/diskusi"
-          className="mt-8 inline-block text-[14px] font-semibold text-ink-strong underline decoration-ink-faint underline-offset-4 transition-colors hover:text-accent-ink hover:decoration-accent"
-        >
-          Semua diskusi
-        </Link>
       </section>
 
       <section aria-labelledby="aturan" className="bg-accent px-6 py-20 text-on-accent md:px-12 md:py-24">
