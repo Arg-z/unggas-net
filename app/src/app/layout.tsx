@@ -17,7 +17,7 @@ import { TombolTulis } from "@/components/TombolTulis";
 import { PemilihKomunitas } from "@/components/PemilihKomunitas";
 import { IkonKeluar } from "@/components/Ikon";
 import { Bingkai } from "@/components/Bingkai";
-import { SkripTema, TombolTema } from "@/components/Tema";
+import { MetaTema, SkripTema, TombolTema } from "@/components/Tema";
 import { keluar } from "./actions/auth";
 
 /* Serif untuk identitas & permukaan baca, sans humanist untuk UI.
@@ -209,6 +209,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body className="min-h-full bg-ground font-body text-ink">
         <SkripTema />
+        <MetaTema />
         <a href="#konten" className="lewati-nav">
           Langsung ke konten
         </a>

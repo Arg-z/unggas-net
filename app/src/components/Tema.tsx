@@ -1,10 +1,47 @@
 "use client";
 
+import { useEffect } from "react";
 import { IkonBulan, IkonMatahari } from "./Ikon";
 
 /* Kunci penyimpanan pilihan tema. Tanpa nilai tersimpan, tema mengikuti
    preferensi sistem; setelah pengguna menekan tombol, pilihannya menang. */
 export const KUNCI_TEMA = "unggas-tema";
+
+const WARNA_TEMA = { gelap: "#0e1210", terang: "#ffffff" };
+
+function warnaBilah() {
+  return document.documentElement.classList.contains("dark")
+    ? WARNA_TEMA.gelap
+    : WARNA_TEMA.terang;
+}
+
+/* Samakan meta theme-color dengan tema aktif. Next menyisipkan ulang tag
+   bermedia saat hidrasi dan navigasi, jadi pengamat ini menjaga warna bilah
+   peramban tetap ikut pilihan pengguna, bukan preferensi sistem. */
+export function MetaTema() {
+  useEffect(() => {
+    const samakan = () => {
+      const warna = warnaBilah();
+      document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
+        if (m.getAttribute("content") !== warna || m.hasAttribute("media")) {
+          m.setAttribute("content", warna);
+          m.removeAttribute("media");
+        }
+      });
+    };
+    samakan();
+    const pengamat = new MutationObserver(samakan);
+    pengamat.observe(document.head, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["content", "media"],
+    });
+    return () => pengamat.disconnect();
+  }, []);
+
+  return null;
+}
 
 /* Skrip ini berjalan sebelum isi <body> digambar, jadi tidak ada kedipan putih
    saat halaman gelap dimuat. Ditaruh di body paling atas, bukan di useEffect,
@@ -19,7 +56,7 @@ export const skripTema = `
     var akar = document.documentElement;
     akar.classList.toggle("dark", gelap);
     akar.style.colorScheme = gelap ? "dark" : "light";
-    var warna = gelap ? "#0e1210" : "#ffffff";
+    var warna = gelap ? "${WARNA_TEMA.gelap}" : "${WARNA_TEMA.terang}";
     document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
       m.setAttribute("content", warna);
       m.removeAttribute("media");
@@ -43,7 +80,7 @@ export function TombolTema({ ukuran = "sm" }: { ukuran?: "sm" | "besar" }) {
     } catch {
       /* Mode privat bisa menolak penyimpanan; tema tetap berganti sesi ini. */
     }
-    const warna = gelap ? "#0e1210" : "#ffffff";
+    const warna = warnaBilah();
     document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
       m.setAttribute("content", warna);
       m.removeAttribute("media");
