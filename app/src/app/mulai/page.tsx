@@ -49,7 +49,7 @@ const FAQ = [
   },
   {
     tanya: "Apakah gratis?",
-    jawab: "Gratis. Setelah mendaftar, ikuti petunjuk aktivasi di layar.",
+    jawab: "Gratis. Pilih username dan password, akunmu langsung aktif.",
   },
   {
     tanya: "Kenapa topiknya baru sedikit?",
@@ -142,7 +142,7 @@ export default async function Mulai() {
             Cara kerjanya
           </h2>
           <p data-reveal className="max-w-[34ch] text-[14px] leading-relaxed text-ink-faint">
-            Lima hal yang membuat pertanyaan tetap berguna setelah dibaca.
+            Yang membuat pertanyaan tidak hilang setelah dijawab.
           </p>
         </div>
 
