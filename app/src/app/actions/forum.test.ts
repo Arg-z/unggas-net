@@ -149,6 +149,21 @@ describe("balas", () => {
   });
 });
 
+describe("listDiscussions", () => {
+  it("mencari dari judul saja, bukan isi balasan", async () => {
+    setCurrentUser({ id: userId, username: uname, email: "", isAdmin: false, isBanned: false });
+    const kata = "katakunci" + randomBytes(4).toString("hex");
+    const r = await balas(null, fd({ discussionId: String(discussionId), content: `Balasan berisi ${kata}.` }));
+    expect(r).toEqual({ ok: true });
+
+    const dariBalasan = await listDiscussions({ q: kata });
+    expect(dariBalasan.rows.some((d) => d.id === discussionId)).toBe(false);
+
+    const dariJudul = await listDiscussions({ q: "Tes kandang panas" });
+    expect(dariJudul.rows.some((d) => d.id === discussionId)).toBe(true);
+  });
+});
+
 describe("XSS", () => {
   it("konten disimpan apa adanya; render React meng-escape (tanpa dangerouslySetInnerHTML)", () => {
     // Store check: konten <script> tersimpan string; rendering React escape otomatis.

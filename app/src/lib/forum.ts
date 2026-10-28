@@ -30,21 +30,11 @@ export async function listDiscussions(opts: {
 
   const where = {
     isHidden: false,
+    // Pencarian hanya menyentuh judul — keputusan pemilik 29 Okt.
+    ...(q ? { title: { contains: q, mode: "insensitive" as const } } : {}),
     ...(saring === "disematkan" ? { isPinned: true } : {}),
     ...(saring === "belum-dijawab"
       ? { posts: { none: { number: { gt: 1 }, isHidden: false } } }
-      : {}),
-    ...(q
-      ? {
-          OR: [
-            { title: { contains: q, mode: "insensitive" as const } },
-            {
-              posts: {
-                some: { content: { contains: q, mode: "insensitive" as const }, isHidden: false },
-              },
-            },
-          ],
-        }
       : {}),
   };
 

@@ -182,7 +182,7 @@ export default async function Beranda({
             type="search"
             name="q"
             defaultValue={q}
-            placeholder="Cari judul atau isi"
+            placeholder="Cari judul diskusi"
             aria-label="Cari diskusi"
             className="h-11 w-full rounded-full border border-control bg-surface pl-9 pr-4 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:text-[14px]"
           />

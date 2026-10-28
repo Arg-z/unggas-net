@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const FITUR = [
   {
     judul: "Cari",
-    isi: "Semua isi diskusi bisa dicari, termasuk balasannya.",
+    isi: "Cari diskusi lewat judulnya. Ketik kata kunci, hasil yang cocok muncul di daftar.",
   },
   {
     judul: "Anonim",
