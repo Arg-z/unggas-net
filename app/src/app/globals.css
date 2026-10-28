@@ -335,16 +335,17 @@ body {
 .lp-mask {
   display: block;
   overflow: hidden;
+  /* Beri ruang untuk ascender/descender; margin negatif menjaga jarak baris. */
+  padding: 0.16em 0;
+  margin: -0.16em 0;
 }
 .lp-naik {
   display: block;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
   animation: lp-naik 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes lp-naik {
   from {
-    transform: translateY(112%);
+    transform: translateY(125%);
   }
   to {
     transform: none;

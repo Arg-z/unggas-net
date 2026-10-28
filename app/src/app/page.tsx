@@ -60,7 +60,7 @@ export default function Mulai() {
 
         <h1
           id="judul-mulai"
-          className="py-[8vh] font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-[0.86] tracking-[-0.05em] text-ink-strong"
+          className="py-[8vh] font-display text-[clamp(3rem,12vw,10.5rem)] font-semibold leading-[0.86] tracking-[-0.05em] text-ink-strong"
         >
           <span className="lp-mask block">
             <span className="lp-naik" style={{ animationDelay: "100ms" }}>
