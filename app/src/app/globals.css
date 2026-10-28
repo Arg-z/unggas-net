@@ -268,6 +268,52 @@ body {
   display: none;
 }
 
+/* === Landing /mulai ===
+   Gerak hanya transform dan opasitas. Isi tidak pernah disembunyikan dari
+   HTML: kelas .lp-gerak baru dipasang setelah JavaScript siap. */
+.lp-mask {
+  display: block;
+  overflow: hidden;
+}
+.lp-naik {
+  display: block;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+  animation: lp-naik 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes lp-naik {
+  from {
+    transform: translateY(112%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.lp-hanyut {
+  animation: lp-hanyut 26s ease-in-out infinite alternate;
+}
+@keyframes lp-hanyut {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.lp-gerak [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms);
+}
+.lp-gerak [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
 /* Hormati preferensi sistem: matikan transisi/animasi, bukan sekadar mempercepat. */
 @media (prefers-reduced-motion: reduce) {
   *,
