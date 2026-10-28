@@ -72,9 +72,6 @@ export default function Mulai() {
             unggas<span className="text-ink-faint">.net</span>
           </Link>
           <nav aria-label="Navigasi halaman" className="flex items-center gap-4 text-ink-soft sm:gap-5">
-            <Link href="/diskusi" className="text-[14px] transition-colors hover:text-ink-strong">
-              Diskusi
-            </Link>
             <Link href="/masuk" className="transition-colors hover:text-ink-strong">
               Masuk
             </Link>
@@ -214,12 +211,6 @@ export default function Mulai() {
             >
               Buat akun
             </Link>
-            <Link
-              href="/diskusi"
-              className="whitespace-nowrap text-[14px] font-semibold text-on-invert underline decoration-on-invert/40 underline-offset-4 transition-colors hover:decoration-on-invert"
-            >
-              Baca diskusi
-            </Link>
           </div>
         </div>
       </section>
@@ -231,9 +222,6 @@ export default function Mulai() {
 
         <div className="mt-10 flex flex-col gap-6 text-[14px] md:flex-row md:items-center md:justify-between">
           <nav aria-label="Tautan footer" className="flex flex-wrap gap-x-6 gap-y-2 text-ink-soft">
-            <Link href="/diskusi" className="transition-colors hover:text-accent-ink">
-              Diskusi
-            </Link>
             <Link href="/daftar" className="transition-colors hover:text-accent-ink">
               Buat akun
             </Link>
