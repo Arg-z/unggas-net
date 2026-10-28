@@ -159,7 +159,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const kaki = (
     <footer className="mt-12 border-t border-border pt-5">
-      <p className="text-[12.5px] text-ink-faint">unggas.net · Forum peternak unggas Indonesia.</p>
+      <div className="flex flex-col gap-1.5 text-[12.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+        <p>unggas.net · Forum peternak unggas Indonesia.</p>
+        <a href="mailto:halo@unggas.net" className="transition-colors hover:text-accent-ink">
+          halo@unggas.net
+        </a>
+      </div>
     </footer>
   );
 
