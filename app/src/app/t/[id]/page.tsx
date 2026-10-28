@@ -37,12 +37,21 @@ export async function generateMetadata({
   return {
     title: diskusi.title,
     description: ringkas || undefined,
+    alternates: { canonical: `https://unggas.net/t/${threadId}` },
     openGraph: { title: diskusi.title, description: ringkas || undefined, type: "article" },
   };
 }
 
-export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ThreadPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ fokus?: string }>;
+}) {
   const { id } = await params;
+  const { fokus } = await searchParams;
+  const modeFokus = fokus === "1";
   const threadId = parseId(id);
   if (threadId === null) notFound();
 
@@ -60,15 +69,21 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
 
   return (
     <main id="konten" tabIndex={-1} className="w-full">
-      <Link
-        href="/diskusi"
-        className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-accent-ink sm:min-h-0"
-      >
-        <IkonPanah className="h-3.5 w-3.5 text-accent" />
-        Semua diskusi
-      </Link>
+      {!modeFokus && (
+        <Link
+          href="/diskusi"
+          className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-accent-ink sm:min-h-0"
+        >
+          <IkonPanah className="h-3.5 w-3.5 text-accent" />
+          Semua diskusi
+        </Link>
+      )}
 
-      <div className="mt-3 grid gap-x-8 gap-y-6 xl:grid-cols-[minmax(0,1fr)_280px]">
+      <div
+        className={`mt-3 grid gap-x-8 gap-y-6 ${
+          modeFokus ? "" : "xl:grid-cols-[minmax(0,1fr)_280px]"
+        }`}
+      >
         <div className="min-w-0">
           {/* Kepala thread adalah garis bawah, bukan kartu: label, judul sans,
               meta, lalu prosa serif di lebar baca. */}
@@ -84,15 +99,16 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                   {thread.isPinned && <BadgeSematkan />}
                 </div>
                 <div className="shrink-0">
-                  {user ? (
-                    <a href="#balas" className="btn btn-primary">
-                      Balas
-                    </a>
-                  ) : (
-                    <Link href="/masuk" className="btn btn-outline">
-                      Masuk untuk membalas
-                    </Link>
-                  )}
+                  {!modeFokus &&
+                    (user ? (
+                      <a href="#balas" className="btn btn-primary">
+                        Balas
+                      </a>
+                    ) : (
+                      <Link href="/masuk" className="btn btn-outline">
+                        Masuk untuk membalas
+                      </Link>
+                    ))}
                 </div>
               </div>
 
@@ -202,7 +218,8 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
 
-        {/* Kolom kanan: fakta diskusi dan diskusi lain di topik yang sama. */}
+        {/* Kolom kanan: fakta diskusi. Tidak perlu saat mode fokus. */}
+        {!modeFokus && (
         <aside className="hidden xl:block">
           <div className="sticky top-8 space-y-8">
             <div className="border-t border-border pt-4">
@@ -224,6 +241,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
             </div>
           </div>
         </aside>
+        )}
       </div>
     </main>
   );

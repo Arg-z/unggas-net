@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 /** Halaman yang tampil tanpa kerangka forum: sidebar, bilah ponsel, dan footer
  *  tidak ikut dirender. Semua bagian kerangka tetap dirender di server lalu
@@ -19,8 +19,19 @@ export function Bingkai({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const sp = useSearchParams();
+  // Link hasil tombol Bagikan memakai ?fokus=1: pembaca hanya melihat thread.
+  const fokus = pathname.startsWith("/t/") && sp.get("fokus") === "1";
 
   if (TANPA_KERANGKA.has(pathname)) return <>{children}</>;
+
+  if (fokus) {
+    return (
+      <div className="mx-auto w-full max-w-[760px] px-5 pb-16 pt-6 sm:px-8 sm:pt-10">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="lg:flex lg:min-h-screen">

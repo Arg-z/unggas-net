@@ -5,14 +5,14 @@ import { IkonTautan } from "./Ikon";
 
 type Status = "diam" | "tersalin" | "gagal";
 
-/** Tombol bagikan: menyalin URL diskusi tanpa hash atau query, lalu memberi
- *  umpan balik singkat. Clipboard API dipakai bila ada; kalau tidak, fallback
- *  ke textarea sementara supaya tetap jalan di browser lama. */
+/** Tombol bagikan: menyalin URL diskusi dengan mode fokus, tanpa hash atau
+ *  query lain. Clipboard API dipakai bila ada; kalau tidak, fallback ke
+ *  textarea sementara supaya tetap jalan di browser lama. */
 export function TombolBagikan({ className = "" }: { className?: string }) {
   const [status, setStatus] = useState<Status>("diam");
 
   async function salin() {
-    const url = window.location.origin + window.location.pathname;
+    const url = `${window.location.origin}${window.location.pathname}?fokus=1`;
 
     try {
       if (navigator.clipboard?.writeText) {
