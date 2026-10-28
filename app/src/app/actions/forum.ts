@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireUser } from "./auth";
-import { validateTagSelection } from "@/lib/tags";
 import { rateLimit } from "@/lib/ratelimit";
 
 export type ActionResult = { ok: true } | { ok: false; alasan: string };
@@ -19,18 +18,9 @@ export async function buatDiskusi(_prev: ActionResult | null, formData: FormData
 
   const judul = String(formData.get("judul") ?? "").trim();
   const isi = String(formData.get("isi") ?? "").trim();
-  // Select wilayah yang kosong mengirim "" → Number("") = 0; buang nilai tak valid.
-  const tagIds = formData
-    .getAll("tag")
-    .map(Number)
-    .filter((n) => Number.isInteger(n) && n > 0);
 
   if (judul.length < 5 || judul.length > 200) return { ok: false, alasan: "Judul 5-200 karakter." };
   if (isi.length < 10 || isi.length > 20_000) return { ok: false, alasan: "Isi diskusi 10-20.000 karakter." };
-
-  const tags = await prisma.tag.findMany();
-  const seleksi = validateTagSelection(tagIds, tags, user.isAdmin);
-  if (!seleksi.ok) return seleksi;
 
   const akunBaru = Date.now() - new Date((await prisma.user.findUniqueOrThrow({ where: { id: user.id }, select: { createdAt: true } })).createdAt).getTime() < MINGGU_MS;
   const limit = akunBaru ? 1 : 5;
@@ -42,9 +32,6 @@ export async function buatDiskusi(_prev: ActionResult | null, formData: FormData
     data: {
       userId: user.id,
       title: judul,
-      tags: {
-        create: [seleksi.topik, ...(seleksi.wilayah ? [seleksi.wilayah] : [])].map((tagId) => ({ tagId })),
-      },
       posts: { create: { userId: user.id, number: 1, content: isi } },
     },
     select: { id: true },

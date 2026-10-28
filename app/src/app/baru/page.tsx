@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/session";
-import { getTags } from "@/lib/forum";
 import { IkonPanah } from "@/components/Ikon";
 import { BuatDiskusiForm } from "./BuatDiskusiForm";
 
@@ -11,7 +10,6 @@ export const metadata = { title: "Tulis diskusi" };
 export default async function BaruPage() {
   const user = await getSessionUser();
   if (!user) redirect("/masuk");
-  const tags = await getTags(user);
 
   return (
     <main
@@ -32,17 +30,11 @@ export default async function BaruPage() {
           Tulis diskusi
         </h1>
         <p className="mt-1 max-w-[60ch] text-[13px] leading-relaxed text-ink-faint">
-          Pilih topik, tambahkan wilayah kalau menyangkut lokasi kandang, lalu tulis pertanyaan
-          atau pengalamanmu selengkap mungkin.
+          Tulis pertanyaan atau pengalamanmu selengkap mungkin.
         </p>
 
         <div className="panel mt-5 p-4 sm:p-6">
-          <BuatDiskusiForm
-            topik={tags.filter((t) => t.kind === "topik").map((t) => ({ id: t.id, name: t.name }))}
-            wilayah={tags
-              .filter((t) => t.kind === "wilayah")
-              .map((t) => ({ id: t.id, name: t.name }))}
-          />
+          <BuatDiskusiForm />
         </div>
       </div>
 

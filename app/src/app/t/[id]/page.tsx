@@ -232,7 +232,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 </ul>
               ) : (
                 <p className="mt-2 text-[13px] leading-relaxed text-ink-faint">
-                  Ini satu-satunya diskusi di topik ini.
+                  Belum ada diskusi lain.
                 </p>
               )}
 

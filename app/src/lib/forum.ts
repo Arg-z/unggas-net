@@ -103,22 +103,6 @@ export async function getThread(id: number, user?: SessionUser | null) {
   return discussion;
 }
 
-export async function getTags(_user?: SessionUser | null) {
-  return prisma.tag.findMany({
-    where: { isRestricted: false },
-    orderBy: [{ kind: "asc" }, { name: "asc" }],
-    include: {
-      _count: {
-        select: {
-          discussions: {
-            where: { discussion: { isHidden: false } },
-          },
-        },
-      },
-    },
-  });
-}
-
 export async function getTagSlugs() {
   return prisma.tag.findMany({ select: { id: true, kind: true, isRestricted: true } });
 }

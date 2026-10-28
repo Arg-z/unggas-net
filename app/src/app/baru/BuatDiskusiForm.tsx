@@ -3,44 +3,10 @@
 import { useActionState } from "react";
 import { buatDiskusi, type ActionResult } from "@/app/actions/forum";
 
-type Tag = { id: number; name: string };
-
-export function BuatDiskusiForm({ topik, wilayah }: { topik: Tag[]; wilayah: Tag[] }) {
+export function BuatDiskusiForm() {
   const [state, action, pending] = useActionState<ActionResult | null, FormData>(buatDiskusi, null);
   return (
     <form action={action} className="flex flex-col gap-5">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <label className="block">
-          <span className="label">
-            Topik <span className="text-accent">*</span>
-          </span>
-          <select name="tag" required defaultValue="" className="input mt-2">
-            <option value="" disabled>
-              Pilih topik...
-            </option>
-            {topik.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block">
-          <span className="label">
-            Wilayah <span className="text-[12px] font-normal text-ink-faint">(opsional)</span>
-          </span>
-          <select name="tag" defaultValue="" className="input mt-2">
-            <option value="">Tanpa wilayah khusus</option>
-            {wilayah.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
       <label className="block">
         <span className="label">Judul diskusi</span>
         <input
