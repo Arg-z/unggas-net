@@ -38,7 +38,7 @@ export default async function VerifikasiPage({ params }: { params: Promise<{ tok
     <main id="konten" tabIndex={-1} className="py-2 sm:py-6 md:grid md:min-h-[calc(100svh-12rem)] md:content-center">
       <AuthShell
         judul="Aktifkan akun"
-        sub="Satu klik lagi, lalu akunmu siap dipakai di komunitas unggas.net."
+        sub="Satu klik lagi, lalu akunmu siap dipakai di forum unggas.net."
       >
         <VerifikasiForm token={token} />
       </AuthShell>

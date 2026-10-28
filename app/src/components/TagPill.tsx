@@ -59,7 +59,7 @@ export function PinDot() {
   );
 }
 
-/** Ikon tiap komunitas topik — benda dari dunia peternak, bukan ikon generik. */
+/** Ikon tiap topik — benda dari dunia peternak, bukan ikon generik. */
 export function TopicIcon({ slug, className = "h-4 w-4" }: { slug: string; className?: string }) {
   switch (slug) {
     case "puyuh":

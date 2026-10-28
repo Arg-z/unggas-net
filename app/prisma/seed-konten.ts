@@ -31,7 +31,7 @@ async function admin() {
 type Topik = { tag: string; wilayah?: string; judul: string; isi: string };
 const TOPIK: Topik[] = [
   { tag: "lobby", judul: "Selamat datang di Forum Peternak Unggas — perkenalkan dirimu di sini",
-    isi: "Selamat datang!\n\nIni forum komunitas peternak unggas Indonesia: satu akun untuk semua topik, wilayah jadi filter bukan tembok.\n\nAturan singkat:\n- Sopan dan saling bantu.\n- Jual-beli nanti punya tempatnya sendiri (masih dibersiapkan).\n- Jaga data pribadi — jangan bagikan nomor HP ke publik kalau tidak yakin.\n\nMulai dari sini: perkenalkan dirimu — daerah mana, ternak apa yang kamu pelihara, dan sudah berapa lama beternak." },
+    isi: "Selamat datang!\n\nIni forum peternak unggas Indonesia: satu akun untuk semua topik, wilayah jadi filter bukan tembok.\n\nAturan singkat:\n- Sopan dan saling bantu.\n- Jual-beli nanti punya tempatnya sendiri (masih dibersiapkan).\n- Jaga data pribadi — jangan bagikan nomor HP ke publik kalau tidak yakin.\n\nMulai dari sini: perkenalkan dirimu — daerah mana, ternak apa yang kamu pelihara, dan sudah berapa lama beternak." },
   { tag: "puyuh", judul: "Memilih DOQ puyuh: ciri mana yang paling menentukan menurut pengalamanmu?",
     isi: "Dari panduan unggas.net: DOQ sehat itu aktif, bersuara jernih, pupur tidak menggumpal, kaki lurus.\n\nDi lapangan, kalau harus memilih satu ciri yang paling menentukan — kalian pilih yang mana? Pernah beli DOQ bagus tampaknya tapi hasilnya kecewa?" },
   { tag: "puyuh", judul: "Kandang baterai vs aviary di tanah — mana yang cocok untuk skala rumahan?",

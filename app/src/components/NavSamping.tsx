@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { IkonAdmin, IkonIndeks, IkonNotifikasi, IkonTulis } from "./Ikon";
 
 /* Navigasi utama. Baris aktif netral dengan ikon hijau; hijau penuh hanya di
-   angka notifikasi. Tidak ada garis kiri atau tint besar. Grup Komunitas tidak
-   ada: pemilih komunitas duduk di atas sebagai sakelar cakupan. */
+   angka notifikasi. Tidak ada garis kiri atau tint besar. */
 export function NavSamping({
   isAdmin,
   belumDibaca = 0,

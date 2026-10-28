@@ -6,7 +6,7 @@ import { IkonMenu, IkonTutup } from "./Ikon";
 import { Wordmark } from "./Wordmark";
 
 /** Menu ponsel: satu lembar penuh, bukan bilah bawah. Tombol 44px membuka
- *  navigasi, pemilih komunitas, pencarian, dan akun dari bilah atas 48px.
+ *  navigasi, pencarian, dan akun dari bilah atas 48px.
  *  Lembar ditutup saat tautan diklik, saat Escape, atau lewat tombol tutup. */
 export function MenuPonsel({ children }: { children: ReactNode }) {
   const [buka, setBuka] = useState(false);

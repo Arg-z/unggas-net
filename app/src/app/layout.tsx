@@ -38,7 +38,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: { default: "Forum Peternak Unggas", template: "%s — Forum Peternak Unggas" },
   description:
-    "Satu akun untuk semua komunitas peternak unggas Indonesia: puyuh, ayam, bebek, dan lainnya.",
+    "Forum peternak unggas Indonesia: satu akun untuk semua topik — puyuh, ayam, bebek, dan lainnya.",
 };
 
 export const viewport: Viewport = {

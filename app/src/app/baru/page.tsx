@@ -32,7 +32,7 @@ export default async function BaruPage() {
           Tulis diskusi
         </h1>
         <p className="mt-1 max-w-[60ch] text-[13px] leading-relaxed text-ink-faint">
-          Pilih komunitas, tambahkan wilayah kalau menyangkut lokasi kandang, lalu tulis pertanyaan
+          Pilih topik, tambahkan wilayah kalau menyangkut lokasi kandang, lalu tulis pertanyaan
           atau pengalamanmu selengkap mungkin.
         </p>
 

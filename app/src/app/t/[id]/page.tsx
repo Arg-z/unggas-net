@@ -25,7 +25,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   const [pembuka, ...balasan] = thread.posts;
   const topik = thread.tags.find(({ tag }) => tag.kind === "topik")?.tag;
 
-  // Diskusi lain di komunitas yang sama: jalan keluar nyata setelah membaca,
+  // Diskusi lain di topik yang sama: jalan keluar nyata setelah membaca,
   // bukan rekomendasi karangan.
   const lain = topik
     ? await prisma.discussion.findMany({
@@ -190,7 +190,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
 
-        {/* Kolom kanan: fakta diskusi dan diskusi lain di komunitas yang sama. */}
+        {/* Kolom kanan: fakta diskusi dan diskusi lain di topik yang sama. */}
         <aside className="hidden xl:block">
           <div className="sticky top-8 space-y-8">
             <div className="border-t border-border pt-4">
@@ -232,7 +232,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 </ul>
               ) : (
                 <p className="mt-2 text-[13px] leading-relaxed text-ink-faint">
-                  Ini diskusi satu-satunya di komunitas ini.
+                  Ini satu-satunya diskusi di topik ini.
                 </p>
               )}
 

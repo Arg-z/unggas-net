@@ -12,11 +12,11 @@ export function BuatDiskusiForm({ topik, wilayah }: { topik: Tag[]; wilayah: Tag
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
           <span className="label">
-            Komunitas <span className="text-accent">*</span>
+            Topik <span className="text-accent">*</span>
           </span>
           <select name="tag" required defaultValue="" className="input mt-2">
             <option value="" disabled>
-              Pilih komunitas...
+              Pilih topik...
             </option>
             {topik.map((t) => (
               <option key={t.id} value={t.id}>

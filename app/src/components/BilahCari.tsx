@@ -5,7 +5,7 @@ import { IkonCari } from "./Ikon";
 
 /** Pencarian di bilah atas: form GET biasa ke beranda, jadi tetap bekerja
  *  tanpa JavaScript dan URL-nya bisa dibagikan. Filter yang sedang aktif ikut
- *  dibawa, supaya mencari dari satu komunitas tidak diam-diam melebar ke semua. */
+ *  dibawa, supaya mencari dari satu topik tidak diam-diam melebar ke semua. */
 export function BilahCari({ penuh = false }: { penuh?: boolean }) {
   const sp = useSearchParams();
   const q = sp.get("q") ?? "";

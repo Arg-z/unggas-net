@@ -60,7 +60,7 @@ export function emailVerifikasi(username: string, token: string): IsiEmail {
     isi: [
       `Halo ${username},`,
       "",
-      "Terima kasih sudah mendaftar di unggas.net — forum komunitas peternak unggas.",
+      "Terima kasih sudah mendaftar di unggas.net — forum peternak unggas.",
       "Klik tautan di bawah untuk mengaktifkan akun kamu:",
       "",
       tautan(`/verifikasi/${token}`),

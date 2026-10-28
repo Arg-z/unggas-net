@@ -97,7 +97,7 @@ export default async function Beranda({
     if (saring === "disematkan") {
       return {
         judul: "Belum ada diskusi yang disematkan.",
-        isi: "Sematan dipakai untuk diskusi yang perlu dibaca lebih dulu: panduan, aturan komunitas, atau kabar penting.",
+        isi: "Sematan dipakai untuk diskusi yang perlu dibaca lebih dulu: panduan, aturan forum, atau kabar penting.",
         aksi: { href: tautan({ saring: undefined }), label: "Lihat semua diskusi" },
       };
     }
@@ -110,7 +110,7 @@ export default async function Beranda({
     }
     if (tag) {
       return {
-        judul: `Komunitas ${tag.name} belum punya diskusi.`,
+        judul: `Belum ada diskusi di ${tag.name}.`,
         isi: "Pertanyaan yang terdengar sepele sering jadi yang paling berguna untuk peternak lain.",
         aksi: { href: "/baru", label: "Tulis diskusi pertama" },
       };
@@ -170,7 +170,7 @@ export default async function Beranda({
 
       <div className="mt-5">
         {papan.length > 0 && (
-          <section aria-label="Papan komunitas" className="mb-4 grid gap-3">
+          <section aria-label="Pengumuman" className="mb-4 grid gap-3">
             {papan.map((d) => (
               <PapanDiskusi key={d.id} d={d} />
             ))}
@@ -248,7 +248,7 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <span className="label-aksen inline-flex items-center gap-1.5">
             <IkonSematkan className="h-3.5 w-3.5" />
-            Papan komunitas
+            Pengumuman
           </span>
           <span aria-hidden="true" className="text-[11px] text-ink-faint">
             ·

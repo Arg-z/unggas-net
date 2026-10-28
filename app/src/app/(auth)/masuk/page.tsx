@@ -26,7 +26,7 @@ export default async function MasukPage({
 
   return (
     <main id="konten" tabIndex={-1} className="py-2 sm:py-6 md:grid md:min-h-[calc(100svh-12rem)] md:content-center">
-      <AuthShell judul="Masuk" sub="Satu akun untuk semua komunitas unggas.net.">
+      <AuthShell judul="Masuk" sub="Satu akun untuk semua topik unggas.net.">
         {pesan && (
           <p role="status" className="alert-ok mb-4">
             {pesan}
