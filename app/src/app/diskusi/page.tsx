@@ -8,7 +8,7 @@ import {
   type DaftarDiskusi,
 } from "@/lib/forum";
 import { relatif } from "@/lib/relatif";
-import { IkonCari, IkonSematkan } from "@/components/Ikon";
+import { IkonCari, IkonHati, IkonSematkan } from "@/components/Ikon";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Semua diskusi" };
@@ -16,8 +16,9 @@ export const metadata = { title: "Semua diskusi" };
 type BarisDiskusi = DaftarDiskusi["rows"][number];
 
 const KOLOM = "grid gap-x-4 sm:grid-cols-12";
-const JUDUL_KOLOM = "sm:col-span-7";
+const JUDUL_KOLOM = "sm:col-span-6";
 const BALASAN_KOLOM = "sm:col-span-2";
+const SUKA_KOLOM = "sm:col-span-1";
 const WAKTU_KOLOM = "sm:col-span-3";
 
 export default async function Beranda({
@@ -235,6 +236,7 @@ export default async function Beranda({
                 <div className={`${KOLOM} hidden border-b border-border px-1 pb-2 text-[12px] text-ink-faint sm:grid`}>
                   <span className={JUDUL_KOLOM}>Diskusi</span>
                   <span className={`${BALASAN_KOLOM} text-right`}>Balasan</span>
+                  <span className={`${SUKA_KOLOM} text-right`}>Suka</span>
                   <span className={`${WAKTU_KOLOM} text-right`}>Aktivitas</span>
                 </div>
 
@@ -305,7 +307,7 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
         <span className="font-medium">anonim</span>
         <span aria-hidden="true">·</span>
         <span className="tabular whitespace-nowrap">
-          {balasan} balasan · {relatif(d.lastPostAt)}
+          {balasan} balasan · {d._count.likes} suka · {relatif(d.lastPostAt)}
         </span>
         <Link
           href={`/t/${d.id}`}
@@ -352,12 +354,19 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
           <span className="tabular">{relatif(d.lastPostAt)}</span>
           <span aria-hidden="true">·</span>
           <span className="tabular">{balasan} balasan</span>
+          <span aria-hidden="true">·</span>
+          <span className="tabular">{d._count.likes} suka</span>
         </p>
 
       </div>
 
       <p className={`${BALASAN_KOLOM} tabular hidden text-right text-[14px] text-ink-soft sm:block`}>
         {balasan}
+      </p>
+
+      <p className={`${SUKA_KOLOM} tabular hidden items-center justify-end gap-1 text-right text-[13px] text-ink-faint sm:flex`}>
+        <IkonHati className="h-3.5 w-3.5" terisi={d._count.likes > 0} />
+        {d._count.likes}
       </p>
 
       <p className={`${WAKTU_KOLOM} tabular hidden text-right text-[12.5px] text-ink-faint sm:block`}>

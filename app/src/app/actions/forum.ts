@@ -109,3 +109,52 @@ export async function balas(_prev: ActionResult | null, formData: FormData): Pro
   revalidatePath(`/t/${discussionId}`);
   return { ok: true };
 }
+
+export type HasilSuka =
+  | { ok: true; suka: boolean; jumlah: number }
+  | { ok: false; alasan: string };
+
+export async function sukaDiskusi(discussionId: number): Promise<HasilSuka> {
+  const user = await requireUser();
+  if (!user) return { ok: false, alasan: "Masuk dulu untuk menyukai diskusi." };
+  if (!Number.isSafeInteger(discussionId) || discussionId <= 0) {
+    return { ok: false, alasan: "Diskusi tidak dikenal." };
+  }
+
+  if (!rateLimit(`suka:${user.id}`, 20, 60_000)) {
+    return { ok: false, alasan: "Terlalu cepat — tunggu sebentar." };
+  }
+
+  const diskusi = await prisma.discussion.findUnique({
+    where: { id: discussionId },
+    select: { isHidden: true },
+  });
+  if (!diskusi || (diskusi.isHidden && !user.isAdmin)) {
+    return { ok: false, alasan: "Diskusi tidak ditemukan." };
+  }
+
+  // Toggle: kalau sudah ada, hapus; kalau belum, simpan. Balapan antar klik
+  // ditangani lewat unique index — yang kalah dianggap sudah menyukai.
+  const dihapus = await prisma.like.deleteMany({
+    where: { discussionId, userId: user.id },
+  });
+
+  let suka = false;
+  if (dihapus.count === 0) {
+    try {
+      await prisma.like.create({ data: { discussionId, userId: user.id } });
+      suka = true;
+    } catch (galat) {
+      if (galat instanceof Prisma.PrismaClientKnownRequestError && galat.code === "P2002") {
+        suka = true;
+      } else {
+        return { ok: false, alasan: "Gagal menyimpan suka. Coba lagi." };
+      }
+    }
+  }
+
+  const jumlah = await prisma.like.count({ where: { discussionId } });
+  revalidatePath(`/t/${discussionId}`);
+  revalidatePath("/diskusi");
+  return { ok: true, suka, jumlah };
+}

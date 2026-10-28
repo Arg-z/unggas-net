@@ -16,7 +16,7 @@ vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 import { _resetBuckets } from "@/lib/ratelimit";
 import { getThread, listDiscussions } from "@/lib/forum";
 
-import { buatDiskusi, balas } from "./forum";
+import { buatDiskusi, balas, sukaDiskusi } from "./forum";
 import { setCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/password";
@@ -143,6 +143,35 @@ describe("balas", () => {
       const activeAdmin = { ...bannedAdmin, isBanned: false };
       expect(await getThread(discussionId, bannedAdmin)).toBeNull();
       expect(await getThread(discussionId, activeAdmin)).not.toBeNull();
+    } finally {
+      await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: false } });
+    }
+  });
+});
+
+describe("sukaDiskusi", () => {
+  it("menolak tamu", async () => {
+    setCurrentUser(null);
+    expect(await sukaDiskusi(discussionId)).toEqual({
+      ok: false,
+      alasan: "Masuk dulu untuk menyukai diskusi.",
+    });
+  });
+
+  it("menyukai lalu membatalkan suka", async () => {
+    setCurrentUser({ id: userId, username: uname, email: "", isAdmin: false, isBanned: false });
+    expect(await sukaDiskusi(discussionId)).toEqual({ ok: true, suka: true, jumlah: 1 });
+    expect(await sukaDiskusi(discussionId)).toEqual({ ok: true, suka: false, jumlah: 0 });
+  });
+
+  it("tidak bisa menyukai diskusi tersembunyi", async () => {
+    setCurrentUser({ id: userId, username: uname, email: "", isAdmin: false, isBanned: false });
+    await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: true } });
+    try {
+      expect(await sukaDiskusi(discussionId)).toEqual({
+        ok: false,
+        alasan: "Diskusi tidak ditemukan.",
+      });
     } finally {
       await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: false } });
     }

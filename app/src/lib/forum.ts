@@ -53,7 +53,12 @@ export async function listDiscussions(opts: {
       skip: (page - 1) * limit,
       take: limit + 1,
       include: {
-        _count: { select: { posts: { where: { isHidden: false } } } },
+        _count: {
+          select: {
+            posts: { where: { isHidden: false } },
+            likes: true,
+          },
+        },
         posts: { where: { number: 1, isHidden: false }, select: { content: true }, take: 1 },
       },
     }),
@@ -76,6 +81,8 @@ export async function getThread(id: number, user?: SessionUser | null) {
         where: { isHidden: false },
         orderBy: { number: "asc" },
       },
+      _count: { select: { likes: true } },
+      likes: { where: { userId: user?.id ?? -1 }, select: { id: true }, take: 1 },
     },
   });
   if (!discussion || (discussion.isHidden && !(user?.isAdmin && !user.isBanned))) return null;

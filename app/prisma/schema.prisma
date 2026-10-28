@@ -22,6 +22,7 @@ model User {
   emailTokens     EmailToken[]
   notifications   Notification[] @relation("penerima")
   notifikasiDibuat Notification[] @relation("pelaku")
+  likes           Like[]
 
   @@map("users")
 }
@@ -81,9 +82,25 @@ model Discussion {
   lastPostAt DateTime        @default(now()) @map("last_post_at")
   posts      Post[]
   notifications Notification[]
+  likes      Like[]
 
   @@index([lastPostAt])
   @@map("discussions")
+}
+
+/// Suka per diskusi. Satu akun hanya bisa menyukai satu diskusi sekali;
+/// menekan lagi berarti membatalkan suka.
+model Like {
+  id           Int        @id @default(autoincrement())
+  discussionId Int        @map("discussion_id")
+  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  userId       Int        @map("user_id")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@unique([discussionId, userId])
+  @@index([userId])
+  @@map("likes")
 }
 
 model Post {

@@ -8,6 +8,7 @@ import { relatif } from "@/lib/relatif";
 import { Avatar } from "@/components/Avatar";
 import { BadgeSematkan } from "@/components/BadgeSematkan";
 import { TombolBagikan } from "@/components/TombolBagikan";
+import { TombolSuka } from "@/components/TombolSuka";
 import { IkonPanah } from "@/components/Ikon";
 import { parseId } from "@/lib/validate";
 import { BalasForm } from "../../BalasForm";
@@ -125,7 +126,6 @@ export default async function ThreadPage({
                 <span className="whitespace-nowrap">{relatif(thread.createdAt)}</span>
                 <span aria-hidden="true">·</span>
                 <span className="tabular whitespace-nowrap">{balasan.length} balasan</span>
-                <TombolBagikan className="ml-auto -mr-1" />
               </p>
             </div>
 
@@ -136,6 +136,16 @@ export default async function ThreadPage({
                 </div>
               </div>
             )}
+
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-rule pt-3">
+              <TombolSuka
+                discussionId={thread.id}
+                jumlahAwal={thread._count.likes}
+                sukaAwal={thread.likes.length > 0}
+                masuk={Boolean(user && !user.isBanned)}
+              />
+              <TombolBagikan />
+            </div>
           </article>
 
           {/* Balasan: baris bergaris, tanpa kartu pembungkus. */}
