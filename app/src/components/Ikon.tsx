@@ -130,3 +130,20 @@ export function IkonTutup({ className = "h-5 w-5" }: Props) {
     </svg>
   );
 }
+
+export function IkonMatahari({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <circle cx="10" cy="10" r="3.6" />
+      <path d="M10 2.2v1.8M10 16v1.8M2.2 10H4M16 10h1.8M4.5 4.5l1.3 1.3M14.2 14.2l1.3 1.3M15.5 4.5l-1.3 1.3M5.8 14.2l-1.3 1.3" />
+    </svg>
+  );
+}
+
+export function IkonBulan({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="M16.2 12.4A6.6 6.6 0 0 1 7.6 3.8a6.8 6.8 0 1 0 8.6 8.6Z" />
+    </svg>
+  );
+}

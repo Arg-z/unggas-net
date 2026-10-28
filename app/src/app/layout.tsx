@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
@@ -17,6 +17,7 @@ import { TombolTulis } from "@/components/TombolTulis";
 import { PemilihKomunitas } from "@/components/PemilihKomunitas";
 import { IkonKeluar } from "@/components/Ikon";
 import { Bingkai } from "@/components/Bingkai";
+import { SkripTema, TombolTema } from "@/components/Tema";
 import { keluar } from "./actions/auth";
 
 /* Serif untuk identitas & permukaan baca, sans humanist untuk UI.
@@ -39,6 +40,13 @@ export const metadata: Metadata = {
   title: { default: "Forum Peternak Unggas", template: "%s — Forum Peternak Unggas" },
   description:
     "Satu akun untuk semua komunitas peternak unggas Indonesia: puyuh, ayam, bebek, dan lainnya.",
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1210" },
+  ],
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -104,8 +112,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // duduk langsung di atas tanah.
   const samping = (
     <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col border-r border-border bg-surface px-3 lg:flex">
-      <div className="flex h-14 shrink-0 items-center px-1">
+      <div className="flex h-14 shrink-0 items-center justify-between px-1">
         <Wordmark />
+        <TombolTema />
       </div>
 
       <div className="shrink-0">
@@ -165,6 +174,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <div className="flex items-center gap-1">
         {user && <NotifikasiBadge userId={user.id} jumlah={belumDibaca} />}
         {user && <TombolTulis />}
+        <TombolTema ukuran="besar" />
         <MenuPonsel>{isiMenu}</MenuPonsel>
       </div>
     </header>
@@ -192,8 +202,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   );
 
   return (
-    <html lang="id" className={`h-full antialiased ${fraunces.variable} ${jakarta.variable}`}>
+    <html
+      lang="id"
+      suppressHydrationWarning
+      className={`h-full antialiased ${fraunces.variable} ${jakarta.variable}`}
+    >
       <body className="min-h-full bg-ground font-body text-ink">
+        <SkripTema />
         <a href="#konten" className="lewati-nav">
           Langsung ke konten
         </a>

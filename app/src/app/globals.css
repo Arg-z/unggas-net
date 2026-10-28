@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Tema dipilih lewat kelas .dark di <html>, bukan media query: pengguna bisa
+   mengalahkan preferensi sistem. Token di bawah hanya diganti nilainya. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
   Unggas.net UI v7 — putih bersih.
   Kanvas putih tanpa tint besar. Kerangka dibaca dari garis rambut dan langkah
@@ -33,10 +37,17 @@
 
   /* Aksen — satu-satunya keluarga warna di UI */
   --color-accent: #2e7d32;
+  --color-accent-hover: #246428;
   --color-accent-deep: #246428;
   --color-accent-ink: #1b5e20;
   --color-accent-soft: #eef7ef;
   --color-accent-track: #d8e8d9;
+  --color-on-accent: #ffffff;
+
+  /* Bidang terbalik: blok ajakan di landing, tombol utama hero. Di tema
+     terang blok hitam, di tema gelap blok terang — arahnya memang dibalik. */
+  --color-invert: #0a0e0c;
+  --color-on-invert: #ffffff;
 
   /* Status */
   --color-warn-soft: #fef3c7;
@@ -58,6 +69,53 @@
   --font-display: var(--font-jakarta), system-ui, sans-serif;
   --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-body: var(--font-jakarta), system-ui, sans-serif;
+}
+
+/* Tema gelap — hijau arang, bukan hitam pekat. Aksen hijau tetap sama supaya
+   tombol terisi dan lencana tidak berubah warna antar tema. Setiap pasangan
+   diukur AA: ink 15.5:1, ink-soft 9.7:1, ink-faint 6.3:1, putih di accent
+   5.1:1, accent-ink di ground 10.3:1, control di surface 3.2:1. */
+.dark {
+  color-scheme: dark;
+
+  --color-ground: #0e1210;
+  --color-surface: #141a16;
+  --color-raised: #181f1a;
+  --color-wash: #1b231d;
+  --color-sunken: #232c25;
+
+  --color-border: #2b352e;
+  --color-rule: #232c26;
+  --color-control: #5f6d63;
+
+  --color-ink: #e4eae5;
+  --color-ink-strong: #f5f8f6;
+  --color-ink-soft: #b0bdb3;
+  --color-ink-faint: #8a998f;
+
+  --color-accent-hover: #33853a;
+  --color-accent-deep: #9ad9a0;
+  --color-accent-ink: #8fce95;
+  --color-accent-soft: #16281a;
+  --color-accent-track: #2d4a31;
+
+  --color-invert: #f2f6f3;
+  --color-on-invert: #0b0f0c;
+
+  --color-warn-soft: #33290f;
+  --color-warn-line: #5a4718;
+  --color-warn-ink: #f0c86b;
+  --color-danger: #ff9ea3;
+  --color-danger-soft: #35171a;
+  --color-danger-line: #5c2a2f;
+
+  /* Tint avatar versi gelap: latar pekat, teks terang, garis tengah. */
+  --color-av-hijau: #16301a;   --color-av-hijau-ink: #a9d6ad;   --color-av-hijau-line: #3d6b42;
+  --color-av-amber: #332912;   --color-av-amber-ink: #f0cd86;   --color-av-amber-line: #6b5526;
+  --color-av-biru: #122a38;    --color-av-biru-ink: #9ed4f0;    --color-av-biru-line: #2c5b74;
+  --color-av-oranye: #35200f;  --color-av-oranye-ink: #f3bd8a;  --color-av-oranye-line: #6d4527;
+  --color-av-teal: #0f2f2b;    --color-av-teal-ink: #8fe0d3;    --color-av-teal-line: #2c5c55;
+  --color-av-rose: #351820;    --color-av-rose-ink: #f2a9b7;    --color-av-rose-line: #6b3340;
 }
 
 body {
@@ -113,10 +171,10 @@ body {
   }
   .btn-primary {
     background: var(--color-accent);
-    color: #ffffff;
+    color: var(--color-on-accent);
   }
   .btn-primary:hover {
-    background: var(--color-accent-deep);
+    background: var(--color-accent-hover);
   }
   .btn-outline {
     background: var(--color-surface);
@@ -179,10 +237,13 @@ body {
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px rgb(46 125 50 / 0.15); /* taste-skill-ignore shadow */
   }
+  .dark .input:focus {
+    box-shadow: 0 0 0 3px rgb(143 206 149 / 0.22); /* taste-skill-ignore shadow */
+  }
   select.input {
     appearance: none;
     padding-right: 34px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%235f6672' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%238a998f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
   }
@@ -326,8 +387,8 @@ body {
   top: 12px;
   padding: 10px 16px;
   border-radius: 8px;
-  background: var(--color-ink-strong);
-  color: #ffffff;
+  background: var(--color-invert);
+  color: var(--color-on-invert);
   font-size: 14px;
   font-weight: 600;
 }

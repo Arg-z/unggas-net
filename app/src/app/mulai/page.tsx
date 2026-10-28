@@ -4,6 +4,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { relatif } from "@/lib/relatif";
 import { Pengungkap } from "@/components/Pengungkap";
+import { TombolTema } from "@/components/Tema";
 
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
@@ -79,6 +80,7 @@ export default async function Mulai() {
             <Link href="/masuk" className="transition-colors hover:text-ink-strong">
               Masuk
             </Link>
+            <TombolTema />
           </nav>
         </header>
 
@@ -104,7 +106,7 @@ export default async function Mulai() {
           </p>
           <Link
             href="/daftar"
-            className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-ink-strong px-7 text-[14px] font-semibold text-white transition-colors hover:bg-accent-ink md:w-auto"
+            className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-invert px-7 text-[14px] font-semibold text-on-invert transition-colors hover:bg-accent hover:text-on-accent md:w-auto"
           >
             Buat akun
           </Link>
@@ -193,7 +195,7 @@ export default async function Mulai() {
         </Link>
       </section>
 
-      <section aria-labelledby="aturan" className="bg-accent px-6 py-20 text-white md:px-12 md:py-24">
+      <section aria-labelledby="aturan" className="bg-accent px-6 py-20 text-on-accent md:px-12 md:py-24">
         <div className="grid gap-8 md:grid-cols-12 md:gap-6">
           <h2 id="aturan" className="text-[17px] font-semibold leading-snug md:col-span-3">
             Aturan main
@@ -241,7 +243,7 @@ export default async function Mulai() {
 
       <section
         aria-labelledby="ajakan"
-        className="flex flex-col bg-ink-strong px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-20 text-white md:px-12 md:pb-24 md:pt-28"
+        className="flex flex-col bg-invert px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-20 text-on-invert md:px-12 md:pb-24 md:pt-28"
       >
         <h2
           id="ajakan"
@@ -257,13 +259,13 @@ export default async function Mulai() {
           <div className="flex shrink-0 flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
             <Link
               href="/daftar"
-              className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-white px-7 text-[14px] font-semibold text-ink-strong transition-colors hover:bg-accent-soft"
+              className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-on-invert px-7 text-[14px] font-semibold text-invert transition-colors hover:bg-accent hover:text-on-accent"
             >
               Buat akun
             </Link>
             <Link
               href="/"
-              className="whitespace-nowrap text-[14px] font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+              className="whitespace-nowrap text-[14px] font-semibold text-on-invert underline decoration-on-invert/40 underline-offset-4 transition-colors hover:decoration-on-invert"
             >
               Baca diskusi
             </Link>
