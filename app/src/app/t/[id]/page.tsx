@@ -197,10 +197,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
               <h2 className="text-[12px] font-medium text-ink-faint">Tentang diskusi</h2>
               <dl className="mt-2 text-[13px]">
                 <div className="flex items-baseline justify-between gap-3 border-b border-rule py-2">
-                  <dt className="text-ink-faint">Komunitas</dt>
-                  <dd className="font-medium text-ink-strong">{topik ? topik.name : "—"}</dd>
-                </div>
-                <div className="flex items-baseline justify-between gap-3 border-b border-rule py-2">
                   <dt className="text-ink-faint">Dibuka</dt>
                   <dd className="text-right font-medium text-ink-strong">{dibuka}</dd>
                 </div>
