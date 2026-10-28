@@ -12,11 +12,7 @@ export default async function BaruPage() {
   if (!user) redirect("/masuk");
 
   return (
-    <main
-      id="konten"
-      tabIndex={-1}
-      className="grid w-full gap-8 xl:grid-cols-[minmax(0,1fr)_280px] xl:items-start xl:gap-8"
-    >
+    <main id="konten" tabIndex={-1} className="w-full">
       <div className="min-w-0">
         <Link
           href="/"
@@ -37,56 +33,6 @@ export default async function BaruPage() {
           <BuatDiskusiForm />
         </div>
       </div>
-
-      {/* Rel kanan: hal yang membuat pertanyaan mudah dijawab, ditulis sebelum
-          orang mengetik — bukan aturan yang muncul setelah ia menekan terbit. */}
-      <aside className="hidden xl:block" aria-label="Panduan menulis">
-        <div className="sticky top-16 space-y-6">
-          <section aria-labelledby="judul-sebelum">
-            <h2 id="judul-sebelum" className="text-[12px] font-medium text-ink-faint">
-              Sebelum menulis
-            </h2>
-            <ul className="mt-2 space-y-2.5 border-t border-rule pt-3 text-[13px] leading-relaxed text-ink-soft">
-              <li>
-                <span className="font-semibold text-ink-strong">Sebutkan jumlah dan umur ternak.</span>{" "}
-                Jawaban untuk 50 puyuh umur 3 minggu berbeda dari 500 ekor umur 8 minggu.
-              </li>
-              <li>
-                <span className="font-semibold text-ink-strong">Tulis angka apa adanya.</span> Suhu
-                kandang, komposisi pakan, harga, atau produksi telur.
-              </li>
-              <li>
-                <span className="font-semibold text-ink-strong">Sebutkan yang sudah dicoba.</span>{" "}
-                Obat, perubahan ventilasi, atau pergantian pakan.
-              </li>
-            </ul>
-          </section>
-
-          <section aria-labelledby="judul-contoh">
-            <h2 id="judul-contoh" className="text-[12px] font-medium text-ink-faint">
-              Judul yang jelas
-            </h2>
-            <div className="mt-2 border-t border-rule pt-3">
-              <p className="text-[12.5px] leading-relaxed text-ink-faint">Kurang jelas</p>
-              <p className="mt-0.5 text-[13.5px] leading-relaxed text-ink-soft">Mohon bantuan.</p>
-              <p className="mt-3 text-[12.5px] leading-relaxed text-ink-faint">Lebih jelas</p>
-              <p className="mt-0.5 text-[13.5px] font-medium leading-relaxed text-ink-strong">
-                Kandang puyuh panas saat siang, ventilasi seperti apa yang pas?
-              </p>
-            </div>
-          </section>
-
-          <section className="panel-accent p-4" aria-labelledby="judul-satu">
-            <h2 id="judul-satu" className="label-aksen">
-              Satu pertanyaan
-            </h2>
-            <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
-              Satu diskusi untuk satu pertanyaan membuat jawabannya fokus dan mudah ditemukan
-              peternak lain.
-            </p>
-          </section>
-        </div>
-      </aside>
     </main>
   );
 }
