@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSessionUser } from "@/lib/session";
+import { prisma } from "@/lib/db";
 import {
   listDiscussions,
   parseSaringan,
@@ -7,13 +8,17 @@ import {
   type DaftarDiskusi,
 } from "@/lib/forum";
 import { relatif } from "@/lib/relatif";
-import { Avatar } from "@/components/Avatar";
 import { IkonCari, IkonSematkan } from "@/components/Ikon";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Semua diskusi" };
 
 type BarisDiskusi = DaftarDiskusi["rows"][number];
+
+const KOLOM = "grid gap-x-4 sm:grid-cols-12";
+const JUDUL_KOLOM = "sm:col-span-7";
+const BALASAN_KOLOM = "sm:col-span-2";
+const WAKTU_KOLOM = "sm:col-span-3";
 
 export default async function Beranda({
   searchParams,
@@ -28,13 +33,14 @@ export default async function Beranda({
   const halaman = Number(params.page);
   const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
 
-  const { rows, hasNext, total } = await listDiscussions({
-    page,
-    user,
-    saring,
-    urut,
-    q,
-  });
+  const [{ rows, hasNext, total }, jumlahDiskusi, jumlahPost, belumDijawab] = await Promise.all([
+    listDiscussions({ page, user, saring, urut, q }),
+    prisma.discussion.count({ where: { isHidden: false } }),
+    prisma.post.count({ where: { isHidden: false } }),
+    prisma.discussion.count({
+      where: { isHidden: false, posts: { none: { number: { gt: 1 } } } },
+    }),
+  ]);
 
   // Filter dan urutan tetap hidup di URL untuk tautan lama, tetapi tidak lagi
   // punya baris tab atau dropdown sendiri — keputusan pemilik 28 Okt.
@@ -57,16 +63,10 @@ export default async function Beranda({
     if (saring === "belum-dijawab")
       return total === 0 ? "Tidak ada pertanyaan yang menunggu" : `${total} pertanyaan menunggu jawaban`;
     if (saring === "disematkan") return `${total} diskusi disematkan`;
-    return null;
+    if (belumDijawab > 0) return `${belumDijawab} diskusi menunggu jawaban pertama.`;
+    return "Pertanyaan, pengalaman, dan angka dari peternak lain.";
   })();
 
-  // Satu baris pengantar saat tidak ada keterangan hasil. Fungsinya memberi
-  // nada, bukan menjelaskan antarmuka.
-  const pengantar =
-    subline ?? "Pertanyaan, pengalaman, dan angka dari peternak lain.";
-
-  // Label di atas daftar menggantikan baris kepala tabel: satu penanda kecil,
-  // bukan kolom angka yang membuat halaman terasa seperti spreadsheet.
   const labelDaftar = q
     ? "Hasil pencarian"
     : saring === "disematkan"
@@ -77,7 +77,7 @@ export default async function Beranda({
           ? "Diskusi terlama"
           : urut === "dibalas"
             ? "Paling banyak dibalas"
-            : "Diskusi terbaru";
+            : "Terbaru";
 
   const kosong = (() => {
     if (q) {
@@ -113,31 +113,50 @@ export default async function Beranda({
   // daftar agar hasilnya tidak terbelah atau menyalahi filter.
   const papan = page === 1 && !q && saring === "semua" ? rows.filter((d) => d.isPinned) : [];
   const daftar = rows.filter((d) => !papan.some((p) => p.id === d.id));
+  const terakhirAktif = rows.reduce<Date | null>(
+    (max, d) => (!max || d.lastPostAt > max ? d.lastPostAt : max),
+    null,
+  );
 
   return (
     <main id="konten" tabIndex={-1} className="w-full">
-      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
-        <div className="min-w-0">
-          <h1 className="truncate font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.02em] text-ink-strong sm:text-[36px]">
+      <header className="grid gap-5 lg:grid-cols-12 lg:gap-4">
+        <div className="lg:col-span-8">
+          <h1 className="font-serif text-[34px] font-semibold leading-[1.02] tracking-[-0.03em] text-ink-strong sm:text-[44px] lg:text-[48px]">
             {saring === "disematkan"
               ? "Disematkan"
               : saring === "belum-dijawab"
                 ? "Belum dijawab"
                 : "Semua diskusi"}
           </h1>
-          <p className="mt-2 max-w-[52ch] text-[14px] leading-relaxed text-ink-soft">
-            {pengantar}
+          <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-ink-soft">
+            {subline}
           </p>
         </div>
-      </div>
+
+        <dl className="hidden grid-cols-2 gap-px overflow-hidden rounded-[22px] bg-rule lg:col-span-4 lg:grid">
+          <div className="bg-wash px-5 py-4">
+            <dt className="text-[13px] text-ink-soft">Diskusi</dt>
+            <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
+              {jumlahDiskusi}
+            </dd>
+          </div>
+          <div className="bg-wash px-5 py-4">
+            <dt className="text-[13px] text-ink-soft">Postingan</dt>
+            <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
+              {jumlahPost}
+            </dd>
+          </div>
+        </dl>
+      </header>
 
       {/* Ponsel: pencarian tinggal satu baris. Di 1024px ke atas ia pindah ke
           sidebar. Tidak ada urutan atau jumlah di sampingnya. */}
-      <div className="mt-3 lg:hidden">
+      <div className="mt-5 lg:hidden">
         <form action="/diskusi" role="search" className="relative">
           {saring !== "semua" && <input type="hidden" name="saring" value={saring} />}
           {urut !== "terbaru" && <input type="hidden" name="urut" value={urut} />}
-          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint">
+          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft">
             <IkonCari className="h-[15px] w-[15px]" />
           </span>
           <input
@@ -146,14 +165,14 @@ export default async function Beranda({
             defaultValue={q}
             placeholder="Cari judul atau isi"
             aria-label="Cari diskusi"
-            className="h-11 w-full rounded-xl border border-control bg-surface pl-8 pr-2.5 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:text-[14px]"
+            className="h-11 w-full rounded-full border border-control bg-surface pl-9 pr-4 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:text-[14px]"
           />
         </form>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-6">
         {papan.length > 0 && (
-          <section aria-label="Pengumuman" className="mb-4 grid gap-3">
+          <section aria-label="Pengumuman" className="mb-5 grid gap-3">
             {papan.map((d) => (
               <PapanDiskusi key={d.id} d={d} />
             ))}
@@ -161,17 +180,21 @@ export default async function Beranda({
         )}
 
         {rows.length === 0 ? (
-          <div className="rounded-2xl border border-border bg-raised px-6 py-14 text-center shadow-[0_1px_2px_rgba(10,14,12,0.04),0_16px_40px_-28px_rgba(10,14,12,0.28)]">
-            <p className="mx-auto max-w-[30ch] font-serif text-[22px] font-semibold leading-[1.15] tracking-[-0.02em] text-ink-strong sm:text-[26px]">
+          <div className="rounded-[22px] bg-wash px-6 py-16 text-center">
+            <p className="mx-auto max-w-[26ch] font-serif text-[24px] font-semibold leading-[1.12] tracking-[-0.02em] text-ink-strong sm:text-[28px]">
               {kosong.judul}
             </p>
-            <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-ink-soft">
+            <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-ink-soft">
               {kosong.isi}
             </p>
-            <div className="mt-5 flex justify-center">
+            <div className="mt-6 flex justify-center">
               <Link
                 href={kosong.aksi.href}
-                className={kosong.aksi.href === "/baru" ? "btn btn-primary" : "btn btn-outline"}
+                className={
+                  kosong.aksi.href === "/baru"
+                    ? "btn btn-primary rounded-full"
+                    : "btn btn-outline rounded-full"
+                }
               >
                 {kosong.aksi.label}
               </Link>
@@ -179,17 +202,25 @@ export default async function Beranda({
           </div>
         ) : (
           <div>
-            <div className="flex items-center justify-between gap-4 pb-1">
-              <h2 className="flex items-center gap-2 text-[12.5px] font-medium text-ink-soft">
-                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
-                {labelDaftar}
-              </h2>
+            <div className="flex items-baseline justify-between gap-4 pb-2">
+              <h2 className="text-[13px] font-medium text-ink-soft">{labelDaftar}</h2>
+              {terakhirAktif && (
+                <p className="text-[12px] text-ink-faint">
+                  Diperbarui {relatif(terakhirAktif)}
+                </p>
+              )}
+            </div>
+
+            <div className={`${KOLOM} hidden border-b border-border px-1 pb-2 text-[12px] text-ink-faint sm:grid`}>
+              <span className={JUDUL_KOLOM}>Diskusi</span>
+              <span className={`${BALASAN_KOLOM} text-right`}>Balasan</span>
+              <span className={`${WAKTU_KOLOM} text-right`}>Aktivitas</span>
             </div>
 
             {daftar.length > 0 && (
-              <ul className="mt-2 space-y-1">
-                {daftar.map((d, i) => (
-                  <BarisDaftar key={d.id} d={d} i={i} />
+              <ul className="divide-y divide-rule">
+                {daftar.map((d) => (
+                  <BarisDaftar key={d.id} d={d} />
                 ))}
               </ul>
             )}
@@ -197,20 +228,23 @@ export default async function Beranda({
         )}
 
         {(page > 1 || hasNext) && (
-          <nav
-            aria-label="Halaman"
-            className="mt-8 flex items-center justify-between border-t border-rule pt-5 text-[13.5px]"
-          >
+          <nav aria-label="Halaman" className="mt-8 flex items-center justify-between gap-4">
             {page > 1 ? (
-              <Link href={tautan({ page: String(page - 1) })} className="link">
+              <Link
+                href={tautan({ page: String(page - 1) })}
+                className="inline-flex h-9 items-center rounded-full border border-control px-4 text-[13px] font-medium text-ink transition-colors hover:border-ink-soft hover:text-ink-strong"
+              >
                 ← Sebelumnya
               </Link>
             ) : (
               <span />
             )}
-            <span className="tabular text-ink-faint">Halaman {page}</span>
+            <span className="tabular text-[12px] text-ink-faint">Halaman {page}</span>
             {hasNext ? (
-              <Link href={tautan({ page: String(page + 1) })} className="link">
+              <Link
+                href={tautan({ page: String(page + 1) })}
+                className="inline-flex h-9 items-center rounded-full border border-control px-4 text-[13px] font-medium text-ink transition-colors hover:border-ink-soft hover:text-ink-strong"
+              >
                 Berikutnya →
               </Link>
             ) : (
@@ -228,69 +262,55 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-accent-track bg-accent-soft shadow-[0_1px_2px_rgba(10,14,12,0.03),0_12px_32px_-24px_rgba(10,14,12,0.18)]">
-      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-accent" />
-      <div className="px-5 py-6 sm:px-7 sm:py-7">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-          <span className="label-aksen inline-flex items-center gap-1.5">
-            <IkonSematkan className="h-3.5 w-3.5" />
-            Pengumuman
-          </span>
-        </div>
+    <article className="rounded-[22px] bg-wash px-5 py-6 sm:px-7 sm:py-7">
+      <p className="flex items-center gap-1.5 text-[12px] font-medium text-ink-soft">
+        <IkonSematkan className="h-3.5 w-3.5" />
+        Pengumuman
+      </p>
 
-        <h2 className="mt-2.5 font-display text-[19px] font-semibold leading-[1.28] tracking-[-0.015em] text-ink-strong sm:max-w-[34ch] sm:text-[24px]">
-          <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
-            {d.title}
-          </Link>
-        </h2>
+      <h2 className="mt-2.5 text-[18px] font-semibold leading-[1.25] tracking-[-0.015em] text-ink-strong sm:text-[21px] lg:text-[24px]">
+        <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
+          {d.title}
+        </Link>
+      </h2>
 
-        {isi && (
-          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[15px]">
-            {isi}
-          </p>
-        )}
+      {isi && (
+        <p className="mt-2.5 line-clamp-2 max-w-[64ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[15px]">
+          {isi}
+        </p>
+      )}
 
-        <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-soft">
-          <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username="anonim" size="sm" />
-            <span className="font-medium text-ink-soft">anonim</span>
-          </span>
-          <span aria-hidden="true">·</span>
-          <span className="tabular whitespace-nowrap">
-            {balasan} balasan · {relatif(d.lastPostAt)}
-          </span>
-          <Link
-            href={`/t/${d.id}`}
-            className="ml-auto whitespace-nowrap text-[12.5px] font-semibold text-accent-deep hover:underline"
-          >
-            Baca pengumuman
-          </Link>
-        </div>
+      <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-soft">
+        <span className="font-medium">anonim</span>
+        <span aria-hidden="true">·</span>
+        <span className="tabular whitespace-nowrap">
+          {balasan} balasan · {relatif(d.lastPostAt)}
+        </span>
+        <Link
+          href={`/t/${d.id}`}
+          className="ml-auto whitespace-nowrap text-[13px] font-semibold text-accent-deep hover:underline"
+        >
+          Baca pengumuman
+        </Link>
       </div>
     </article>
   );
 }
 
-function BarisDaftar({ d, i }: { d: BarisDiskusi; i: number }) {
+function BarisDaftar({ d }: { d: BarisDiskusi }) {
   const balasan = Math.max(0, d._count.posts - 1);
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <li className="group relative">
-      <div
-        className="baris-masuk -mx-3 rounded-xl px-3.5 py-4 transition-[background-color,box-shadow] duration-200 group-hover:bg-wash group-hover:shadow-[0_1px_2px_rgba(10,14,12,0.04)] group-active:bg-wash sm:px-4 sm:py-5"
-        style={{ animationDelay: `${Math.min(i, 10) * 30}ms` }}
-      >
-        <h2 className="font-display text-[17.5px] font-semibold leading-[1.35] tracking-[-0.015em] text-ink-strong sm:text-[19px]">
-          {d.isPinned && (
-            <span
-              className="mr-1.5 inline-block translate-y-[2px] text-accent"
-              title="Disematkan"
-            >
-              <IkonSematkan className="h-3.5 w-3.5" />
-              <span className="sr-only">Disematkan</span>
-            </span>
-          )}
+    <li className={`${KOLOM} group relative items-start gap-y-2 px-1 py-4 sm:items-center sm:py-5`}>
+      <div className={`${JUDUL_KOLOM} min-w-0`}>
+        {d.isPinned && (
+          <span className="mb-1 inline-flex items-center gap-1 rounded-full bg-sunken px-2 py-[3px] text-[11.5px] font-medium text-ink-soft">
+            <IkonSematkan className="h-3 w-3" />
+            Disematkan
+          </span>
+        )}
+        <h2 className="text-[16px] font-semibold leading-[1.35] tracking-[-0.01em] text-ink-strong sm:text-[17px]">
           <Link
             href={`/t/${d.id}`}
             className="line-clamp-2 transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-ink"
@@ -300,29 +320,28 @@ function BarisDaftar({ d, i }: { d: BarisDiskusi; i: number }) {
         </h2>
 
         {isi && (
-          <p className="mt-2 line-clamp-2 max-w-[68ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
+          <p className="mt-1.5 line-clamp-2 max-w-[64ch] text-[13.5px] leading-[1.6] text-ink-soft">
             {isi}
           </p>
         )}
 
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
-          <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username="anonim" size="xs" />
-            <span className="font-medium text-ink-soft">anonim</span>
-          </span>
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 text-[12px] text-ink-faint sm:hidden">
+          <span className="font-medium text-ink-soft">anonim</span>
           <span aria-hidden="true">·</span>
-          <span className="tabular whitespace-nowrap">{relatif(d.lastPostAt)}</span>
-          <span
-            className={`ml-0.5 inline-flex items-center rounded-full px-2 py-[3px] text-[11.5px] font-medium ${
-              balasan === 0
-                ? "bg-accent-soft text-accent-ink"
-                : "bg-sunken text-ink-soft"
-            }`}
-          >
-            {balasan === 0 ? "Belum dijawab" : `${balasan} balasan`}
-          </span>
-        </div>
+          <span className="tabular">{relatif(d.lastPostAt)}</span>
+          <span aria-hidden="true">·</span>
+          <span className="tabular">{balasan} balasan</span>
+        </p>
+
       </div>
+
+      <p className={`${BALASAN_KOLOM} tabular hidden text-right text-[14px] text-ink-soft sm:block`}>
+        {balasan}
+      </p>
+
+      <p className={`${WAKTU_KOLOM} tabular hidden text-right text-[12.5px] text-ink-faint sm:block`}>
+        {relatif(d.lastPostAt)}
+      </p>
     </li>
   );
 }
