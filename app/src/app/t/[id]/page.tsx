@@ -60,7 +60,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   return (
     <main id="konten" tabIndex={-1} className="w-full">
       <Link
-        href="/"
+        href="/diskusi"
         className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-accent-ink"
       >
         <IkonPanah className="h-3.5 w-3.5 text-accent" />

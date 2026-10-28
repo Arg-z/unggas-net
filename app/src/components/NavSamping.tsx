@@ -21,7 +21,7 @@ export function NavSamping({
   return (
     <nav aria-label="Navigasi utama" className="flex flex-col gap-1">
       <p className="px-2.5 pb-1.5 text-[12px] font-medium text-ink-faint">Forum</p>
-      <Baris href="/" aktif={pathname === "/"} ikon={<IkonIndeks />} ponsel={ponsel}>
+      <Baris href="/diskusi" aktif={pathname === "/diskusi"} ikon={<IkonIndeks />} ponsel={ponsel}>
         Semua diskusi
       </Baris>
       <Baris

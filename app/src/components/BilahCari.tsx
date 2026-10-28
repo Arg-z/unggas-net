@@ -13,7 +13,7 @@ export function BilahCari({ penuh = false }: { penuh?: boolean }) {
   const urut = sp.get("urut");
 
   return (
-    <form action="/" role="search" className={`relative ${penuh ? "w-full" : "w-[300px]"}`}>
+    <form action="/diskusi" role="search" className={`relative ${penuh ? "w-full" : "w-[300px]"}`}>
       {saring && <input type="hidden" name="saring" value={saring} />}
       {urut && <input type="hidden" name="urut" value={urut} />}
       <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint">

@@ -18,7 +18,7 @@ export default async function MasukPage({
   searchParams: Promise<{ verified?: string; reset?: string }>;
 }) {
   const user = await getSessionUser();
-  if (user) redirect("/");
+  if (user) redirect("/diskusi");
 
   const { verified, reset } = await searchParams;
   const pesan = verified ? PESAN.verified : reset ? PESAN.reset : null;

@@ -15,7 +15,7 @@ export default async function BaruPage() {
     <main id="konten" tabIndex={-1} className="w-full">
       <div className="min-w-0">
         <Link
-          href="/"
+          href="/diskusi"
           className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-ink-strong"
         >
           <IkonPanah className="h-3.5 w-3.5 text-accent" />

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 /** Halaman yang tampil tanpa kerangka forum: sidebar, bilah ponsel, dan footer
  *  tidak ikut dirender. Semua bagian kerangka tetap dirender di server lalu
  *  dioper sebagai node, jadi tidak ada data atau aksi yang pindah ke klien. */
-const TANPA_KERANGKA = new Set(["/mulai"]);
+const TANPA_KERANGKA = new Set(["/"]);
 
 export function Bingkai({
   samping,

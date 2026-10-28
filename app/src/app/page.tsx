@@ -1,322 +1,292 @@
+import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { getSessionUser } from "@/lib/session";
-import {
-  listDiscussions,
-  parseSaringan,
-  parseUrutan,
-  type DaftarDiskusi,
-} from "@/lib/forum";
+import { prisma } from "@/lib/db";
 import { relatif } from "@/lib/relatif";
-import { Avatar } from "@/components/Avatar";
-import { IkonCari, IkonSematkan } from "@/components/Ikon";
+import { Pengungkap } from "@/components/Pengungkap";
+import { TombolTema } from "@/components/Tema";
 
-export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
+  description: "Forum peternak unggas Indonesia. Baca tanpa akun.",
+  alternates: { canonical: "https://unggas.net/mulai" },
+};
 
-type BarisDiskusi = DaftarDiskusi["rows"][number];
+const FITUR = [
+  {
+    judul: "Cari",
+    isi: "Semua isi diskusi bisa dicari, termasuk balasan.",
+  },
+  {
+    judul: "Wilayah",
+    isi: "Tandai provinsi supaya saran pakan dan harga sesuai daerahmu.",
+  },
+  {
+    judul: "Tautan",
+    isi: "Tiap diskusi punya tautan sendiri untuk dibagikan.",
+  },
+];
 
-export default async function Beranda({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string; saring?: string; urut?: string; q?: string }>;
-}) {
-  const params = await searchParams;
-  const user = await getSessionUser();
-  const saring = parseSaringan(params.saring);
-  const urut = parseUrutan(params.urut);
-  const q = (params.q ?? "").trim().slice(0, 80);
-  const halaman = Number(params.page);
-  const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
+const FAQ = [
+  {
+    tanya: "Apa bedanya dengan grup chat?",
+    jawab:
+      "Pertanyaan di grup cepat tenggelam; di sini punya halaman sendiri.",
+  },
+  {
+    tanya: "Apakah gratis?",
+    jawab: "Gratis. Pilih username dan password, akun langsung aktif.",
+  },
+  {
+    tanya: "Boleh jualan?",
+    jawab: "Belum.",
+  },
+];
 
-  const { rows, hasNext, total } = await listDiscussions({
-    page,
-    user,
-    saring,
-    urut,
-    q,
+const tunda = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
+
+export default async function Mulai() {
+  const diskusi = await prisma.discussion.findMany({
+    where: { isHidden: false },
+    orderBy: [{ isPinned: "desc" }, { lastPostAt: "desc" }],
+    take: 6,
+    include: {
+      _count: { select: { posts: { where: { isHidden: false } } } },
+    },
   });
 
-  // Filter dan urutan tetap hidup di URL untuk tautan lama, tetapi tidak lagi
-  // punya baris tab atau dropdown sendiri — keputusan pemilik 28 Okt.
-  const dasar = new URLSearchParams();
-  if (q) dasar.set("q", q);
-  if (urut !== "terbaru") dasar.set("urut", urut);
-  if (saring !== "semua") dasar.set("saring", saring);
-  const tautan = (ubah: Record<string, string | undefined> = {}) => {
-    const sp = new URLSearchParams(dasar);
-    for (const [k, v] of Object.entries(ubah)) {
-      if (v) sp.set(k, v);
-      else sp.delete(k);
-    }
-    const s = sp.toString();
-    return s ? `/?${s}` : "/";
-  };
-
-  const subline = (() => {
-    if (q) return `${total} hasil untuk “${q}”`;
-    if (saring === "belum-dijawab")
-      return total === 0 ? "Tidak ada pertanyaan yang menunggu" : `${total} pertanyaan menunggu jawaban`;
-    if (saring === "disematkan") return `${total} diskusi disematkan`;
-    return null;
-  })();
-
-  // Satu baris pengantar saat tidak ada keterangan hasil. Fungsinya memberi
-  // nada, bukan menjelaskan antarmuka.
-  const pengantar =
-    subline ?? "Pertanyaan, pengalaman, dan angka dari peternak lain.";
-
-  // Label di atas daftar menggantikan baris kepala tabel: satu penanda kecil,
-  // bukan kolom angka yang membuat halaman terasa seperti spreadsheet.
-  const labelDaftar = q
-    ? "Hasil pencarian"
-    : saring === "disematkan"
-      ? "Diskusi disematkan"
-      : saring === "belum-dijawab"
-        ? "Menunggu jawaban"
-        : urut === "terlama"
-          ? "Diskusi terlama"
-          : urut === "dibalas"
-            ? "Paling banyak dibalas"
-            : "Diskusi terbaru";
-
-  const kosong = (() => {
-    if (q) {
-      return {
-        judul: `Tidak ada hasil untuk “${q}”.`,
-        isi: "Coba kata lain, atau kembali ke seluruh diskusi.",
-        aksi: { href: tautan({ q: undefined }), label: "Hapus pencarian" },
-      };
-    }
-    if (saring === "disematkan") {
-      return {
-        judul: "Belum ada diskusi yang disematkan.",
-        isi: "Sematan dipakai untuk diskusi yang perlu dibaca lebih dulu: panduan, aturan forum, atau kabar penting.",
-        aksi: { href: tautan({ saring: undefined }), label: "Lihat semua diskusi" },
-      };
-    }
-    if (saring === "belum-dijawab") {
-      return {
-        judul: "Semua diskusi sudah dibalas.",
-        isi: "Tidak ada pertanyaan yang menunggu jawaban saat ini.",
-        aksi: { href: tautan({ saring: undefined }), label: "Lihat semua diskusi" },
-      };
-    }
-    return {
-      judul: "Belum ada diskusi.",
-      isi: "Forum ini baru dibuka. Diskusi pertama akan menentukan isinya.",
-      aksi: { href: "/baru", label: "Tulis diskusi pertama" },
-    };
-  })();
-
-  // Diskusi tersemat dipindahkan ke papan pengumuman hanya di tampilan utama.
-  // Di hasil pencarian, halaman kedua, dan filter lain, sematan tetap duduk di
-  // daftar agar hasilnya tidak terbelah atau menyalahi filter.
-  const papan = page === 1 && !q && saring === "semua" ? rows.filter((d) => d.isPinned) : [];
-  const daftar = rows.filter((d) => !papan.some((p) => p.id === d.id));
-
   return (
-    <main id="konten" tabIndex={-1} className="w-full">
-      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
-        <div className="min-w-0">
-          <h1 className="truncate font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[28px]">
-            {saring === "disematkan"
-              ? "Disematkan"
-              : saring === "belum-dijawab"
-                ? "Belum dijawab"
-                : "Semua diskusi"}
-          </h1>
-          <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-ink-soft">
-            {pengantar}
-          </p>
-        </div>
-      </div>
+    <main id="konten" tabIndex={-1} className="mx-auto w-full max-w-[1600px] bg-ground">
+      <Pengungkap />
 
-      {/* Ponsel: pencarian tinggal satu baris. Di 1024px ke atas ia pindah ke
-          sidebar. Tidak ada urutan atau jumlah di sampingnya. */}
-      <div className="mt-3 lg:hidden">
-        <form action="/" role="search" className="relative">
-          {saring !== "semua" && <input type="hidden" name="saring" value={saring} />}
-          {urut !== "terbaru" && <input type="hidden" name="urut" value={urut} />}
-          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint">
-            <IkonCari className="h-[15px] w-[15px]" />
-          </span>
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder="Cari judul atau isi"
-            aria-label="Cari diskusi"
-            className="h-10 w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[13.5px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15"
-          />
-        </form>
-      </div>
-
-      <div className="mt-5">
-        {papan.length > 0 && (
-          <section aria-label="Pengumuman" className="mb-4 grid gap-3">
-            {papan.map((d) => (
-              <PapanDiskusi key={d.id} d={d} />
-            ))}
-          </section>
-        )}
-
-        {rows.length === 0 ? (
-          <div className="rounded-xl border border-border bg-surface px-6 py-12 text-center">
-            <p className="mx-auto max-w-[30ch] font-display text-[20px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[22px]">
-              {kosong.judul}
-            </p>
-            <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-ink-soft">
-              {kosong.isi}
-            </p>
-            <div className="mt-5 flex justify-center">
-              <Link
-                href={kosong.aksi.href}
-                className={kosong.aksi.href === "/baru" ? "btn btn-primary" : "btn btn-outline"}
-              >
-                {kosong.aksi.label}
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
-              <h2 className="text-[12.5px] font-medium text-ink-faint">{labelDaftar}</h2>
-            </div>
-
-            {daftar.length > 0 && (
-              <ul>
-                {daftar.map((d) => (
-                  <BarisDaftar key={d.id} d={d} />
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-
-        {(page > 1 || hasNext) && (
-          <nav
-            aria-label="Halaman"
-            className="mt-6 flex items-center justify-between border-t border-rule pt-4 text-[13px]"
-          >
-            {page > 1 ? (
-              <Link href={tautan({ page: String(page - 1) })} className="link">
-                ← Sebelumnya
-              </Link>
-            ) : (
-              <span />
-            )}
-            <span className="tabular text-ink-faint">Halaman {page}</span>
-            {hasNext ? (
-              <Link href={tautan({ page: String(page + 1) })} className="link">
-                Berikutnya →
-              </Link>
-            ) : (
-              <span />
-            )}
+      {/* Satu layar, hanya kata. Tidak ada navigasi batang: dua tautan kecil
+          di sudut, satu pernyataan besar, satu aksi. */}
+      <section
+        aria-labelledby="judul-mulai"
+        className="flex min-h-[100svh] flex-col justify-between px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-6 md:px-12 md:pb-[calc(2rem+env(safe-area-inset-bottom))]"
+      >
+        <header className="flex items-center justify-between gap-6 text-[14px]">
+          <Link href="/" className="font-semibold tracking-tight text-ink-strong">
+            unggas<span className="text-ink-faint">.net</span>
+          </Link>
+          <nav aria-label="Navigasi halaman" className="flex items-center gap-4 text-ink-soft sm:gap-5">
+            <Link href="/diskusi" className="text-[14px] transition-colors hover:text-ink-strong">
+              Diskusi
+            </Link>
+            <Link href="/masuk" className="transition-colors hover:text-ink-strong">
+              Masuk
+            </Link>
+            <TombolTema />
           </nav>
-        )}
-      </div>
-    </main>
-  );
-}
+        </header>
 
-function PapanDiskusi({ d }: { d: BarisDiskusi }) {
-  const balasan = Math.max(0, d._count.posts - 1);
-  const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
-
-  return (
-    <article className="relative overflow-hidden rounded-xl border border-border bg-surface">
-      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-accent" />
-      <div className="px-5 py-5 sm:px-6 sm:py-6">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-          <span className="label-aksen inline-flex items-center gap-1.5">
-            <IkonSematkan className="h-3.5 w-3.5" />
-            Pengumuman
-          </span>
-        </div>
-
-        <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[22px]">
-          <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
-            {d.title}
-          </Link>
-        </h2>
-
-        {isi && (
-          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[13.8px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
-            {isi}
-          </p>
-        )}
-
-        <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
-          <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username="anonim" size="sm" />
-            <span className="font-medium text-ink-soft">anonim</span>
-          </span>
-          <span aria-hidden="true">·</span>
-          <span className="tabular whitespace-nowrap">
-            {balasan} balasan · {relatif(d.lastPostAt)}
-          </span>
-          <Link
-            href={`/t/${d.id}`}
-            className="ml-auto whitespace-nowrap text-[12.5px] font-semibold text-accent-deep hover:underline"
-          >
-            Baca pengumuman
-          </Link>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function BarisDaftar({ d }: { d: BarisDiskusi }) {
-  const balasan = Math.max(0, d._count.posts - 1);
-  const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
-
-  return (
-    <li className="group relative border-b border-rule last:border-0">
-      <div className="-mx-3 px-3 py-4 transition-colors group-hover:bg-wash sm:py-5">
-        <h2 className="font-display text-[16.5px] font-semibold leading-[1.4] tracking-[-0.01em] text-ink-strong sm:text-[18px]">
-          {d.isPinned && (
-            <span
-              className="mr-1.5 inline-block translate-y-[2px] text-accent"
-              title="Disematkan"
-            >
-              <IkonSematkan className="h-3.5 w-3.5" />
-              <span className="sr-only">Disematkan</span>
+        <h1
+          id="judul-mulai"
+          className="py-[8vh] font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-[0.86] tracking-[-0.05em] text-ink-strong"
+        >
+          <span className="lp-mask block">
+            <span className="lp-naik" style={{ animationDelay: "100ms" }}>
+              Pertanyaan
             </span>
-          )}
+          </span>
+          <span className="lp-mask block text-left md:text-right">
+            <span className="lp-naik" style={{ animationDelay: "200ms" }}>
+              tetap ada.
+            </span>
+          </span>
+        </h1>
+
+        <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
+          <p className="max-w-[44ch] text-balance text-[22px] leading-[1.4] text-ink-soft">
+            Forum peternak unggas Indonesia. Baca tanpa akun.
+          </p>
           <Link
-            href={`/t/${d.id}`}
-            className="line-clamp-2 transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-ink"
+            href="/daftar"
+            className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-invert px-7 text-[14px] font-semibold text-on-invert transition-colors hover:bg-accent hover:text-on-accent md:w-auto"
           >
-            {d.title}
+            Buat akun
           </Link>
+        </div>
+      </section>
+
+      <section aria-labelledby="isinya" className="px-6 py-20 md:px-12 md:py-24">
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
+          <h2
+            id="isinya"
+            className="text-[22px] font-semibold tracking-[-0.03em] text-ink-strong md:text-[36px] lg:col-span-3"
+          >
+            Isinya
+          </h2>
+
+          <ul className="lg:col-span-8 lg:col-start-5">
+            {FITUR.map((f, i) => (
+              <li
+                key={f.judul}
+                className="flex flex-col gap-2 py-5 lg:flex-row lg:items-baseline lg:gap-10 lg:py-6"
+              >
+                <h3
+                  data-reveal
+                  style={tunda(i * 70)}
+                  className="shrink-0 font-display text-[clamp(2rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-ink-strong"
+                >
+                  {f.judul}
+                </h3>
+                <p
+                  data-reveal
+                  style={tunda(i * 70 + 60)}
+                  className="max-w-[58ch] text-[17px] leading-[1.55] text-ink-soft"
+                >
+                  {f.isi}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="ramai" className="px-6 py-20 md:px-12 md:py-24">
+        <h2
+          id="ramai"
+          className="max-w-[16ch] text-[clamp(2rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-ink-strong"
+        >
+          Yang sedang dibicarakan
+        </h2>
+        <p data-reveal className="mt-4 text-[17px] leading-[1.6] text-ink-soft">
+          Untuk sekarang semua diskusi ada di satu ruang yang sama.
+        </p>
+
+        <ul className="mt-8 md:mt-12">
+          {diskusi.map((d, i) => {
+            const balasan = Math.max(0, d._count.posts - 1);
+
+            return (
+              <li key={d.id}>
+                <Link
+                  href={`/t/${d.id}`}
+                  data-reveal
+                  style={tunda(i * 60)}
+                  className="group -mx-3 block px-3 py-5 transition-colors hover:bg-wash md:grid md:grid-cols-12 md:items-baseline md:gap-6"
+                >
+                  <h3 className="text-[17px] font-semibold leading-snug tracking-[-0.01em] text-ink-strong transition-colors group-hover:text-accent-ink md:col-span-8 md:text-[22px]">
+                    {d.title}
+                  </h3>
+                  <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-ink-faint md:col-span-4 md:mt-0 md:justify-end">
+                    {d.isPinned && <span>Disematkan</span>}
+                    <span>{balasan} balasan</span>
+                    <span>{relatif(d.lastPostAt)}</span>
+                  </p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        <Link
+          href="/diskusi"
+          className="mt-8 inline-block text-[14px] font-semibold text-ink-strong underline decoration-ink-faint underline-offset-4 transition-colors hover:text-accent-ink hover:decoration-accent"
+        >
+          Semua diskusi
+        </Link>
+      </section>
+
+      <section aria-labelledby="aturan" className="bg-accent px-6 py-20 text-on-accent md:px-12 md:py-24">
+        <div className="grid gap-8 md:grid-cols-12 md:gap-6">
+          <h2 id="aturan" className="text-[17px] font-semibold leading-snug md:col-span-3">
+            Aturan main
+          </h2>
+          <div className="md:col-span-8 md:col-start-5">
+            <blockquote
+              data-reveal
+              className="max-w-[28ch] font-display text-[clamp(1.375rem,3vw,2.25rem)] font-medium leading-[1.2] tracking-[-0.02em]"
+            >
+              “Sopan dan saling bantu. Jual-beli nanti punya tempatnya sendiri.”
+            </blockquote>
+            <p data-reveal style={tunda(100)} className="mt-6 text-[14px]">
+              <Link
+                href="/t/20"
+                className="underline decoration-white/50 underline-offset-4 transition-colors hover:decoration-white"
+              >
+                Dari sambutan di forum
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="tanya" className="px-6 py-20 md:px-12 md:py-24">
+        <div className="grid gap-10 md:grid-cols-12 md:gap-6">
+          <h2
+            id="tanya"
+            className="text-[clamp(2rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-ink-strong md:col-span-5"
+          >
+            Yang sering ditanya
+          </h2>
+
+          <dl className="space-y-8 md:col-span-6 md:col-start-7">
+            {FAQ.map((f, i) => (
+              <div key={f.tanya} data-reveal style={tunda(i * 50)}>
+                <dt className="text-[17px] font-semibold text-ink-strong">{f.tanya}</dt>
+                <dd className="mt-2 max-w-[58ch] text-[17px] leading-[1.65] text-ink-soft">
+                  {f.jawab}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="ajakan"
+        className="flex flex-col bg-invert px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-20 text-on-invert md:px-12 md:pb-24 md:pt-28"
+      >
+        <h2
+          id="ajakan"
+          data-reveal
+          className="font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-[0.9] tracking-[-0.05em]"
+        >
+          Ada yang
+          <br />
+          mau ditanya?
         </h2>
 
-        {isi && (
-          <p className="mt-1.5 line-clamp-2 max-w-[70ch] text-[13.5px] leading-[1.6] text-ink-soft sm:text-[14px]">
-            {isi}
-          </p>
-        )}
-
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
-          <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username="anonim" size="xs" />
-            <span className="font-medium text-ink-soft">anonim</span>
-          </span>
-          <span aria-hidden="true">·</span>
-          <span className="tabular whitespace-nowrap">{relatif(d.lastPostAt)}</span>
-          <span aria-hidden="true">·</span>
-          <span
-            className={
-              balasan === 0
-                ? "whitespace-nowrap text-ink-faint"
-                : "whitespace-nowrap font-medium text-ink-soft"
-            }
-          >
-            {balasan} balasan
-          </span>
+        <div className="mt-14 flex flex-col gap-7 md:flex-row md:items-end md:justify-end md:gap-12">
+          <div className="flex shrink-0 flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+            <Link
+              href="/daftar"
+              className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-on-invert px-7 text-[14px] font-semibold text-invert transition-colors hover:bg-accent hover:text-on-accent"
+            >
+              Buat akun
+            </Link>
+            <Link
+              href="/diskusi"
+              className="whitespace-nowrap text-[14px] font-semibold text-on-invert underline decoration-on-invert/40 underline-offset-4 transition-colors hover:decoration-on-invert"
+            >
+              Baca diskusi
+            </Link>
+          </div>
         </div>
-      </div>
-    </li>
+      </section>
+
+      <footer className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-16 md:px-12 md:pt-28">
+        <p className="font-display text-[clamp(3.5rem,15vw,12.5rem)] font-semibold leading-none tracking-[-0.05em] text-ink-strong">
+          unggas<span className="text-ink-faint">.net</span>
+        </p>
+
+        <div className="mt-10 flex flex-col gap-6 text-[14px] md:flex-row md:items-center md:justify-between">
+          <nav aria-label="Tautan footer" className="flex flex-wrap gap-x-6 gap-y-2 text-ink-soft">
+            <Link href="/diskusi" className="transition-colors hover:text-accent-ink">
+              Diskusi
+            </Link>
+            <Link href="/daftar" className="transition-colors hover:text-accent-ink">
+              Buat akun
+            </Link>
+            <Link href="/masuk" className="transition-colors hover:text-accent-ink">
+              Masuk
+            </Link>
+          </nav>
+          <p className="text-ink-faint">© 2026 unggas.net</p>
+        </div>
+      </footer>
+    </main>
   );
 }

@@ -54,7 +54,7 @@ export default async function NotifikasiPage() {
             balasannya.
           </p>
           <div className="mt-5 flex justify-center">
-            <Link href="/" className="btn btn-outline">
+            <Link href="/diskusi" className="btn btn-outline">
               Lihat semua diskusi
             </Link>
           </div>

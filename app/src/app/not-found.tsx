@@ -35,7 +35,7 @@ export default async function TidakKetemu() {
             terbuka.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <Link href="/" className="btn btn-primary">
+            <Link href="/diskusi" className="btn btn-primary">
               Ke semua diskusi
             </Link>
             <Link href="/baru" className="btn btn-outline">

@@ -124,7 +124,7 @@ export async function daftar(_prev: ActionResult | null, formData: FormData): Pr
 
   if (!emailNyala) {
     await createSession(user.id);
-    redirect("/");
+    redirect("/diskusi");
   }
 
   const token = await buatToken(user.id, "verifikasi");
@@ -167,7 +167,7 @@ export async function masuk(_prev: ActionResult | null, formData: FormData): Pro
   }
 
   await createSession(user.id);
-  redirect("/");
+  redirect("/diskusi");
 }
 
 export async function keluar(): Promise<void> {

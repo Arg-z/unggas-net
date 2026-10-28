@@ -23,9 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${BASE}/mulai`,
+      url: `${BASE}/diskusi`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
+      changeFrequency: "hourly",
       priority: 0.9,
     },
     ...diskusi.map((d) => ({

@@ -9,7 +9,7 @@ export const metadata = { title: "Daftar" };
 
 export default async function DaftarPage() {
   const user = await getSessionUser();
-  if (user) redirect("/");
+  if (user) redirect("/diskusi");
   const denganEmail = emailAktif();
 
   return (
