@@ -118,14 +118,14 @@ export default async function Beranda({
     <main id="konten" tabIndex={-1} className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
         <div className="min-w-0">
-          <h1 className="truncate font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[28px]">
+          <h1 className="truncate font-serif text-[30px] font-semibold leading-[1.08] tracking-[-0.02em] text-ink-strong sm:text-[36px]">
             {saring === "disematkan"
               ? "Disematkan"
               : saring === "belum-dijawab"
                 ? "Belum dijawab"
                 : "Semua diskusi"}
           </h1>
-          <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-ink-soft">
+          <p className="mt-2 max-w-[52ch] text-[14px] leading-relaxed text-ink-soft">
             {pengantar}
           </p>
         </div>
@@ -146,7 +146,7 @@ export default async function Beranda({
             defaultValue={q}
             placeholder="Cari judul atau isi"
             aria-label="Cari diskusi"
-            className="h-11 w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:h-10 sm:text-[13.5px]"
+            className="h-11 w-full rounded-xl border border-control bg-surface pl-8 pr-2.5 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:text-[14px]"
           />
         </form>
       </div>
@@ -161,8 +161,8 @@ export default async function Beranda({
         )}
 
         {rows.length === 0 ? (
-          <div className="rounded-xl border border-border bg-surface px-6 py-12 text-center">
-            <p className="mx-auto max-w-[30ch] font-display text-[20px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[22px]">
+          <div className="rounded-2xl border border-border bg-raised px-6 py-14 text-center shadow-[0_1px_2px_rgba(10,14,12,0.04),0_16px_40px_-28px_rgba(10,14,12,0.28)]">
+            <p className="mx-auto max-w-[30ch] font-serif text-[22px] font-semibold leading-[1.15] tracking-[-0.02em] text-ink-strong sm:text-[26px]">
               {kosong.judul}
             </p>
             <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-ink-soft">
@@ -179,8 +179,8 @@ export default async function Beranda({
           </div>
         ) : (
           <div>
-            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2.5">
-              <h2 className="text-[12.5px] font-medium text-ink-faint">{labelDaftar}</h2>
+            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
+              <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-faint">{labelDaftar}</h2>
             </div>
 
             {daftar.length > 0 && (
@@ -196,7 +196,7 @@ export default async function Beranda({
         {(page > 1 || hasNext) && (
           <nav
             aria-label="Halaman"
-            className="mt-6 flex items-center justify-between border-t border-rule pt-4 text-[13px]"
+            className="mt-8 flex items-center justify-between border-t border-rule pt-5 text-[13.5px]"
           >
             {page > 1 ? (
               <Link href={tautan({ page: String(page - 1) })} className="link">
@@ -225,9 +225,9 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <article className="relative overflow-hidden rounded-xl border border-border bg-surface">
+    <article className="relative overflow-hidden rounded-2xl border border-border bg-raised shadow-[0_1px_2px_rgba(10,14,12,0.04),0_16px_40px_-28px_rgba(10,14,12,0.28)]">
       <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-accent" />
-      <div className="px-5 py-5 sm:px-6 sm:py-6">
+      <div className="px-5 py-6 sm:px-7 sm:py-7">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <span className="label-aksen inline-flex items-center gap-1.5">
             <IkonSematkan className="h-3.5 w-3.5" />
@@ -235,14 +235,14 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
           </span>
         </div>
 
-        <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[22px]">
+        <h2 className="mt-2.5 font-display text-[19px] font-semibold leading-[1.28] tracking-[-0.015em] text-ink-strong sm:max-w-[34ch] sm:text-[24px]">
           <Link href={`/t/${d.id}`} className="transition-colors hover:text-accent-ink">
             {d.title}
           </Link>
         </h2>
 
         {isi && (
-          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[13.8px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
+          <p className="mt-2 line-clamp-2 max-w-[66ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[15px]">
             {isi}
           </p>
         )}
@@ -274,8 +274,8 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
 
   return (
     <li className="group relative border-b border-rule last:border-0">
-      <div className="-mx-3 px-3 py-4 transition-colors group-hover:bg-wash group-active:bg-wash sm:py-5">
-        <h2 className="font-display text-[16.5px] font-semibold leading-[1.4] tracking-[-0.01em] text-ink-strong sm:text-[18px]">
+      <div className="-mx-3 px-3 py-5 transition-colors group-hover:bg-wash group-active:bg-wash sm:py-6">
+        <h2 className="font-display text-[17.5px] font-semibold leading-[1.35] tracking-[-0.015em] text-ink-strong sm:text-[19px]">
           {d.isPinned && (
             <span
               className="mr-1.5 inline-block translate-y-[2px] text-accent"
@@ -294,7 +294,7 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
         </h2>
 
         {isi && (
-          <p className="mt-1.5 line-clamp-2 max-w-[70ch] text-[13.5px] leading-[1.6] text-ink-soft sm:text-[14px]">
+          <p className="mt-2 line-clamp-2 max-w-[68ch] text-[14px] leading-[1.65] text-ink-soft sm:text-[14.5px]">
             {isi}
           </p>
         )}
