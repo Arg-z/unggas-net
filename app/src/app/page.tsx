@@ -41,8 +41,8 @@ export default function Mulai() {
     <main id="konten" tabIndex={-1} className="mx-auto w-full max-w-[1600px] bg-ground">
       <Pengungkap />
 
-      {/* Satu layar, hanya kata. Tidak ada navigasi batang: tautan kecil
-          di sudut, satu pernyataan besar, dua aksi. */}
+      {/* Satu layar, hanya kata. Tidak ada navigasi batang: dua tautan kecil
+          di sudut, satu pernyataan besar, satu aksi. */}
       <section
         aria-labelledby="judul-mulai"
         className="flex min-h-[100svh] flex-col justify-between px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-6 md:px-12 md:pb-[calc(2rem+env(safe-area-inset-bottom))]"
@@ -52,9 +52,6 @@ export default function Mulai() {
             unggas<span className="text-ink-faint">.net</span>
           </Link>
           <nav aria-label="Navigasi halaman" className="flex items-center gap-4 text-ink-soft sm:gap-5">
-            <Link href="/diskusi" className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-accent-ink">
-              Diskusi
-            </Link>
             <Link href="/masuk" className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-accent-ink">
               Masuk
             </Link>
@@ -82,13 +79,7 @@ export default function Mulai() {
             Forum peternak unggas Indonesia. Baca tanpa akun; untuk menulis, buat akun — nama
             penulis tetap anonim.
           </p>
-          <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto md:shrink-0">
-            <Link
-              href="/diskusi"
-              className="inline-flex min-h-[52px] w-full items-center justify-center whitespace-nowrap border border-control px-7 text-[14px] font-semibold text-ink-strong transition-colors hover:border-ink-soft hover:bg-wash sm:w-auto"
-            >
-              Lihat diskusi
-            </Link>
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end md:w-auto md:shrink-0">
             <Link
               href="/daftar"
               className="inline-flex min-h-[52px] w-full shrink-0 items-center justify-center whitespace-nowrap bg-accent px-7 text-[14px] font-semibold text-on-accent transition-colors hover:bg-accent-hover sm:w-auto"
@@ -149,13 +140,7 @@ export default function Mulai() {
         </h2>
 
         <div className="mt-14 flex flex-col gap-7 md:flex-row md:items-end md:justify-end md:gap-12">
-          <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-            <Link
-              href="/diskusi"
-              className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap border border-on-invert/40 px-7 text-[14px] font-semibold text-on-invert transition-colors hover:bg-on-invert/10"
-            >
-              Lihat diskusi
-            </Link>
+          <div className="flex shrink-0 flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
             <Link
               href="/daftar"
               className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap bg-accent px-7 text-[14px] font-semibold text-on-accent transition-colors hover:bg-accent-hover"
@@ -173,9 +158,6 @@ export default function Mulai() {
 
         <div className="mt-10 flex flex-col gap-6 text-[14px] md:flex-row md:items-center md:justify-between">
           <nav aria-label="Tautan footer" className="flex flex-wrap gap-x-6 gap-y-2 text-ink-soft">
-            <Link href="/diskusi" className="inline-flex min-h-11 items-center transition-colors hover:text-accent-ink sm:min-h-0">
-              Diskusi
-            </Link>
             <Link href="/daftar" className="inline-flex min-h-11 items-center transition-colors hover:text-accent-ink sm:min-h-0">
               Buat akun
             </Link>
