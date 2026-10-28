@@ -31,6 +31,74 @@ export function IkonSematkan({ className = "h-3.5 w-3.5" }: Props) {
   );
 }
 
+export function IkonLepasSematkan({ className = "h-3.5 w-3.5" }: Props) {
+  return (
+    <svg viewBox="0 0 16 16" className={className} {...dasar}>
+      <path d="M5.4 2.2h5.2" />
+      <path d="M6.6 2.2v3.4L4.8 8.1h6.4L9.4 5.6V2.2" />
+      <path d="M8 8.1v5.7" />
+      <path d="M2.8 13.2 13.2 2.8" />
+    </svg>
+  );
+}
+
+export function IkonMata({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="M2.4 10s2.9-4.8 7.6-4.8 7.6 4.8 7.6 4.8-2.9 4.8-7.6 4.8S2.4 10 2.4 10Z" />
+      <circle cx="10" cy="10" r="2.3" />
+    </svg>
+  );
+}
+
+export function IkonMataTutup({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="M2.4 10s2.9-4.8 7.6-4.8 7.6 4.8 7.6 4.8-2.9 4.8-7.6 4.8S2.4 10 2.4 10Z" />
+      <circle cx="10" cy="10" r="2.3" />
+      <path d="M3.2 3.2 16.8 16.8" />
+    </svg>
+  );
+}
+
+export function IkonPenggunaBanyak({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <circle cx="7.6" cy="7.2" r="2.9" />
+      <path d="M2.5 16.6c.5-2.7 2.6-4.3 5.1-4.3s4.6 1.6 5.1 4.3" />
+      <path d="M12.8 4.6a2.9 2.9 0 0 1 0 5.3" />
+      <path d="M14.4 12.5c1.7.5 2.8 1.8 3.1 3.9" />
+    </svg>
+  );
+}
+
+export function IkonBlokir({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <circle cx="10" cy="10" r="6.9" />
+      <path d="m5.1 5.1 9.8 9.8" />
+    </svg>
+  );
+}
+
+export function IkonBukaBlokir({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <circle cx="10" cy="10" r="6.9" />
+      <path d="m6.7 10.2 2.2 2.2 4.5-4.7" />
+    </svg>
+  );
+}
+
+export function IkonPerisaiCentang({ className = "h-4 w-4" }: Props) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} {...dasar}>
+      <path d="M10 2.8 4 5v4.6c0 3.4 2.4 6.2 6 7.6 3.6-1.4 6-4.2 6-7.6V5l-6-2.2Z" />
+      <path d="m7.4 9.7 1.8 1.8 3.4-3.4" />
+    </svg>
+  );
+}
+
 export function IkonBalasan({ className = "h-4 w-4" }: Props) {
   return (
     <svg viewBox="0 0 20 20" className={className} {...dasar}>

@@ -5,15 +5,26 @@ import { prisma } from "@/lib/db";
 import { relatif } from "@/lib/relatif";
 import { Avatar } from "@/components/Avatar";
 import { BadgeSematkan } from "@/components/BadgeSematkan";
+import {
+  IkonBalasan,
+  IkonBlokir,
+  IkonBukaBlokir,
+  IkonLepasSematkan,
+  IkonMata,
+  IkonMataTutup,
+  IkonPenggunaBanyak,
+  IkonPerisaiCentang,
+  IkonSematkan,
+} from "@/components/Ikon";
 import { sembunyikanDiskusi, tampilkanDiskusi, setSematkan, tampilkanPost, setBan } from "../actions/admin";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Panel admin" };
 
 const TABS = [
-  { id: "diskusi", label: "Diskusi" },
-  { id: "post", label: "Post tersembunyi" },
-  { id: "user", label: "Pengguna" },
+  { id: "diskusi", label: "Diskusi", ikon: IkonBalasan },
+  { id: "post", label: "Post tersembunyi", ikon: IkonMataTutup },
+  { id: "user", label: "Pengguna", ikon: IkonPenggunaBanyak },
 ] as const;
 
 type Tab = (typeof TABS)[number]["id"];
@@ -28,7 +39,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   return (
     <main id="konten" tabIndex={-1} className="w-full">
       <div className="min-w-0">
-        <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[26px]">
+        <h1 className="flex items-center gap-2 text-[22px] font-semibold leading-tight tracking-tight text-ink-strong sm:text-[26px]">
+          <IkonPerisaiCentang className="h-[22px] w-[22px] shrink-0" />
           Panel admin
         </h1>
         <p className="mt-1 text-[13px] text-ink-faint">
@@ -42,12 +54,15 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             key={t.id}
             href={`/admin?tab=${t.id}`}
             aria-current={aktif === t.id ? "page" : undefined}
-            className={`-mb-px inline-flex h-11 shrink-0 items-center border-b-2 px-2.5 text-[13px] transition-colors sm:h-9 sm:px-3 sm:text-[13.5px] ${
+            className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 px-2.5 text-[13px] transition-colors sm:h-9 sm:px-3 sm:text-[13.5px] ${
               aktif === t.id
                 ? "border-ink-strong font-semibold text-ink-strong"
                 : "border-transparent font-medium text-ink-soft hover:text-ink-strong"
             }`}
           >
+            <t.ikon
+              className={`h-[15px] w-[15px] shrink-0 ${aktif === t.id ? "" : "opacity-60"}`}
+            />
             {t.label}
           </Link>
         ))}
@@ -110,16 +125,23 @@ async function DaftarDiskusi() {
               <div className="flex flex-wrap gap-2 sm:justify-end">
                 <form action={async () => { "use server"; await setSematkan(d.id, !d.isPinned); }}>
                   <button type="submit" className="btn btn-outline btn-sm">
+                    {d.isPinned ? <IkonLepasSematkan /> : <IkonSematkan />}
                     {d.isPinned ? "Lepas sematan" : "Sematkan"}
                   </button>
                 </form>
                 {d.isHidden ? (
                   <form action={async () => { "use server"; await tampilkanDiskusi(d.id); }}>
-                    <button type="submit" className="btn btn-primary btn-sm">Tampilkan</button>
+                    <button type="submit" className="btn btn-primary btn-sm">
+                      <IkonMata className="h-3.5 w-3.5" />
+                      Tampilkan
+                    </button>
                   </form>
                 ) : (
                   <form action={async () => { "use server"; await sembunyikanDiskusi(d.id); }}>
-                    <button type="submit" className="btn btn-outline btn-sm">Sembunyikan</button>
+                    <button type="submit" className="btn btn-outline btn-sm">
+                      <IkonMataTutup className="h-3.5 w-3.5" />
+                      Sembunyikan
+                    </button>
                   </form>
                 )}
               </div>
@@ -167,7 +189,10 @@ async function PostTersembunyi() {
               </Link>
             </div>
             <form action={async () => { "use server"; await tampilkanPost(p.id); }}>
-              <button type="submit" className="btn btn-primary btn-sm">Tampilkan</button>
+              <button type="submit" className="btn btn-primary btn-sm">
+                <IkonMata className="h-3.5 w-3.5" />
+                Tampilkan
+              </button>
             </form>
           </div>
         </li>
@@ -224,6 +249,11 @@ async function DaftarPengguna({ akunId }: { akunId: number }) {
                     type="submit"
                     className={u.isBanned ? "btn btn-primary btn-sm" : "btn btn-outline btn-sm"}
                   >
+                    {u.isBanned ? (
+                      <IkonBukaBlokir className="h-3.5 w-3.5" />
+                    ) : (
+                      <IkonBlokir className="h-3.5 w-3.5" />
+                    )}
                     {u.isBanned ? "Buka blokir" : "Blokir"}
                   </button>
                 </form>
