@@ -117,8 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <TombolTema />
       </div>
 
-      <div className="shrink-0">
-        <p className="mb-1.5 px-1 text-[11.5px] font-medium text-ink-faint">Komunitas</p>
+      <div className="mt-1 shrink-0">
         <Suspense fallback={<div className="h-9" />}>
           <PemilihKomunitas topik={topik} lebar="w-full" kotak />
         </Suspense>
