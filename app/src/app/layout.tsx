@@ -161,7 +161,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <footer className="mt-12 border-t border-border pt-5">
       <div className="flex flex-col gap-1.5 text-[12.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
         <p>unggas.net · Forum peternak unggas Indonesia.</p>
-        <a href="mailto:halo@unggas.net" className="transition-colors hover:text-accent-ink">
+        <a href="mailto:halo@unggas.net" className="inline-flex min-h-11 items-center transition-colors hover:text-accent-ink sm:min-h-0">
           halo@unggas.net
         </a>
       </div>

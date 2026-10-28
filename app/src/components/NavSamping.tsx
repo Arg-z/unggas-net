@@ -64,7 +64,7 @@ function Baris({
     <Link
       href={href}
       aria-current={aktif ? "page" : undefined}
-      className={`flex items-center gap-2.5 rounded-lg px-2.5 text-[14px] transition-colors ${
+      className={`flex items-center gap-2.5 rounded-lg px-2.5 text-[14px] transition-colors active:bg-wash ${
         ponsel ? "h-11" : "h-9"
       } ${
         aktif

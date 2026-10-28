@@ -146,7 +146,7 @@ export default async function Beranda({
             defaultValue={q}
             placeholder="Cari judul atau isi"
             aria-label="Cari diskusi"
-            className="h-10 w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[13.5px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15"
+            className="h-11 w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:h-10 sm:text-[13.5px]"
           />
         </form>
       </div>
@@ -274,7 +274,7 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
 
   return (
     <li className="group relative border-b border-rule last:border-0">
-      <div className="-mx-3 px-3 py-4 transition-colors group-hover:bg-wash sm:py-5">
+      <div className="-mx-3 px-3 py-4 transition-colors group-hover:bg-wash group-active:bg-wash sm:py-5">
         <h2 className="font-display text-[16.5px] font-semibold leading-[1.4] tracking-[-0.01em] text-ink-strong sm:text-[18px]">
           {d.isPinned && (
             <span

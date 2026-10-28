@@ -8,7 +8,7 @@ export function Wordmark() {
     <Link
       href="/"
       aria-label="unggas.net, beranda"
-      className="inline-flex items-center gap-2.5"
+      className="inline-flex min-h-11 items-center gap-2.5"
     >
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-accent text-white">
         <svg
@@ -29,7 +29,7 @@ export function Wordmark() {
           <circle cx="12" cy="13.6" r="0.9" fill="currentColor" />
         </svg>
       </span>
-      <span className="font-display text-[18.5px] font-semibold leading-none tracking-tight text-ink-strong">
+      <span className="max-[359px]:hidden font-display text-[18.5px] font-semibold leading-none tracking-tight text-ink-strong">
         unggas<span className="text-ink-faint">.net</span>
       </span>
     </Link>

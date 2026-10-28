@@ -15,7 +15,7 @@ export function BuatDiskusiForm() {
           minLength={5}
           maxLength={200}
           className="input mt-2"
-          placeholder="Kandang puyuh panas saat siang, ventilasi seperti apa yang pas?"
+          placeholder="Kandang puyuh panas saat siang?"
         />
         <span className="hint mt-1.5 block">5–200 karakter. Tulis inti pertanyaannya saja.</span>
       </label>

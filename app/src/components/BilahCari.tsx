@@ -26,8 +26,8 @@ export function BilahCari({ penuh = false }: { penuh?: boolean }) {
         defaultValue={q}
         placeholder="Cari judul atau isi diskusi"
         aria-label="Cari diskusi"
-        className={`w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 ${
-          penuh ? "h-9" : "h-8"
+        className={`w-full rounded-lg border border-control bg-surface pl-8 pr-2.5 text-[16px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/15 sm:text-[13px] ${
+          penuh ? "h-11 sm:h-9" : "h-8"
         }`}
       />
     </form>

@@ -16,7 +16,7 @@ export default async function BaruPage() {
       <div className="min-w-0">
         <Link
           href="/diskusi"
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-ink-strong"
+          className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-medium text-ink-soft transition-colors hover:text-ink-strong sm:min-h-0"
         >
           <IkonPanah className="h-3.5 w-3.5 text-accent" />
           Semua diskusi

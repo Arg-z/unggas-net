@@ -42,7 +42,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             key={t.id}
             href={`/admin?tab=${t.id}`}
             aria-current={aktif === t.id ? "page" : undefined}
-            className={`-mb-px inline-flex h-9 shrink-0 items-center border-b-2 px-3 text-[13.5px] transition-colors ${
+            className={`-mb-px inline-flex h-11 shrink-0 items-center border-b-2 px-2.5 text-[13px] transition-colors sm:h-9 sm:px-3 sm:text-[13.5px] ${
               aktif === t.id
                 ? "border-ink-strong font-semibold text-ink-strong"
                 : "border-transparent font-medium text-ink-soft hover:text-ink-strong"

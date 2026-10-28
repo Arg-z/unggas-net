@@ -77,7 +77,7 @@ export default async function NotifikasiPage() {
                   <input type="hidden" name="postNumber" value={n.postNumber} />
                   <button
                     type="submit"
-                    className={`-mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3 px-3 py-4 text-left transition-colors hover:bg-wash ${
+                    className={`-mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3 px-3 py-4 text-left transition-colors hover:bg-wash active:bg-wash ${
                       n.readAt ? "" : "bg-wash"
                     }`}
                   >

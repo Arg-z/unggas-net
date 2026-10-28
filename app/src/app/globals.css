@@ -176,6 +176,9 @@ body {
   .btn-primary:hover {
     background: var(--color-accent-hover);
   }
+  .btn:active {
+    transform: translateY(1px);
+  }
   .btn-outline {
     background: var(--color-surface);
     color: var(--color-ink);
@@ -250,6 +253,31 @@ body {
   textarea.input {
     min-height: 0;
     resize: vertical;
+  }
+
+  /* Sasaran sentuh ponsel: 44px untuk semua tombol dan kontrol form. */
+  @media (max-width: 640px) {
+    .btn {
+      min-height: 44px;
+      padding: 0 16px;
+      font-size: 15px;
+    }
+    .btn-sm {
+      min-height: 44px;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+    .btn-lg {
+      min-height: 48px;
+    }
+    .input {
+      min-height: 44px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn:active {
+      transform: none;
+    }
   }
 
   .label {
