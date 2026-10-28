@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { validateSignup, validateSignupTanpaEmail } from "@/lib/validate";
@@ -99,15 +100,27 @@ export async function daftar(_prev: ActionResult | null, formData: FormData): Pr
     return { ok: false, alasan: "Terlalu banyak permintaan email. Tunggu beberapa menit lalu coba lagi." };
   }
 
-  const user = await prisma.user.create({
-    data: {
-      username,
-      email,
-      passwordHash: await hashPassword(password),
-      // Saat email dimatikan, akun langsung aktif supaya bisa dipakai tanpa verifikasi.
-      emailVerifiedAt: emailNyala ? null : new Date(),
-    },
-  });
+  const user = await prisma.user
+    .create({
+      data: {
+        username,
+        email,
+        passwordHash: await hashPassword(password),
+        // Saat email dimatikan, akun langsung aktif supaya bisa dipakai tanpa verifikasi.
+        emailVerifiedAt: emailNyala ? null : new Date(),
+      },
+    })
+    // Dua pendaftaran bersamaan bisa lolos cek bentrok; unique index yang menangkap.
+    .catch((galat) => {
+      if (galat instanceof Prisma.PrismaClientKnownRequestError && galat.code === "P2002") return null;
+      throw galat;
+    });
+  if (!user) {
+    return {
+      ok: false,
+      alasan: emailNyala ? "Username atau email sudah dipakai" : "Username sudah dipakai",
+    };
+  }
 
   if (!emailNyala) {
     await createSession(user.id);

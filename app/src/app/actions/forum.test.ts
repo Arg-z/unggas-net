@@ -110,6 +110,17 @@ describe("balas", () => {
     last = await balas(null, fd({ discussionId: String(discussionId), content: "Balasan ke sebelas yang harusnya ditolak." }));
     expect(last.ok).toBe(false);
   });
+
+  it("menolak balasan ke diskusi tersembunyi untuk non-admin", async () => {
+    setCurrentUser({ id: userId, username: uname, email: "", isAdmin: false, isBanned: false });
+    await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: true } });
+    try {
+      const r = await balas(null, fd({ discussionId: String(discussionId), content: "Balasan ke diskusi tersembunyi." }));
+      expect(r).toEqual({ ok: false, alasan: "Diskusi tidak ditemukan." });
+    } finally {
+      await prisma.discussion.update({ where: { id: discussionId }, data: { isHidden: false } });
+    }
+  });
 });
 
 describe("XSS", () => {

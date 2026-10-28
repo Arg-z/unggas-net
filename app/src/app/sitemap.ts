@@ -3,6 +3,10 @@ import { prisma } from "@/lib/db";
 
 const BASE = "https://unggas.net";
 
+// Daftar diskusi berubah tiap hari; sitemap harus dibuat saat diminta,
+// bukan dibekukan saat build.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const diskusi = await prisma.discussion.findMany({
     where: { isHidden: false },

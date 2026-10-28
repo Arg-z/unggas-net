@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/lib/session";
 import { getThread } from "@/lib/forum";
+import { prisma } from "@/lib/db";
 import { relatif } from "@/lib/relatif";
 import { Avatar } from "@/components/Avatar";
 import { BadgeSematkan } from "@/components/BadgeSematkan";
@@ -10,6 +12,33 @@ import { parseId } from "@/lib/validate";
 import { BalasForm } from "../../BalasForm";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const threadId = parseId(id);
+  if (threadId === null) return {};
+
+  const diskusi = await prisma.discussion.findUnique({
+    where: { id: threadId },
+    select: {
+      title: true,
+      isHidden: true,
+      posts: { where: { number: 1 }, select: { content: true }, take: 1 },
+    },
+  });
+  if (!diskusi || diskusi.isHidden) return {};
+
+  const ringkas = (diskusi.posts[0]?.content ?? "").replace(/\s+/g, " ").trim().slice(0, 155);
+  return {
+    title: diskusi.title,
+    description: ringkas || undefined,
+    openGraph: { title: diskusi.title, description: ringkas || undefined, type: "article" },
+  };
+}
 
 export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

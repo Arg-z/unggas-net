@@ -9,7 +9,6 @@ import { rateLimit } from "@/lib/ratelimit";
 
 export type ActionResult = { ok: true } | { ok: false; alasan: string };
 
-const LIMIT_DISKUSI_BARU = 1 / (60 * 1000); // user baru: 1/menit
 const MINGGU_MS = 7 * 24 * 60 * 60 * 1000;
 
 export async function buatDiskusi(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
@@ -52,6 +51,15 @@ export async function balas(_prev: ActionResult | null, formData: FormData): Pro
 
   if (!rateLimit(`balas:${user.id}`, 10, 60_000)) {
     return { ok: false, alasan: "Terlalu cepat — tunggu sebentar." };
+  }
+
+  // Diskusi tersembunyi tidak boleh dibalas lewat URL langsung oleh non-admin.
+  const diskusi = await prisma.discussion.findUnique({
+    where: { id: discussionId },
+    select: { isHidden: true },
+  });
+  if (!diskusi || (diskusi.isHidden && !user.isAdmin)) {
+    return { ok: false, alasan: "Diskusi tidak ditemukan." };
   }
 
   // Nomor post dihitung dari max+1. Dua balasan bersamaan bisa memilih nomor

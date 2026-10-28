@@ -20,7 +20,7 @@ type Tab = (typeof TABS)[number]["id"];
 
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const user = await getSessionUser();
-  if (!user || !user.isAdmin) redirect("/");
+  if (!user || user.isBanned || !user.isAdmin) redirect("/");
 
   const { tab } = await searchParams;
   const aktif: Tab = tab === "post" || tab === "user" ? tab : "diskusi";
