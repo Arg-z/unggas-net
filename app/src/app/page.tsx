@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { getSessionUser } from "@/lib/session";
 import {
   listDiscussions,
-  getTags,
   parseSaringan,
   parseUrutan,
   type DaftarDiskusi,
@@ -13,7 +11,6 @@ import { relatif } from "@/lib/relatif";
 import { TagPill } from "@/components/TagPill";
 import { Avatar } from "@/components/Avatar";
 import { IkonCari, IkonSematkan } from "@/components/Ikon";
-import { PemilihKomunitas } from "@/components/PemilihKomunitas";
 
 export const dynamic = "force-dynamic";
 
@@ -32,18 +29,18 @@ export default async function Beranda({
   const halaman = Number(params.page);
   const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
 
-  const [{ rows, tag, hasNext, total }, tags] = await Promise.all([
-    listDiscussions({ tagSlug: params.tag, page, user, saring, urut, q }),
-    getTags(user),
-  ]);
+  const { rows, tag, hasNext, total } = await listDiscussions({
+    tagSlug: params.tag,
+    page,
+    user,
+    saring,
+    urut,
+    q,
+  });
 
   // Tag yang tidak ada jangan jatuh diam-diam ke "semua diskusi": URL-nya menjanjikan
   // filter, halamannya menampilkan hal lain. 404 yang jujur lebih baik.
   if (params.tag && !tag) notFound();
-
-  const topik = tags
-    .filter((t) => t.kind === "topik")
-    .map((t) => ({ slug: t.slug, name: t.name }));
 
   // Filter dan urutan tetap hidup di URL untuk tautan lama, tetapi tidak lagi
   // punya baris tab atau dropdown sendiri — keputusan pemilik 28 Okt.
@@ -147,11 +144,6 @@ export default async function Beranda({
           <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-ink-soft">
             {pengantar}
           </p>
-        </div>
-        <div className="shrink-0 lg:hidden">
-          <Suspense fallback={<span className="block h-9 w-[172px]" />}>
-            <PemilihKomunitas topik={topik} lebar="w-[172px]" kotak />
-          </Suspense>
         </div>
       </div>
 

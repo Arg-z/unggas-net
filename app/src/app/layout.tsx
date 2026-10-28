@@ -14,7 +14,6 @@ import { BilahCari } from "@/components/BilahCari";
 import { KartuTamu } from "@/components/KartuTamu";
 import { MenuPonsel } from "@/components/MenuPonsel";
 import { TombolTulis } from "@/components/TombolTulis";
-import { PemilihKomunitas } from "@/components/PemilihKomunitas";
 import { IkonKeluar } from "@/components/Ikon";
 import { Bingkai } from "@/components/Bingkai";
 import { MetaTema, SkripTema, TombolTema } from "@/components/Tema";
@@ -68,12 +67,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <BilahCari penuh />
       </Suspense>
 
-      <div className="rounded-xl border border-border px-3 py-2.5">
-        <Suspense fallback={<div className="h-8" />}>
-          <PemilihKomunitas topik={topik} lebar="w-full" lembut />
-        </Suspense>
-      </div>
-
       <Suspense fallback={<div className="h-44" />}>
         <NavSamping isAdmin={Boolean(user?.isAdmin)} belumDibaca={belumDibaca} ponsel />
       </Suspense>
@@ -112,12 +105,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <div className="flex h-14 shrink-0 items-center justify-between px-1">
         <Wordmark />
         <TombolTema />
-      </div>
-
-      <div className="mt-1 shrink-0">
-        <Suspense fallback={<div className="h-9" />}>
-          <PemilihKomunitas topik={topik} lebar="w-full" kotak />
-        </Suspense>
       </div>
 
       <div className="mt-4 shrink-0">
