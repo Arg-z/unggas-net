@@ -179,14 +179,17 @@ export default async function Beranda({
           </div>
         ) : (
           <div>
-            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-faint">{labelDaftar}</h2>
+            <div className="flex items-center justify-between gap-4 pb-1">
+              <h2 className="flex items-center gap-2 text-[12.5px] font-medium text-ink-soft">
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
+                {labelDaftar}
+              </h2>
             </div>
 
             {daftar.length > 0 && (
-              <ul>
-                {daftar.map((d) => (
-                  <BarisDaftar key={d.id} d={d} />
+              <ul className="mt-2 space-y-1">
+                {daftar.map((d, i) => (
+                  <BarisDaftar key={d.id} d={d} i={i} />
                 ))}
               </ul>
             )}
@@ -225,7 +228,7 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-border bg-raised shadow-[0_1px_2px_rgba(10,14,12,0.04),0_16px_40px_-28px_rgba(10,14,12,0.28)]">
+    <article className="relative overflow-hidden rounded-2xl border border-accent-track bg-accent-soft shadow-[0_1px_2px_rgba(10,14,12,0.03),0_12px_32px_-24px_rgba(10,14,12,0.18)]">
       <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-accent" />
       <div className="px-5 py-6 sm:px-7 sm:py-7">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
@@ -247,7 +250,7 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
           </p>
         )}
 
-        <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
+        <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-soft">
           <span className="flex items-center gap-1.5 whitespace-nowrap">
             <Avatar username="anonim" size="sm" />
             <span className="font-medium text-ink-soft">anonim</span>
@@ -268,13 +271,16 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
   );
 }
 
-function BarisDaftar({ d }: { d: BarisDiskusi }) {
+function BarisDaftar({ d, i }: { d: BarisDiskusi; i: number }) {
   const balasan = Math.max(0, d._count.posts - 1);
   const isi = (d.posts[0]?.content ?? "").replace(/\s+/g, " ").trim();
 
   return (
-    <li className="group relative border-b border-rule last:border-0">
-      <div className="-mx-3 px-3 py-5 transition-colors group-hover:bg-wash group-active:bg-wash sm:py-6">
+    <li className="group relative">
+      <div
+        className="baris-masuk -mx-3 rounded-xl px-3.5 py-4 transition-[background-color,box-shadow] duration-200 group-hover:bg-wash group-hover:shadow-[0_1px_2px_rgba(10,14,12,0.04)] group-active:bg-wash sm:px-4 sm:py-5"
+        style={{ animationDelay: `${Math.min(i, 10) * 30}ms` }}
+      >
         <h2 className="font-display text-[17.5px] font-semibold leading-[1.35] tracking-[-0.015em] text-ink-strong sm:text-[19px]">
           {d.isPinned && (
             <span
@@ -306,15 +312,14 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
           </span>
           <span aria-hidden="true">·</span>
           <span className="tabular whitespace-nowrap">{relatif(d.lastPostAt)}</span>
-          <span aria-hidden="true">·</span>
           <span
-            className={
+            className={`ml-0.5 inline-flex items-center rounded-full px-2 py-[3px] text-[11.5px] font-medium ${
               balasan === 0
-                ? "whitespace-nowrap text-ink-faint"
-                : "whitespace-nowrap font-medium text-ink-soft"
-            }
+                ? "bg-accent-soft text-accent-ink"
+                : "bg-sunken text-ink-soft"
+            }`}
           >
-            {balasan} balasan
+            {balasan === 0 ? "Belum dijawab" : `${balasan} balasan`}
           </span>
         </div>
       </div>
