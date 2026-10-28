@@ -81,8 +81,9 @@ export async function daftar(_prev: ActionResult | null, formData: FormData): Pr
   }
 
   const bentrok = await prisma.user.findFirst({
+    // Cek bentrok username juga tanpa peduli besar-kecil, sama seperti saat masuk.
     where: emailNyala
-      ? { OR: [{ username }, { email }] }
+      ? { OR: [{ username: { equals: username, mode: "insensitive" } }, { email }] }
       : { username: { equals: username, mode: "insensitive" } },
     select: { username: true, email: true },
   });
@@ -136,8 +137,9 @@ export async function masuk(_prev: ActionResult | null, formData: FormData): Pro
   }
 
   const user = await prisma.user.findFirst({
+    // Username selalu dicocokkan tanpa peduli besar-kecil; email sudah tersimpan lowercase.
     where: emailNyala
-      ? { OR: [{ username: identitas }, { email: identitas }] }
+      ? { OR: [{ username: { equals: identitas, mode: "insensitive" } }, { email: identitas }] }
       : { username: { equals: identitas, mode: "insensitive" } },
   });
   if (!user || !(await verifyPassword(password, user.passwordHash))) {

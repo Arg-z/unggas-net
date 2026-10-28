@@ -112,3 +112,33 @@ describe("masuk saat email dimatikan", () => {
     expect(sesiMasuk).toContain(user?.id);
   });
 });
+
+describe("masuk saat email menyala", () => {
+  const campur = `Budi${suffix}`;
+
+  beforeAll(async () => {
+    process.env.EMAIL_AKTIF = "true";
+    await prisma.user.create({
+      data: {
+        username: campur,
+        email: `budi${suffix}@example.com`, // taste-skill-ignore placeholder-data
+        passwordHash: await hashPassword(PASS),
+        emailVerifiedAt: new Date(),
+      },
+    });
+  });
+
+  afterAll(async () => {
+    delete process.env.EMAIL_AKTIF;
+    await prisma.user.deleteMany({ where: { username: campur } });
+  });
+
+  it("username berhuruf besar bisa masuk walau diketik lowercase", async () => {
+    const user = await prisma.user.findUniqueOrThrow({ where: { username: campur } });
+
+    await expect(
+      masuk(null, fd({ identitas: campur.toLowerCase(), password: PASS })),
+    ).rejects.toThrow("NEXT_REDIRECT /");
+    expect(sesiMasuk).toContain(user.id);
+  });
+});
