@@ -80,7 +80,6 @@ model Discussion {
   createdAt  DateTime        @default(now()) @map("created_at")
   lastPostAt DateTime        @default(now()) @map("last_post_at")
   posts      Post[]
-  tags       DiscussionTag[]
   notifications Notification[]
 
   @@index([lastPostAt])
@@ -101,27 +100,4 @@ model Post {
   @@unique([discussionId, number])
   @@index([userId])
   @@map("posts")
-}
-
-model Tag {
-  id           Int             @id @default(autoincrement())
-  name         String          @db.VarChar(60)
-  slug         String          @unique @db.VarChar(60)
-  kind         String          @db.VarChar(10)
-  description  String?         @db.Text
-  isRestricted Boolean         @default(false) @map("is_restricted")
-  discussions  DiscussionTag[]
-
-  @@map("tags")
-}
-
-model DiscussionTag {
-  discussionId Int        @map("discussion_id")
-  tagId        Int        @map("tag_id")
-  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
-  tag          Tag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([discussionId, tagId])
-  @@index([tagId])
-  @@map("discussion_tags")
 }

@@ -60,10 +60,9 @@ describe("buatDiskusi", () => {
 
     const d = await prisma.discussion.findFirstOrThrow({
       where: { userId, title: "Tes kandang panas" },
-      include: { tags: true, posts: true },
+      include: { posts: true },
     });
     discussionId = d.id;
-    expect(d.tags).toHaveLength(0);
     expect(d.posts).toHaveLength(1);
     expect(d.posts[0].number).toBe(1);
   });
@@ -76,9 +75,8 @@ describe("buatDiskusi", () => {
 
     const d = await prisma.discussion.findFirstOrThrow({
       where: { userId, title: "Tes tanpa tag" },
-      include: { tags: true },
     });
-    expect(d.tags).toHaveLength(0);
+    expect(d.title).toBe("Tes tanpa tag");
   });
 
   it("menolak user banned", async () => {
