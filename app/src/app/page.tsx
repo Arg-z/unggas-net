@@ -29,7 +29,8 @@ export default async function Beranda({
   const saring = parseSaringan(params.saring);
   const urut = parseUrutan(params.urut);
   const q = (params.q ?? "").trim().slice(0, 80);
-  const page = Math.max(1, Number(params.page) || 1);
+  const halaman = Number(params.page);
+  const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
 
   const [{ rows, tag, hasNext, total }, tags] = await Promise.all([
     listDiscussions({ tagSlug: params.tag, page, user, saring, urut, q }),

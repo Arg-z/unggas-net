@@ -22,7 +22,8 @@ export async function listDiscussions(opts: {
   urut?: Urutan;
   q?: string;
 }) {
-  const page = Math.max(1, opts.page ?? 1);
+  const halaman = Number(opts.page ?? 1);
+  const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
   const limit = 20;
   const saring = opts.saring ?? "semua";
   const urut = opts.urut ?? "terbaru";

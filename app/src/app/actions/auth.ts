@@ -23,6 +23,10 @@ const LIMIT_EMAIL_IP = 5;
 const LIMIT_EMAIL_ALAMAT = 3;
 const JENDELA_EMAIL_MS = 10 * 60_000;
 
+// Pendaftaran dibatasi supaya tidak bisa dipakai menumpuk akun / memicu email massal.
+const LIMIT_DAFTAR_IP = 5;
+const JENDELA_DAFTAR_MS = 10 * 60_000;
+
 /** IP pengirim dari header nginx (X-Real-IP). Aman dipanggil di luar konteks request. */
 async function ipPengirim(): Promise<string> {
   try {
@@ -49,6 +53,10 @@ async function bolehKirimEmail(alamat: string): Promise<boolean> {
 export async function daftar(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const usang = sesiKedaluwarsa(formData);
   if (usang) return usang;
+
+  if (!rateLimit(`daftar:ip:${await ipPengirim()}`, LIMIT_DAFTAR_IP, JENDELA_DAFTAR_MS)) {
+    return { ok: false, alasan: "Terlalu banyak pendaftaran dari jaringan ini. Coba lagi beberapa menit lagi." };
+  }
 
   const emailNyala = emailAktif();
   const isian = {
@@ -83,6 +91,11 @@ export async function daftar(_prev: ActionResult | null, formData: FormData): Pr
       ok: false,
       alasan: emailNyala && bentrok.email === email ? "Email sudah terdaftar" : "Username sudah dipakai",
     };
+  }
+
+  // Saat email nyala, pendaftaran mengirim email verifikasi — ikut batas anti-spam.
+  if (emailNyala && !(await bolehKirimEmail(email))) {
+    return { ok: false, alasan: "Terlalu banyak permintaan email. Tunggu beberapa menit lalu coba lagi." };
   }
 
   const user = await prisma.user.create({
