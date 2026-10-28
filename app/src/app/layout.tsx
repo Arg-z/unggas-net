@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import Link from "next/link";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { getSessionUser } from "@/lib/session";
-import { getTags } from "@/lib/forum";
 import { prisma } from "@/lib/db";
 import { NotifikasiBadge } from "@/components/NotifikasiBadge";
 import { Avatar } from "@/components/Avatar";
@@ -50,10 +48,6 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
-  const tags = await getTags(user);
-  const topik = tags
-    .filter((t) => t.kind === "topik")
-    .map((t) => ({ slug: t.slug, name: t.name, jumlah: t._count.discussions }));
 
   // Satu hitungan untuk dua tempat: lencana di bilah ponsel dan angka di
   // baris nav sidebar. Jangan biarkan keduanya membaca angka yang berbeda.
@@ -165,22 +159,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const kaki = (
     <footer className="mt-12 border-t border-border pt-5">
-      <div className="flex flex-col gap-2 text-[12.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
-        <p>unggas.net · Forum peternak unggas Indonesia.</p>
-        <nav aria-label="Tautan footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          <Link href="/" className="hover:text-accent-ink">
-            Semua diskusi
-          </Link>
-          {topik.map((t) => (
-            <Link key={t.slug} href={`/?tag=${t.slug}`} className="hover:text-accent-ink">
-              {t.name}
-            </Link>
-          ))}
-          <Link href="/baru" className="hover:text-accent-ink">
-            Tulis
-          </Link>
-        </nav>
-      </div>
+      <p className="text-[12.5px] text-ink-faint">unggas.net · Forum peternak unggas Indonesia.</p>
     </footer>
   );
 
