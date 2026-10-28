@@ -2,7 +2,6 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Pengungkap } from "@/components/Pengungkap";
-import { TombolTema } from "@/components/Tema";
 
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
@@ -54,7 +53,6 @@ export default function Mulai() {
             <Link href="/masuk" className="transition-colors hover:text-ink-strong">
               Masuk
             </Link>
-            <TombolTema />
           </nav>
         </header>
 
