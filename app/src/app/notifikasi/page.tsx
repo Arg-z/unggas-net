@@ -18,7 +18,6 @@ export default async function NotifikasiPage() {
     orderBy: { createdAt: "desc" },
     take: 50,
     include: {
-      actor: { select: { username: true } },
       discussion: { select: { title: true } },
     },
   });
@@ -82,10 +81,10 @@ export default async function NotifikasiPage() {
                       n.readAt ? "" : "bg-wash"
                     }`}
                   >
-                    <Avatar username={n.actor.username} size="sm" />
+                    <Avatar username="anonim" size="sm" />
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-center gap-x-1.5 text-[12.5px] text-ink-faint">
-                        <span className="font-medium text-ink-soft">{n.actor.username}</span>
+                        <span className="font-medium text-ink-soft">anonim</span>
                         <span>membalas</span>
                         <span aria-hidden="true">·</span>
                         <span className="tabular">{relatif(n.createdAt)}</span>

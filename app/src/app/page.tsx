@@ -248,9 +248,8 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
 
         <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
           <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username={d.user.username} size="sm" />
-            <span className="font-medium text-ink-soft">{d.user.username}</span>
-            {d.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+            <Avatar username="anonim" size="sm" />
+            <span className="font-medium text-ink-soft">anonim</span>
           </span>
           <span aria-hidden="true">·</span>
           <span className="tabular whitespace-nowrap">
@@ -301,9 +300,8 @@ function BarisDaftar({ d }: { d: BarisDiskusi }) {
 
         <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] text-ink-faint">
           <span className="flex items-center gap-1.5 whitespace-nowrap">
-            <Avatar username={d.user.username} size="xs" />
-            <span className="font-medium text-ink-soft">{d.user.username}</span>
-            {d.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+            <Avatar username="anonim" size="xs" />
+            <span className="font-medium text-ink-soft">anonim</span>
           </span>
           <span aria-hidden="true">·</span>
           <span className="tabular whitespace-nowrap">{relatif(d.lastPostAt)}</span>

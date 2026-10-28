@@ -63,7 +63,6 @@ export async function listDiscussions(opts: {
       skip: (page - 1) * limit,
       take: limit + 1,
       include: {
-        user: { select: { username: true, isAdmin: true } },
         _count: { select: { posts: { where: { isHidden: false } } } },
         posts: { where: { number: 1 }, select: { content: true }, take: 1 },
       },
@@ -83,11 +82,9 @@ export async function getThread(id: number, user?: SessionUser | null) {
   const discussion = await prisma.discussion.findUnique({
     where: { id },
     include: {
-      user: { select: { username: true, isAdmin: true } },
       posts: {
         where: { isHidden: false },
         orderBy: { number: "asc" },
-        include: { user: { select: { username: true, isAdmin: true } } },
       },
     },
   });

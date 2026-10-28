@@ -66,9 +66,8 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
 
               <p className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-faint">
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <Avatar username={thread.user.username} size="xs" />
-                  <span className="font-medium text-ink-soft">{thread.user.username}</span>
-                  {thread.user.isAdmin && <span className="text-[11.5px]">admin</span>}
+                  <Avatar username="anonim" size="xs" />
+                  <span className="font-medium text-ink-soft">anonim</span>
                 </span>
                 <span aria-hidden="true">·</span>
                 <span className="whitespace-nowrap">{relatif(thread.createdAt)}</span>
@@ -98,7 +97,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
             {balasan.length > 0 ? (
               <ol>
                 {balasan.map((p) => {
-                  const adalahPenulis = p.user.username === thread.user.username;
+                  const adalahPenulis = p.userId === thread.userId;
                   return (
                     <li
                       key={p.id}
@@ -107,14 +106,13 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                     >
                       <div className="flex flex-wrap items-center gap-x-1 gap-y-1 text-[13px] text-ink-faint">
                         <span className="flex items-center gap-1.5 whitespace-nowrap after:ml-1 after:content-['·']">
-                          <Avatar username={p.user.username} size="xs" />
-                          <span className="font-semibold text-ink-strong">{p.user.username}</span>
+                          <Avatar username="anonim" size="xs" />
+                          <span className="font-semibold text-ink-strong">anonim</span>
                           {adalahPenulis && (
                             <span className="text-[11.5px] font-medium text-accent-ink">
                               penulis
                             </span>
                           )}
-                          {p.user.isAdmin && <span className="text-[11.5px]">admin</span>}
                         </span>
                         <span className="whitespace-nowrap">{relatif(p.createdAt)}</span>
                         <a
@@ -183,7 +181,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                 </div>
                 <div className="flex items-baseline justify-between gap-3 py-2">
                   <dt className="text-ink-faint">Penulis</dt>
-                  <dd className="truncate font-medium text-ink-strong">{thread.user.username}</dd>
+                  <dd className="truncate font-medium text-ink-strong">anonim</dd>
                 </div>
               </dl>
             </div>
