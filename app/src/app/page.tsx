@@ -250,14 +250,18 @@ function PapanDiskusi({ d }: { d: BarisDiskusi }) {
             <IkonSematkan className="h-3.5 w-3.5" />
             Pengumuman
           </span>
-          <span aria-hidden="true" className="text-[11px] text-ink-faint">
-            ·
-          </span>
-          {d.tags.slice(0, 2).map(({ tag: t }) => (
-            <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
-              {t.name}
-            </TagPill>
-          ))}
+          {d.tags.length > 0 && (
+            <>
+              <span aria-hidden="true" className="text-[11px] text-ink-faint">
+                ·
+              </span>
+              {d.tags.slice(0, 2).map(({ tag: t }) => (
+                <TagPill key={t.id} slug={t.slug} withDot={t.kind === "wilayah"}>
+                  {t.name}
+                </TagPill>
+              ))}
+            </>
+          )}
         </div>
 
         <h2 className="mt-2.5 font-display text-[18px] font-semibold leading-[1.3] tracking-tight text-ink-strong sm:max-w-[34ch] sm:text-[22px]">
