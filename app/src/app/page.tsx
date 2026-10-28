@@ -33,27 +33,6 @@ const FITUR = [
   },
 ];
 
-const FAQ = [
-  {
-    tanya: "Apa bedanya dengan grup chat?",
-    jawab:
-      "Pertanyaan di grup cepat tenggelam; di sini punya halaman sendiri.",
-  },
-  {
-    tanya: "Apakah gratis?",
-    jawab: "Gratis. Pilih username dan password, akun langsung aktif.",
-  },
-  {
-    tanya: "Apakah nama saya terlihat?",
-    jawab:
-      "Tidak. Semua tulisan tampil sebagai anonim; hanya admin yang bisa melihat identitas untuk moderasi.",
-  },
-  {
-    tanya: "Boleh jualan?",
-    jawab: "Belum.",
-  },
-];
-
 const tunda = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 export default function Mulai() {
@@ -140,52 +119,6 @@ export default function Mulai() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      <section aria-labelledby="aturan" className="bg-accent px-6 py-20 text-on-accent md:px-12 md:py-24">
-        <div className="grid gap-8 md:grid-cols-12 md:gap-6">
-          <h2 id="aturan" className="text-[17px] font-semibold leading-snug md:col-span-3">
-            Aturan main
-          </h2>
-          <div className="md:col-span-8 md:col-start-5">
-            <blockquote
-              data-reveal
-              className="max-w-[28ch] font-display text-[clamp(1.375rem,3vw,2.25rem)] font-medium leading-[1.2] tracking-[-0.02em]"
-            >
-              “Sopan dan saling bantu. Jual-beli nanti punya tempatnya sendiri.”
-            </blockquote>
-            <p data-reveal style={tunda(100)} className="mt-6 text-[14px]">
-              <Link
-                href="/t/20"
-                className="underline decoration-white/50 underline-offset-4 transition-colors hover:decoration-white"
-              >
-                Dari sambutan di forum
-              </Link>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="tanya" className="px-6 py-20 md:px-12 md:py-24">
-        <div className="grid gap-10 md:grid-cols-12 md:gap-6">
-          <h2
-            id="tanya"
-            className="text-[clamp(2rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-ink-strong md:col-span-5"
-          >
-            Yang sering ditanya
-          </h2>
-
-          <dl className="space-y-8 md:col-span-6 md:col-start-7">
-            {FAQ.map((f, i) => (
-              <div key={f.tanya} data-reveal style={tunda(i * 50)}>
-                <dt className="text-[17px] font-semibold text-ink-strong">{f.tanya}</dt>
-                <dd className="mt-2 max-w-[58ch] text-[17px] leading-[1.65] text-ink-soft">
-                  {f.jawab}
-                </dd>
-              </div>
-            ))}
-          </dl>
         </div>
       </section>
 
