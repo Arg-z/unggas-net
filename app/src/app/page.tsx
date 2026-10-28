@@ -8,8 +8,16 @@ import { TombolTema } from "@/components/Tema";
 
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
-  description: "Forum peternak unggas Indonesia. Baca tanpa akun.",
-  alternates: { canonical: "https://unggas.net/mulai" },
+  description: "Forum peternak unggas Indonesia. Baca tanpa akun, tulis sebagai anonim.",
+  alternates: { canonical: "https://unggas.net" },
+  openGraph: {
+    title: "Forum Peternak Unggas Indonesia",
+    description: "Forum peternak unggas Indonesia. Baca tanpa akun, tulis sebagai anonim.",
+    url: "https://unggas.net/",
+    siteName: "unggas.net",
+    locale: "id_ID",
+    type: "website",
+  },
 };
 
 const FITUR = [
@@ -18,8 +26,8 @@ const FITUR = [
     isi: "Semua isi diskusi bisa dicari, termasuk balasan.",
   },
   {
-    judul: "Wilayah",
-    isi: "Tandai provinsi supaya saran pakan dan harga sesuai daerahmu.",
+    judul: "Anonim",
+    isi: "Nama penulis tampil sebagai anonim. Yang dibaca isinya, bukan siapa yang bicara.",
   },
   {
     judul: "Tautan",
@@ -36,6 +44,11 @@ const FAQ = [
   {
     tanya: "Apakah gratis?",
     jawab: "Gratis. Pilih username dan password, akun langsung aktif.",
+  },
+  {
+    tanya: "Apakah nama saya terlihat?",
+    jawab:
+      "Tidak. Semua tulisan tampil sebagai anonim; hanya admin yang bisa melihat identitas untuk moderasi.",
   },
   {
     tanya: "Boleh jualan?",
@@ -98,7 +111,7 @@ export default async function Mulai() {
 
         <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
           <p className="max-w-[44ch] text-balance text-[22px] leading-[1.4] text-ink-soft">
-            Forum peternak unggas Indonesia. Baca tanpa akun.
+            Forum peternak unggas Indonesia. Baca tanpa akun, tulis sebagai anonim.
           </p>
           <Link
             href="/daftar"
