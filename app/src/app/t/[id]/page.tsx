@@ -83,9 +83,15 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                   {thread.isPinned && <BadgeSematkan />}
                 </div>
                 <div className="shrink-0">
-                  <a href="#balas" className="btn btn-primary">
-                    Balas
-                  </a>
+                  {user ? (
+                    <a href="#balas" className="btn btn-primary">
+                      Balas
+                    </a>
+                  ) : (
+                    <Link href="/masuk" className="btn btn-outline">
+                      Masuk untuk membalas
+                    </Link>
+                  )}
                 </div>
               </div>
 

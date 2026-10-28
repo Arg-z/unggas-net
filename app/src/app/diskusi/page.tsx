@@ -36,9 +36,13 @@ export default async function Beranda({
   const [{ rows, hasNext, total }, jumlahDiskusi, jumlahPost, belumDijawab] = await Promise.all([
     listDiscussions({ page, user, saring, urut, q }),
     prisma.discussion.count({ where: { isHidden: false } }),
-    prisma.post.count({ where: { isHidden: false } }),
+    prisma.post.count({ where: { isHidden: false, discussion: { isHidden: false } } }),
     prisma.discussion.count({
-      where: { isHidden: false, posts: { none: { number: { gt: 1 } } } },
+      where: {
+        isHidden: false,
+        isPinned: false,
+        posts: { none: { number: { gt: 1 }, isHidden: false } },
+      },
     }),
   ]);
 
@@ -134,19 +138,34 @@ export default async function Beranda({
           </p>
         </div>
 
-        <dl className="hidden grid-cols-2 gap-px overflow-hidden rounded-[22px] bg-rule lg:col-span-4 lg:grid">
-          <div className="bg-wash px-5 py-4">
-            <dt className="text-[13px] text-ink-soft">Diskusi</dt>
-            <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
-              {jumlahDiskusi}
-            </dd>
-          </div>
-          <div className="bg-wash px-5 py-4">
-            <dt className="text-[13px] text-ink-soft">Postingan</dt>
-            <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
-              {jumlahPost}
-            </dd>
-          </div>
+        <dl
+          className={`hidden gap-px overflow-hidden rounded-[22px] bg-rule lg:col-span-4 lg:grid ${
+            q ? "grid-cols-1" : "grid-cols-2"
+          }`}
+        >
+          {q ? (
+            <div className="bg-wash px-5 py-4">
+              <dt className="text-[13px] text-ink-soft">Hasil pencarian</dt>
+              <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
+                {total}
+              </dd>
+            </div>
+          ) : (
+            <>
+              <div className="bg-wash px-5 py-4">
+                <dt className="text-[13px] text-ink-soft">Diskusi</dt>
+                <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
+                  {jumlahDiskusi}
+                </dd>
+              </div>
+              <div className="bg-wash px-5 py-4">
+                <dt className="text-[13px] text-ink-soft">Postingan</dt>
+                <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
+                  {jumlahPost}
+                </dd>
+              </div>
+            </>
+          )}
         </dl>
       </header>
 
@@ -202,27 +221,29 @@ export default async function Beranda({
           </div>
         ) : (
           <div>
-            <div className="flex items-baseline justify-between gap-4 pb-2">
-              <h2 className="text-[13px] font-medium text-ink-soft">{labelDaftar}</h2>
-              {terakhirAktif && (
-                <p className="text-[12px] text-ink-faint">
-                  Diperbarui {relatif(terakhirAktif)}
-                </p>
-              )}
-            </div>
-
-            <div className={`${KOLOM} hidden border-b border-border px-1 pb-2 text-[12px] text-ink-faint sm:grid`}>
-              <span className={JUDUL_KOLOM}>Diskusi</span>
-              <span className={`${BALASAN_KOLOM} text-right`}>Balasan</span>
-              <span className={`${WAKTU_KOLOM} text-right`}>Aktivitas</span>
-            </div>
-
             {daftar.length > 0 && (
-              <ul className="divide-y divide-rule">
-                {daftar.map((d) => (
-                  <BarisDaftar key={d.id} d={d} />
-                ))}
-              </ul>
+              <>
+                <div className="flex items-baseline justify-between gap-4 pb-2">
+                  <h2 className="text-[13px] font-medium text-ink-soft">{labelDaftar}</h2>
+                  {terakhirAktif && (
+                    <p className="text-[12px] text-ink-faint">
+                      Diperbarui {relatif(terakhirAktif)}
+                    </p>
+                  )}
+                </div>
+
+                <div className={`${KOLOM} hidden border-b border-border px-1 pb-2 text-[12px] text-ink-faint sm:grid`}>
+                  <span className={JUDUL_KOLOM}>Diskusi</span>
+                  <span className={`${BALASAN_KOLOM} text-right`}>Balasan</span>
+                  <span className={`${WAKTU_KOLOM} text-right`}>Aktivitas</span>
+                </div>
+
+                <ul className="divide-y divide-rule">
+                  {daftar.map((d) => (
+                    <BarisDaftar key={d.id} d={d} />
+                  ))}
+                </ul>
+              </>
             )}
           </div>
         )}

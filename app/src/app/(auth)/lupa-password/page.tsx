@@ -12,8 +12,11 @@ export default function LupaPasswordPage() {
       <main id="konten" tabIndex={-1} className="py-2 sm:py-6 md:grid md:min-h-[calc(100svh-12rem)] md:content-center">
         <AuthShell judul="Lupa password" sub="Reset lewat email sedang dimatikan sementara.">
           <p className="text-[13.5px] leading-relaxed text-ink-soft">
-            Kamu tetap bisa masuk dengan username dan password seperti biasa. Kalau password lupa,
-            hubungi admin untuk mengatur ulang.
+            Kamu tetap bisa masuk dengan username dan password seperti biasa. Kalau password lupa,{" "}
+            <a href="mailto:halo@unggas.net" className="link">
+              hubungi admin
+            </a>{" "}
+            untuk mengatur ulang.
           </p>
           <Link href="/masuk" className="btn btn-primary mt-5 w-full">
             Kembali ke halaman masuk

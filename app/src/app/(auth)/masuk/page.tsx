@@ -40,7 +40,12 @@ export default async function MasukPage({
               Lupa password?
             </Link>
           ) : (
-            <span>Lupa password? Hubungi admin.</span>
+            <span>
+              Lupa password?{" "}
+              <a href="mailto:halo@unggas.net" className="link">
+                Hubungi admin.
+              </a>
+            </span>
           )}
           <span>
             Belum punya akun?{" "}
