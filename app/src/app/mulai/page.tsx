@@ -7,22 +7,22 @@ import { Pengungkap } from "@/components/Pengungkap";
 
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
-  description: "Forum peternak unggas Indonesia. Baca tanpa akun, tulis setelah masuk.",
+  description: "Forum peternak unggas Indonesia. Baca tanpa akun.",
   alternates: { canonical: "https://unggas.net/mulai" },
 };
 
 const FITUR = [
   {
     judul: "Cari",
-    isi: "Pencarian menelusuri seluruh isi diskusi, termasuk balasan.",
+    isi: "Semua isi diskusi bisa dicari, termasuk balasan.",
   },
   {
     judul: "Wilayah",
-    isi: "Tandai provinsi di diskusi supaya saran pakan dan harga sesuai daerahmu.",
+    isi: "Tandai provinsi supaya saran pakan dan harga sesuai daerahmu.",
   },
   {
     judul: "Tautan",
-    isi: "Setiap diskusi punya alamat sendiri, jadi tautannya tetap bisa dibuka saat dikirim ke grup.",
+    isi: "Tiap diskusi punya tautan sendiri untuk dibagikan.",
   },
 ];
 
@@ -30,11 +30,7 @@ const FAQ = [
   {
     tanya: "Apa bedanya dengan grup chat?",
     jawab:
-      "Di grup pertanyaan cepat tenggelam, sedangkan di sini tiap diskusi punya halaman sendiri.",
-  },
-  {
-    tanya: "Apakah harus punya ternak?",
-    jawab: "Tidak perlu. Kamu bisa baca-baca dulu.",
+      "Pertanyaan di grup cepat tenggelam; di sini punya halaman sendiri.",
   },
   {
     tanya: "Apakah gratis?",
@@ -42,7 +38,7 @@ const FAQ = [
   },
   {
     tanya: "Boleh jualan?",
-    jawab: "Belum. Jual-beli nanti punya tempat sendiri.",
+    jawab: "Belum.",
   },
 ];
 
@@ -104,7 +100,7 @@ export default async function Mulai() {
 
         <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
           <p className="max-w-[44ch] text-balance text-[22px] leading-[1.4] text-ink-soft">
-            Forum peternak unggas Indonesia. Baca tanpa akun, tulis setelah masuk.
+            Forum peternak unggas Indonesia. Baca tanpa akun.
           </p>
           <Link
             href="/daftar"
@@ -116,36 +112,38 @@ export default async function Mulai() {
       </section>
 
       <section aria-labelledby="isinya" className="px-6 py-20 md:px-12 md:py-24">
-        <h2
-          id="isinya"
-          className="text-[22px] font-semibold tracking-[-0.03em] text-ink-strong md:text-[36px]"
-        >
-          Isinya
-        </h2>
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
+          <h2
+            id="isinya"
+            className="text-[22px] font-semibold tracking-[-0.03em] text-ink-strong md:text-[36px] lg:col-span-3"
+          >
+            Isinya
+          </h2>
 
-        <ul className="mt-8 md:mt-12">
-          {FITUR.map((f, i) => (
-            <li
-              key={f.judul}
-              className="flex flex-col gap-2 py-6 lg:flex-row lg:items-baseline lg:gap-12 lg:py-7"
-            >
-              <h3
-                data-reveal
-                style={tunda(i * 70)}
-                className="shrink-0 font-display text-[clamp(2rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-ink-strong"
+          <ul className="lg:col-span-8 lg:col-start-5">
+            {FITUR.map((f, i) => (
+              <li
+                key={f.judul}
+                className="flex flex-col gap-2 py-5 lg:flex-row lg:items-baseline lg:gap-10 lg:py-6"
               >
-                {f.judul}
-              </h3>
-              <p
-                data-reveal
-                style={tunda(i * 70 + 60)}
-                className="max-w-[58ch] text-[17px] leading-[1.55] text-ink-soft"
-              >
-                {f.isi}
-              </p>
-            </li>
-          ))}
-        </ul>
+                <h3
+                  data-reveal
+                  style={tunda(i * 70)}
+                  className="shrink-0 font-display text-[clamp(2rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-ink-strong"
+                >
+                  {f.judul}
+                </h3>
+                <p
+                  data-reveal
+                  style={tunda(i * 70 + 60)}
+                  className="max-w-[58ch] text-[17px] leading-[1.55] text-ink-soft"
+                >
+                  {f.isi}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section aria-labelledby="ramai" className="px-6 py-20 md:px-12 md:py-24">
@@ -156,7 +154,7 @@ export default async function Mulai() {
           Yang sedang dibicarakan
         </h2>
         <p data-reveal className="mt-4 text-[17px] leading-[1.6] text-ink-soft">
-          Untuk sementara, baru Puyuh dan Lobby yang terbuka. Topik lain menyusul.
+          Untuk sekarang baru Puyuh dan Lobby.
         </p>
 
         <ul className="mt-8 md:mt-12">
@@ -243,7 +241,7 @@ export default async function Mulai() {
 
       <section
         aria-labelledby="ajakan"
-        className="flex min-h-[100svh] flex-col bg-ink-strong px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-[26vh] text-white md:min-h-0 md:px-12 md:pb-24 md:pt-24 lg:min-h-[100svh] lg:pb-[calc(2.5rem+env(safe-area-inset-bottom))] lg:pt-[24vh]"
+        className="flex flex-col bg-ink-strong px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-20 text-white md:px-12 md:pb-24 md:pt-28"
       >
         <h2
           id="ajakan"
@@ -255,10 +253,7 @@ export default async function Mulai() {
           mau ditanya?
         </h2>
 
-        <div className="mt-auto flex flex-col gap-7 pt-16 md:flex-row md:items-end md:justify-between md:gap-12">
-          <p className="max-w-[40ch] text-[17px] leading-[1.55] text-white/80 md:text-[22px]">
-            Buat akun gratis, lalu mulai dari satu pertanyaan.
-          </p>
+        <div className="mt-14 flex flex-col gap-7 md:flex-row md:items-end md:justify-end md:gap-12">
           <div className="flex shrink-0 flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
             <Link
               href="/daftar"
@@ -281,14 +276,8 @@ export default async function Mulai() {
           unggas<span className="text-ink-faint">.net</span>
         </p>
 
-        <div className="mt-10 grid gap-8 md:grid-cols-12 md:gap-6">
-          <p className="text-[17px] text-ink-soft md:col-span-4">
-            Forum peternak unggas Indonesia.
-          </p>
-          <nav
-            aria-label="Tautan footer"
-            className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-ink-soft md:col-span-4 md:col-start-9 md:justify-end"
-          >
+        <div className="mt-10 flex flex-col gap-6 text-[14px] md:flex-row md:items-center md:justify-between">
+          <nav aria-label="Tautan footer" className="flex flex-wrap gap-x-6 gap-y-2 text-ink-soft">
             <Link href="/" className="transition-colors hover:text-accent-ink">
               Diskusi
             </Link>
@@ -299,9 +288,8 @@ export default async function Mulai() {
               Masuk
             </Link>
           </nav>
+          <p className="text-ink-faint">© 2026 unggas.net</p>
         </div>
-
-        <p className="mt-12 text-[14px] text-ink-faint">© 2026 unggas.net</p>
       </footer>
     </main>
   );
