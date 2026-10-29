@@ -35,19 +35,12 @@ export default async function MasukPage({
         <MasukForm denganEmail={denganEmail} />
 
         <div className="mt-5 flex flex-col gap-2 border-t border-rule pt-4 text-[13px] text-ink-faint sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-          {denganEmail ? (
+          {denganEmail && (
             <Link href="/lupa-password" className="link">
               Lupa password?
             </Link>
-          ) : (
-            <span>
-              Lupa password?{" "}
-              <a href="mailto:halo@unggas.net" className="link">
-                Hubungi admin.
-              </a>
-            </span>
           )}
-          <span>
+          <span className={denganEmail ? "" : "sm:ml-auto"}>
             Belum punya akun?{" "}
             <Link href="/daftar" className="link">
               Daftar
