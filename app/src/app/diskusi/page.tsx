@@ -125,7 +125,7 @@ export default async function Beranda({
     <main id="konten" tabIndex={-1} className="w-full">
       <header className="grid gap-5 lg:grid-cols-12 lg:gap-4">
         <div className="lg:col-span-8">
-          <h1 className="font-serif text-[34px] font-semibold leading-[1.02] tracking-[-0.03em] text-ink-strong sm:text-[44px] lg:text-[48px]">
+          <h1 className="font-display text-[34px] font-semibold leading-[1.02] tracking-[-0.03em] text-ink-strong sm:text-[44px] lg:text-[48px]">
             {saring === "disematkan"
               ? "Disematkan"
               : saring === "belum-dijawab"
@@ -180,7 +180,7 @@ export default async function Beranda({
 
         {rows.length === 0 ? (
           <div className="rounded-[22px] bg-wash px-6 py-16 text-center">
-            <p className="mx-auto max-w-[26ch] font-serif text-[24px] font-semibold leading-[1.12] tracking-[-0.02em] text-ink-strong sm:text-[28px]">
+            <p className="mx-auto max-w-[26ch] font-display text-[24px] font-semibold leading-[1.12] tracking-[-0.02em] text-ink-strong sm:text-[28px]">
               {kosong.judul}
             </p>
             <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-ink-soft">
