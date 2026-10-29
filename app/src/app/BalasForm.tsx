@@ -11,9 +11,6 @@ export function BalasForm({ discussionId }: { discussionId: number }) {
       <label htmlFor="content" className="label">
         Tulis balasan
       </label>
-      <p className="hint mt-1">
-        Ceritakan pengalaman lapangan, saran praktis, atau pertanyaan lanjutan.
-      </p>
       <textarea
         id="content"
         name="content"
