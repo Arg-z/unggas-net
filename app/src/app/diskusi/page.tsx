@@ -106,7 +106,7 @@ export default async function Beranda({
     }
     return {
       judul: "Belum ada diskusi.",
-      isi: "Forum ini baru dibuka. Diskusi pertama akan menentukan isinya.",
+      isi: undefined,
       aksi: { href: "/baru", label: "Tulis diskusi pertama" },
     };
   })();
@@ -183,9 +183,11 @@ export default async function Beranda({
             <p className="mx-auto max-w-[26ch] font-display text-[24px] font-semibold leading-[1.12] tracking-[-0.02em] text-ink-strong sm:text-[28px]">
               {kosong.judul}
             </p>
-            <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-ink-soft">
-              {kosong.isi}
-            </p>
+            {kosong.isi && (
+              <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-ink-soft">
+                {kosong.isi}
+              </p>
+            )}
             <div className="mt-6 flex justify-center">
               <Link
                 href={kosong.aksi.href}
