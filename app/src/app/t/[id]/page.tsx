@@ -178,13 +178,6 @@ export default async function ThreadPage({
                           )}
                         </span>
                         <span className="whitespace-nowrap">{relatif(p.createdAt)}</span>
-                        <a
-                          href={`#post-${p.number}`}
-                          aria-label={`Tautan ke balasan ${p.number}`}
-                          className="tabular ml-auto text-[12px] font-medium text-ink-faint hover:text-accent-deep"
-                        >
-                          #{p.number}
-                        </a>
                       </div>
 
                       <div className="prosa mt-2.5 max-w-[68ch] whitespace-pre-wrap break-words text-ink">
