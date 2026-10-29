@@ -196,9 +196,8 @@ export default async function ThreadPage({
               </ol>
             ) : (
               <div className="py-6">
-                <p className="max-w-[62ch] text-[14px] leading-relaxed text-ink-soft">
-                  Belum ada yang menanggapi. Pengalaman sekecil apa pun berguna di sini, pemula
-                  lain pasti terbantu.
+                <p className="text-[14px] leading-relaxed text-ink-soft">
+                  Belum ada yang menanggapi.
                 </p>
                 <a href="#balas" className="link mt-2 text-[13px]">
                   Jadi yang pertama membalas
