@@ -65,6 +65,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NavSamping isAdmin={Boolean(user?.isAdmin && !user.isBanned)} belumDibaca={belumDibaca} ponsel />
       </Suspense>
 
+      <div>
+        <p className="px-2.5 pb-1.5 text-[12px] font-medium text-ink-faint">Tampilan</p>
+        <div className="flex h-11 items-center justify-between rounded-lg px-2.5">
+          <span className="text-[14px] font-medium text-ink-soft">Tema</span>
+          <TombolTema ukuran="besar" />
+        </div>
+      </div>
+
       {user ? (
         <div className="flex items-center gap-3 border-t border-border pt-4">
           <Avatar username={user.username} size="md" />
@@ -151,7 +159,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <div className="flex items-center gap-1">
         {user && <NotifikasiBadge userId={user.id} jumlah={belumDibaca} />}
         {user && <TombolTulis />}
-        <TombolTema ukuran="besar" />
         <MenuPonsel>{isiMenu}</MenuPonsel>
       </div>
     </header>
