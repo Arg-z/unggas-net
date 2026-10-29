@@ -19,6 +19,7 @@ export default defineConfig({
     env: {
       DATABASE_URL: databaseUrl,
       SESSION_SECRET: "test-secret",
+      EMAIL_AKTIF: "false",
     },
   },
   resolve: {

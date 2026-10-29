@@ -38,12 +38,17 @@ const JENDELA_EMAIL_MS = 10 * 60_000;
 const LIMIT_DAFTAR_IP = 5;
 const JENDELA_DAFTAR_MS = 10 * 60_000;
 
-/** IP pengirim dari header nginx (X-Real-IP). Aman dipanggil di luar konteks request. */
+/** IP pengirim untuk pembatasan percobaan. Origin hanya menerima koneksi dari
+ *  Cloudflare, jadi CF-Connecting-IP adalah IP pengunjung yang bisa dipercaya;
+ *  X-Real-IP dipakai untuk akses langsung lewat localhost/tailnet. */
 async function ipPengirim(): Promise<string> {
   try {
     const h = await headers();
-    const ip = h.get("x-real-ip") ?? h.get("x-forwarded-for")?.split(",")[0]?.trim();
-    return ip || "tanpa-ip";
+    const ip =
+      h.get("cf-connecting-ip") ??
+      h.get("x-real-ip") ??
+      h.get("x-forwarded-for")?.split(",")[0]?.trim();
+    return ip?.trim() || "tanpa-ip";
   } catch {
     return "tanpa-ip";
   }
