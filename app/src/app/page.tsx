@@ -6,12 +6,12 @@ import { Pengungkap } from "@/components/Pengungkap";
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
   description:
-    "Forum peternak unggas Indonesia. Baca tanpa akun, bikin akun buat menulis atau kasih suka. Identitas penulis tidak ditampilkan ke publik.",
+    "Forum peternak unggas Indonesia. Tempat bertanya dan berbagi pengalaman beternak.",
   alternates: { canonical: "https://unggas.net" },
   openGraph: {
     title: "Forum Peternak Unggas Indonesia",
     description:
-      "Forum peternak unggas Indonesia. Baca tanpa akun, bikin akun buat menulis atau kasih suka. Identitas penulis tidak ditampilkan ke publik.",
+      "Forum peternak unggas Indonesia. Tempat bertanya dan berbagi pengalaman beternak.",
     url: "https://unggas.net/",
     siteName: "unggas.net",
     locale: "id_ID",
@@ -76,8 +76,7 @@ export default function Mulai() {
 
         <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
           <p className="max-w-[44ch] text-balance text-[22px] leading-[1.4] text-ink-soft">
-            Forum peternak unggas Indonesia. Baca tanpa akun, bikin akun buat menulis atau kasih suka.
-            Identitas penulis tidak ditampilkan ke publik.
+            Forum peternak unggas Indonesia. Tempat bertanya dan berbagi pengalaman beternak.
           </p>
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end md:w-auto md:shrink-0">
             <Link
