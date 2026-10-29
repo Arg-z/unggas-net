@@ -34,10 +34,8 @@ export default async function Beranda({
   const halaman = Number(params.page);
   const page = Number.isSafeInteger(halaman) && halaman > 0 ? Math.min(halaman, 1000) : 1;
 
-  const [{ rows, hasNext, total }, jumlahDiskusi, jumlahPost, belumDijawab] = await Promise.all([
+  const [{ rows, hasNext, total }, belumDijawab] = await Promise.all([
     listDiscussions({ page, user, saring, urut, q }),
-    prisma.discussion.count({ where: { isHidden: false } }),
-    prisma.post.count({ where: { isHidden: false, discussion: { isHidden: false } } }),
     prisma.discussion.count({
       where: {
         isHidden: false,
@@ -139,35 +137,16 @@ export default async function Beranda({
           </p>
         </div>
 
-        <dl
-          className={`hidden gap-px overflow-hidden rounded-[22px] bg-rule lg:col-span-4 lg:grid ${
-            q ? "grid-cols-1" : "grid-cols-2"
-          }`}
-        >
-          {q ? (
+        {q && (
+          <dl className="hidden overflow-hidden rounded-[22px] bg-rule lg:col-span-4 lg:grid">
             <div className="bg-wash px-5 py-4">
               <dt className="text-[13px] text-ink-soft">Hasil pencarian</dt>
               <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
                 {total}
               </dd>
             </div>
-          ) : (
-            <>
-              <div className="bg-wash px-5 py-4">
-                <dt className="text-[13px] text-ink-soft">Diskusi</dt>
-                <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
-                  {jumlahDiskusi}
-                </dd>
-              </div>
-              <div className="bg-wash px-5 py-4">
-                <dt className="text-[13px] text-ink-soft">Postingan</dt>
-                <dd className="tabular mt-1 text-[32px] font-normal leading-none text-ink-strong">
-                  {jumlahPost}
-                </dd>
-              </div>
-            </>
-          )}
-        </dl>
+          </dl>
+        )}
       </header>
 
       {/* Ponsel: pencarian tinggal satu baris. Di 1024px ke atas ia pindah ke
