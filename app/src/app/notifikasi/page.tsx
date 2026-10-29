@@ -49,10 +49,6 @@ export default async function NotifikasiPage() {
           <p className="mx-auto max-w-[30ch] text-[19px] font-semibold leading-snug tracking-tight text-ink-strong">
             Belum ada notifikasi.
           </p>
-          <p className="mx-auto mt-2 max-w-[46ch] text-[14px] leading-relaxed text-ink-soft">
-            Setiap balasan baru pada diskusimu akan muncul di sini, beserta tautan langsung ke
-            balasannya.
-          </p>
           <div className="mt-5 flex justify-center">
             <Link href="/diskusi" className="btn btn-outline">
               Lihat semua diskusi
