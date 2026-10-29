@@ -21,7 +21,7 @@ export function KartuTamu() {
     <div className="rounded-xl border border-border p-3.5">
       <p className="text-[13px] font-semibold text-ink-strong">Ikut berdiskusi</p>
       <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">
-        Satu akun untuk semua topik unggas.net.
+        Forum peternak unggas Indonesia.
       </p>
       <div className="mt-3 flex gap-2">
         <Link href="/masuk" className="btn btn-outline btn-sm flex-1">
