@@ -17,7 +17,7 @@ export function BuatDiskusiForm() {
           className="input mt-2"
           placeholder="Kandang puyuh panas saat siang?"
         />
-        <span className="hint mt-1.5 block">5–200 karakter. Tulis inti pertanyaannya saja.</span>
+        <span className="hint mt-1.5 block">5–200 karakter.</span>
       </label>
 
       <label className="block">
@@ -31,9 +31,6 @@ export function BuatDiskusiForm() {
           className="input mt-2"
           placeholder="Umur ternak, kapasitas kandang, komposisi pakan, gejala yang terlihat, dan apa yang sudah dicoba."
         />
-        <span className="hint mt-1.5 block">
-          Makin lengkap konteksnya, makin tepat jawaban yang kamu terima.
-        </span>
       </label>
 
       {state && !state.ok && (
