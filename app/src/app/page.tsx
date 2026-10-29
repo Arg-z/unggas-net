@@ -6,12 +6,12 @@ import { Pengungkap } from "@/components/Pengungkap";
 export const metadata: Metadata = {
   title: { absolute: "Forum Peternak Unggas Indonesia — unggas.net" },
   description:
-    "Forum peternak unggas Indonesia. Baca tanpa akun; bikin akun kalau mau menulis atau kasih suka. Identitas penulis tidak ditampilkan ke publik.",
+    "Forum peternak unggas Indonesia. Baca tanpa akun, bikin akun buat menulis atau kasih suka. Identitas penulis tidak ditampilkan ke publik.",
   alternates: { canonical: "https://unggas.net" },
   openGraph: {
     title: "Forum Peternak Unggas Indonesia",
     description:
-      "Forum peternak unggas Indonesia. Baca tanpa akun; bikin akun kalau mau menulis atau kasih suka. Identitas penulis tidak ditampilkan ke publik.",
+      "Forum peternak unggas Indonesia. Baca tanpa akun, bikin akun buat menulis atau kasih suka. Identitas penulis tidak ditampilkan ke publik.",
     url: "https://unggas.net/",
     siteName: "unggas.net",
     locale: "id_ID",
@@ -22,15 +22,15 @@ export const metadata: Metadata = {
 const FITUR = [
   {
     judul: "Cari",
-    isi: "Cari diskusi lewat judulnya. Ketik kata kunci, hasil yang cocok muncul di daftar.",
+    isi: "Cari diskusi dari judulnya. Ketik kata kunci, hasilnya muncul di daftar.",
   },
   {
     judul: "Anonim",
-    isi: "Identitas penulis tidak ditampilkan ke publik. Yang dibaca isinya, bukan siapa yang bicara.",
+    isi: "Identitas penulis tidak ditampilkan ke publik. Yang dibaca isinya.",
   },
   {
     judul: "Tautan",
-    isi: "Tiap diskusi punya tautan sendiri buat dibagikan.",
+    isi: "Tiap diskusi punya tautan buat dibagikan.",
   },
 ];
 
@@ -76,8 +76,8 @@ export default function Mulai() {
 
         <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
           <p className="max-w-[44ch] text-balance text-[22px] leading-[1.4] text-ink-soft">
-            Forum peternak unggas Indonesia. Baca tanpa akun; bikin akun kalau mau menulis atau kasih
-            suka. Identitas penulis tidak ditampilkan ke publik.
+            Forum peternak unggas Indonesia. Baca tanpa akun, bikin akun buat menulis atau kasih suka.
+            Identitas penulis tidak ditampilkan ke publik.
           </p>
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end md:w-auto md:shrink-0">
             <Link
