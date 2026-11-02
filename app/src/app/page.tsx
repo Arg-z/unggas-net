@@ -25,8 +25,8 @@ const FITUR = [
     isi: "Cari diskusi dari judulnya. Ketik kata kunci, hasilnya muncul di daftar.",
   },
   {
-    judul: "Anonim",
-    isi: "Identitas penulis tidak ditampilkan ke publik. Yang dibaca isinya.",
+    judul: "Username",
+    isi: "Tiap penulis pakai username, jadi kelihatan siapa yang sering bantu.",
   },
   {
     judul: "Tautan",
