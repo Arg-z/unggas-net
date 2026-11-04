@@ -61,9 +61,10 @@ function sesiKedaluwarsa(formData: FormData | undefined): ActionResult | null {
 
 async function bolehKirimEmail(alamat: string): Promise<boolean> {
   const ip = await ipPengirim();
-  const bolehIp = rateLimit(`email:ip:${ip}`, LIMIT_EMAIL_IP, JENDELA_EMAIL_MS);
-  const bolehAlamat = rateLimit(`email:alamat:${alamat}`, LIMIT_EMAIL_ALAMAT, JENDELA_EMAIL_MS);
-  return bolehIp && bolehAlamat;
+  // Gagal cepat: panggilan yang ditolak tidak boleh mengonsumsi quota dimensi
+  // lain (alamat korban) — sama dengan gating fail-closed di daftar.
+  if (!rateLimit(`email:ip:${ip}`, LIMIT_EMAIL_IP, JENDELA_EMAIL_MS)) return false;
+  return rateLimit(`email:alamat:${alamat}`, LIMIT_EMAIL_ALAMAT, JENDELA_EMAIL_MS);
 }
 
 export async function daftar(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
@@ -159,9 +160,12 @@ export async function masuk(_prev: ActionResult | null, formData: FormData): Pro
   const password = String(formData.get("password") ?? "");
   if (!identitas || !password) return { ok: false, alasan: "Isi username dan password" };
 
-  const bolehIp = rateLimit(`masuk:ip:${await ipPengirim()}`, LIMIT_IP, JENDELA_MS);
-  const bolehIdentitas = rateLimit(`masuk:identitas:${identitas}`, LIMIT_IDENTITAS, JENDELA_MS);
-  if (!bolehIp || !bolehIdentitas) {
+  // Gagal cepat per dimensi: panggilan yang ditolak tidak boleh mengonsumsi
+  // quota dimensi lain (identitas korban) setelah quota IP-nya habis.
+  if (!rateLimit(`masuk:ip:${await ipPengirim()}`, LIMIT_IP, JENDELA_MS)) {
+    return { ok: false, alasan: "Terlalu banyak percobaan masuk. Tunggu sebentar lalu coba lagi." };
+  }
+  if (!rateLimit(`masuk:identitas:${identitas}`, LIMIT_IDENTITAS, JENDELA_MS)) {
     return { ok: false, alasan: "Terlalu banyak percobaan masuk. Tunggu sebentar lalu coba lagi." };
   }
 

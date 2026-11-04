@@ -16,7 +16,8 @@ function kunciRingkas(key: string): string {
 }
 
 function jagaBatas(): void {
-  // Map menjaga urutan sisip: buang kunci tertua saat melewati batas.
+  // Map menjaga urutan sisip: dengan delete+set pada tiap sentuhan di bawah,
+  // urutan ini berarti LRU — buang kunci yang paling lama tidak disentuh.
   while (buckets.size > MAKS_KUNCI) {
     const tertua = buckets.keys().next().value;
     if (tertua === undefined) return;
@@ -37,6 +38,9 @@ export function rateLimit(key: string, max: number, windowMs: number): boolean {
   const kunci = kunciRingkas(key);
   const recent = (buckets.get(kunci)?.hits ?? []).filter((t) => now - t < windowMs);
 
+  // delete+set di setiap panggilan (termasuk yang ditolak) supaya kunci aktif
+  // tidak terbuang oleh banjir kunci baru dan quota yang habis tidak ke-reset.
+  buckets.delete(kunci);
   if (recent.length >= max) {
     buckets.set(kunci, { hits: recent, windowMs, terakhir: now });
     return false;
